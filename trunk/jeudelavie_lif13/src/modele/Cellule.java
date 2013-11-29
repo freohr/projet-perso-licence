@@ -1,0 +1,40 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package modele;
+
+/**
+ *
+ * @author p1006099
+ */
+public class Cellule {
+    protected boolean alive;
+    protected int x;
+    protected int y;
+
+    public Cellule() {
+        this.alive = false;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+    
+    public void setCoord(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}

@@ -1,0 +1,18 @@
+g++ -c -Wall -Wextra src/ndet.cpp -o src/ndet.o
+src/ndet.cpp:552:6: warning: unused parameter 'at' [-Wunused-parameter]
+ bool ToGraph(sAutoNDE& at, string path){
+      ^
+src/ndet.cpp:552:6: warning: unused parameter 'path' [-Wunused-parameter]
+src/ndet.cpp:616:10: warning: unused parameter 'y' [-Wunused-parameter]
+ sAutoNDE Intersection(const sAutoNDE& x, const sAutoNDE& y){
+          ^
+g++ -c -Wall -Wextra src/expression_rationnelle.cpp -o src/expression_rationnelle.o
+g++ -c -Wall -Wextra src/parser.tab.cpp -o src/parser.tab.o
+src/parser.y:49:6: warning: unused parameter 'loc' [-Wunused-parameter]
+ void yy::parser::error(yy::location const& loc, std::string const& s){
+      ^
+g++ -c -Wall -Wextra src/lex.yy.cpp -o src/lex.yy.o
+src/lex.yy.cpp:1124:17: warning: 'void yyunput(int, char*)' defined but not used [-Wunused-function]
+     static void yyunput (int c, register char * yy_bp )
+                 ^
+g++  src/ndet.o src/expression_rationnelle.o src/parser.tab.o src/lex.yy.o -o ndet

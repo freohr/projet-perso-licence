@@ -5,9 +5,11 @@
 package modele;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,12 +23,19 @@ public class Monde extends Observable implements Runnable {
     protected Cellule[][] grille;
     protected Regles regle;
     protected ArrayList<Coordonnee> changement;
+    protected boolean useteams;
+
+    protected Set<Integer> teams;
 
     /**
      *
      * @param size la taille de la grille représentant l'environnement
-     * @param regle le nombre de cellules vivantes voisines à une cellule
-     * nécéssaires pour réveiller cette cellule
+     * @param reveil le nombres de celluls voisines vivantes nécéssaires pour
+     * réveiller une cellule morte
+     * @param survie le nombres de cellules voisines vivantes minimum pour
+     * garder une cellule en vie
+     * @param mort le nombre de cellules voisines vivantes maximum pour garder
+     * une cellule en vie
      */
     public Monde(int size, int reveil, int survie, int mort) {
         this.size = size;
@@ -36,12 +45,32 @@ public class Monde extends Observable implements Runnable {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grille[i][j] = new Cellule();
+                grille[i][j] = new Cellule(0);
             }
         }
 
         changement = new ArrayList<>();
 
+    }
+
+    public Monde(int size, int reveil, int survie, int mort, int nbteams) {
+        this.size = size;
+        this.useteams = true;
+
+        this.regle = new Regles(reveil, survie, mort);
+        grille = new Cellule[size][size];
+
+        for (int i = 0; i < nbteams; i++) {
+            teams.add(new Integer(i));
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grille[i][j] = new Cellule((int) Math.round((Math.random() * nbteams) + 1));
+            }
+        }
+
+        changement = new ArrayList<>();
     }
 
     public int getSize() {
@@ -87,7 +116,6 @@ public class Monde extends Observable implements Runnable {
             grille[temp.getX()][temp.getY()].setAlive(!grille[temp.getX()][temp.getY()].isAlive());
         }
 
-        System.out.println("Udpate finie");
         this.setChanged();
     }
 
@@ -117,14 +145,13 @@ public class Monde extends Observable implements Runnable {
             Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
         while (true) {
 
             update();
             //random();
             notifyObservers();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(200);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
             }

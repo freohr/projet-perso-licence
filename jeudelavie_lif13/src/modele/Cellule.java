@@ -12,9 +12,11 @@ public class Cellule {
     protected boolean alive;
     protected int x;
     protected int y;
+    protected int team;
 
-    public Cellule() {
+    public Cellule(int team) {
         this.alive = false;
+        this.team = team;
     }
 
     public boolean isAlive() {
@@ -37,4 +39,9 @@ public class Cellule {
         this.x = x;
         this.y = y;
     }
+
+    public int getTeam() {
+        return team;
+    }
+    
 }

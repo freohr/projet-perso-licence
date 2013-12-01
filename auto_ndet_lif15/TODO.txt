@@ -1,0 +1,19 @@
+1/ Fonction de Fermeture (Si jamais tu touches à ça demain/dimanche avant moi)
+
+/!\ Il ne faut pas ajouter d'éléments dans un set sur lequel on est en train d'utiliser un itérateur (risque de sauter des éléments) /!\
+
+-> Il faut faire un while/do_while (le do_while évite d'avoir à rajouter un booléen pour savoir si on a rajouté des éléments dans le set temporaire) qui va comporter 2 étapes
+ 1- on parcours le set, on cherche les transitions spontanées et on les mets dans un set temporaire
+ 2- on fusionne le set temporaire et le set à fermer
+ 3- tant que le set temporaire n'est pas vide après un passage complet sur le set à fermer, on recommence à l'étape 1
+
+ ---------------------------------
+
+ 2/ Algo de Déterminisation
+
+ 4 étapes
+
+ 	1- Fermeture
+	2- pour chaque set d'états et chaque symbole, chercher le set d'état correspondant à l'arrivée de la transition. Si on trouve un set d'états qui n'est pas encore présent dans notre ensemble de set d'états, chercher les transitions pour ce set (on va en général au moins rajouter l'ensemble d'états vide, comme puit pour l'automate)
+	3- Une fois qu'on a tous les sets d'états et les transitions, on cherche les sets d'états qui ne sont pas accessibles par transitions, et on les supprime
+	4- coder la fonction qui output l'automate au format accepté par graphviz, puis sortir le graphe de l'automate.

@@ -11,6 +11,7 @@
 #include <list>
 #include <cassert>
 #include <utility>
+#include <assert.h>
 
 // pour la seconde partie du projet
 #include "expression_rationnelle.hpp"
@@ -36,25 +37,25 @@ typedef map< etatset_t, etat_t > map_t;
 ////////////////////////////////////////////////////////////////////////////////
 
 struct sAutoNDE {
-    // caract�ristiques
+    // caractéristiques
     size_t nb_etats;
     size_t nb_symbs;
     size_t nb_finaux;
 
     etat_t initial;
-    // �tat initial
+    // État initial
 
     etatset_t finaux;
-    // �tats finaux : finaux_t peut �tre un int*, un tableau dynamique comme vector<int>
-    // ou une autre structure de donn�e de votre choix.
+    // États finaux : finaux_t peut être un int*, un tableau dynamique comme vector<int>
+    // ou une autre structure de données de votre choix.
 
     trans_t trans;
-    // matrice de transition : trans_t peut �tre un int***, une structure dynamique 3D comme vector< vector< set<int> > >
-    // ou une autre structure de donn�e de votre choix.
+    // matrice de transition : trans_t peut être un int***, une structure dynamique 3D comme vector< vector< set<int> > >
+    // ou une autre structure de données de votre choix.
 
     epsilon_t epsilon;
-    // transitions spontan�es : epsilon_t peut �tre un int**, une structure dynamique 2D comme vector< set<int> >
-    // ou une autre structure de donn�e de votre choix.
+    // transitions spontan�es : epsilon_t peut être un int**, une structure dynamique 2D comme vector< set<int> >
+    // ou une autre structure de données de votre choix.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,10 +125,10 @@ bool FromFile(sAutoNDE& at, string path) {
 
             //test espilon ou non
             if ((a - ASCII_A) >= at.nb_symbs) {
-                cerr << "s=" << s << ", (e), t=" << t << endl;
+                //cerr << "s=" << s << ", (e), t=" << t << endl;
                 at.epsilon[s].insert(t);
             } else {
-                cerr << "s=" << s << ", a=" << a - ASCII_A << ", t=" << t << endl;
+                //cerr << "s=" << s << ", a=" << a - ASCII_A << ", t=" << t << endl;
                 //cout <<"at.trans["<<s<<"]["<<a-ASCII_A<<"].insert("<<t<<")" << endl;
                 at.trans[s][a - ASCII_A].insert(t);
             }
@@ -188,11 +189,14 @@ void Fermeture(const sAutoNDE& at, etatset_t& e) {
     // Cette fonction clot l'ensemble d'états E={e_0, e_1, ... ,e_n} passé en
     // paramètre avec les epsilon transitions
 
-    /*Parcours des �tats l'ensemble d'etats */
+
+    /*Parcours des états l'ensemble d'etats */
+
     for (etatset_t::const_iterator et_it = e.begin(); et_it != e.end(); et_it++) {
-        /* parours de l'ensemble des �tats spontan�s de l'�tat actuel*/
+        /* parours de l'ensemble des états spontanés de l'état actuel*/
         for (etatset_t::const_iterator ep_it = at.epsilon[*et_it].begin(); ep_it != at.epsilon[*et_it].end(); ep_it++)
-            e.insert(*ep_it); /* insertion des �tats spobntan�s */
+            /* insertion des états spontanés */
+            e.insert(*ep_it);
     }
 }
 
@@ -201,19 +205,21 @@ void Fermeture(const sAutoNDE& at, etatset_t& e) {
 etatset_t Delta(const sAutoNDE& at, const etatset_t& e, symb_t c) {
     // définir cette fonction en utilisant Fermeture
     etatset_t etat_retour;
-    etatset_t e_ferme; // e étant en const, on forme un état temporaire sur lequel on fera la fermeture
+    etatset_t tmp_ferme; // e étant en const, on forme un état temporaire sur lequel on fera la fermeture
+
     // On ferme e
     for (etatset_t::const_iterator it = e.begin(); it != e.end(); it++) {
-        e_ferme.insert(*it);
+        tmp_ferme.insert(*it);
     }
-    Fermeture(at, e_ferme);
+    Fermeture(at, tmp_ferme);
 
-    // on parcours les etats de e_ferme qui est une copie de l'état e fermé
-    for (etatset_t::const_iterator e_it = e_ferme.begin(); e_it != e_ferme.end(); e_it++) {
-        // on parcours les etats de la transition à partir des états de e et du symbole passé en parametre
-        for (etatset_t::const_iterator at_it = at.trans[*e_it][c - ASCII_A].begin(); at_it != at.trans[*e_it][c - ASCII_A].end(); at_it++)
-            etat_retour.insert(*at_it); // on insere les etats trouv�s dans l'etatset a renvoyer
+    // on parcourt les etats de e_ferme qui est une copie de l'état e fermé
+    for (etatset_t::const_iterator tmp_it = tmp_ferme.begin(); tmp_it != tmp_ferme.end(); tmp_it++) {
+        // on parcourt les états de la transition à partir des états de e et du symbole passé en paramètre
+        for (etatset_t::const_iterator at_it = at.trans[*tmp_it][c - ASCII_A].begin(); at_it != at.trans[*tmp_it][c - ASCII_A].end(); at_it++)
+            etat_retour.insert(*at_it); // on insere les etats trouvés dans l'etatset a renvoyer
     }
+
     return etat_retour;
 }
 
@@ -221,10 +227,10 @@ etatset_t Delta(const sAutoNDE& at, const etatset_t& e, symb_t c) {
 
 /* fonction récursive pour accept */
 bool AcceptRec(const sAutoNDE& at, string str, etat_t current_state) {
-    /* parcours des transitions spontan�es pour l'�tat courant*/
-    /* note : il peut y avoir des transitions spontan�es m�me lorsque c'est la derni�re lettre de la chaine, c'est pour cel� que l'on commence par �a */
+    /* parcours des transitions spontanées pour l'état courant*/
+    /* note : il peut y avoir des transitions spontanées même lorsque c'est la dernière lettre de la chaine, c'est pour celà que l'on commence par ça */
     for (etatset_t::iterator e_it = at.epsilon[current_state].begin(); e_it != at.epsilon[current_state].end(); e_it++) {
-        // appel r�cursif de la fonction sur tout les �tats trouv�s
+        // appel récursif de la fonction sur tout les états trouvés
         if (AcceptRec(at, str, *e_it))
             return true;
     }
@@ -234,7 +240,7 @@ bool AcceptRec(const sAutoNDE& at, string str, etat_t current_state) {
         cout << "la lettre '" << *str.begin() << " n'est pas acceptée par l'automate" << endl;
         return false;
     }
-    // condition d'arret
+    // condition d'arrêt
     etatset_t etats_suivants = at.trans[current_state][*(str.begin()) - ASCII_A];
     if (str.size() == 1) {
         if (ContientFinal(at, etats_suivants))
@@ -243,8 +249,8 @@ bool AcceptRec(const sAutoNDE& at, string str, etat_t current_state) {
             return false;
     } else {
         if (!etats_suivants.empty()) {
-            str = str.substr(1, str.size() - 1); // on cr�e une chaine qui est �gale a la chaine sans sa premi�re lettre
-            // on parcourt les transitions pour l'etat actuel et la premi�re lettre du mot
+            str = str.substr(1, str.size() - 1); // on crée une sous-chaine qui est égale à la chaine sans sa première lettre
+            // on parcourt les transitions pour l'état actuel et la première lettre du mot
             for (etatset_t::iterator f_it = etats_suivants.begin(); f_it != etats_suivants.end(); f_it++) // on parcourt le tableau de transitions dans l'automate
             {
                 if (AcceptRec(at, str, *f_it))
@@ -268,12 +274,12 @@ ostream& operator<<(ostream& out, const sAutoNDE& at) {
 
     size_t i, j;
     unsigned char charac;
-    bool epsilon = false; /* pour savoir si il a des transitions spontan�es*/
+    bool epsilon = false; /* pour savoir s'il y a des transitions spontanées*/
 
-    out << "Nombre d'�tats : " << at.nb_etats << endl;
+    out << "Nombre d'états : " << at.nb_etats << endl;
     out << "Nombre de symboles : " << at.nb_symbs << endl;
 
-    out << "Transitions spontan�es : ";
+    out << "Transitions spontanées : ";
 
     for (i = 0; i != at.nb_etats; i++) {
         if (at.epsilon[i].size() != 0) {
@@ -299,11 +305,11 @@ ostream& operator<<(ostream& out, const sAutoNDE& at) {
     }
     out << "}" << endl;
 
-    etatset_t transition; /* pour afficher les transitions normales et les transitions spontan�es */
+    etatset_t transition; /* pour afficher les transitions normales et les transitions spontanées */
 
     out << "Transitions :" << endl;
     for (i = 0; i != at.nb_etats; i++) {
-        /* parcours des transions normales */
+        /* parcours des transitions normales */
         for (j = 0; j != at.nb_symbs; j++) {
             transition.clear();
             transition.insert(i);
@@ -324,7 +330,7 @@ ostream& operator<<(ostream& out, const sAutoNDE& at) {
 
         transition.clear();
         transition.insert(i);
-        /* parcours des transitions spontan�es */
+        /* parcours des transitions spontanées */
         if (epsilon) {
             out << " Delta(" << i << ",e) = {";
             Fermeture(at, transition);
@@ -354,15 +360,73 @@ sAutoNDE Determinize(const sAutoNDE& at){
 
 } */
 
-typedef map<etat_t, etatset_t > map_etats; /* pour tous �tats, on a un set de transtions*/
+typedef map<etat_t, etatset_t > map_etats; /* pour tout état, on a un set de transtions*/
+
+/* vérifie si le set1 est avant le set2 dans l'ordre lexicographique */
+bool isBefore(etatset_t &set1, etatset_t& set2) {
+    etatset_t::const_iterator it1 = set1.begin();
+    etatset_t::const_iterator it2 = set2.begin();
+    
+    if(set1.size() > set2.size())
+        return true;
+
+    while (it1 != set1.end() && it2 != set2.end()) {
+        if (*it1 < *it2)
+            return true;
+        else if (*it1 > *it2)
+            return false;
+
+        it1++;
+        it2++;
+        
+    }
+
+    if (it1 == set1.end())
+        return false;
+    else
+        return true;
+}
+
+map_etats ordonne_lexico(map_etats &map_inv) {
+    map_etats temp_map;
+    vector<etatset_t> temp_vector;
+
+    map_etats::iterator inv_it = map_inv.begin();
+    vector<etatset_t>::iterator tmp_it = temp_vector.begin();
+
+    for (inv_it = map_inv.begin(); inv_it != map_inv.end(); inv_it++) {
+ 
+        if (temp_vector.size() == 0) {
+            temp_vector.insert(temp_vector.begin(), inv_it->second);
+        } else {
+            for (tmp_it = temp_vector.begin(); tmp_it != temp_vector.end(); tmp_it++) {
+
+                bool before = isBefore(inv_it->second, *tmp_it);
+                if (before) {
+                    temp_vector.insert(tmp_it, inv_it->second);
+                    break;
+                }
+            }
+            if(tmp_it == temp_vector.end())
+                temp_vector.insert(tmp_it, inv_it->second);
+        }
+    }
+
+    for (etat_t i = 0; i < temp_vector.size(); i++) {
+        temp_map.insert(std::pair<etat_t, etatset_t>(i, temp_vector.at(i)));
+    }
+
+    return temp_map;
+}
 
 sAutoNDE Determinize(const sAutoNDE& at) {
-    sAutoNDE r;
-    map_t map;
+    sAutoNDE r; /*automate de retour, déterminisé */
+    map_t map_auto_det;
     map_etats map_Epsi, map_Inv;
     etatset_t transition, ENS;
-    unsigned int j, k;
     symb_t caractere;
+
+    unsigned int j, k;
     int indice_Entree, indice, nb_Etats;
     unsigned int MAX = 50;
 
@@ -373,73 +437,67 @@ sAutoNDE Determinize(const sAutoNDE& at) {
         r.trans[i].resize(r.nb_symbs);
     }
 
-    cout << "Cloture des Epsilons : " << endl;
+
+    // Étape 1 : Epsilon-clôture
+    cout << "Epsilon-clotures : " << endl;
+
     for (j = 0; j != at.nb_etats; j++) {
         /*Affichage des epsilon transitions*/
         transition.clear();
         transition.insert(j);
+
         cout << " E(" << j << ") = {";
+
         Fermeture(at, transition);
-        map_Epsi[j] = transition;
+        map_Epsi[j] = transition; /* Ajout de l'équivalence entre l'état et son epsilon-clôture*/
+
         int nb_etats_spontanes = transition.size();
         for (etatset_t::const_iterator it = transition.begin(); it != transition.end(); it++) {
             nb_etats_spontanes--;
             if (nb_etats_spontanes == 0)
                 cout << *it;
             else
-                cout << *it << ";";
+                cout << *it << ",";
         }
         cout << "}" << endl;
     }
 
-    ENS = map_Epsi[at.initial];
+
+    // Étape 2 : calcul des nouveaux états nécéssaires à la déterminisation
+    ENS = map_Epsi[at.initial]; /* L'état de départ correspond à l'e-clôture de l'état initial de l'automate non-det*/
     map_Inv[0] = ENS;
-    map[ENS] = 0;
-    r.initial = map[ENS];
+    map_auto_det[ENS] = 0; /*l'ensemble d'états correspondant à l'état initial a pour indice 0 parmi les états de l'automate déterminisé */
+    r.initial = map_auto_det[ENS];
 
     indice_Entree = 0;
     nb_Etats = 1;
     indice = 1;
 
-    // affichage des nouveaux etats
-
-    cout << endl << "Nouveaux Etats : " << endl;
-    cout << " {";
-    int nb_nv_etats = ENS.size();
-    for (etatset_t::const_iterator it2 = ENS.begin(); it2 != ENS.end(); it2++) {
-        nb_nv_etats--;
-        if (nb_nv_etats == 0)
-            cout << *it2;
-        else
-            cout << *it2 << ",";
-    }
-    cout << "}      (initial)";
-    if (ContientFinal(at, ENS)) {
-        r.nb_finaux++;
-        r.finaux.insert(map[ENS]);
-        cout << "     (final)";
-    }
-    cout << endl;
-
+    // Calcul des nouveaux états
 
     while (indice_Entree < nb_Etats) {
         ENS = map_Inv[indice_Entree];
+
+        /* on cherche les transitions pour chaque symbole du langage */
         for (caractere = ASCII_A; caractere < ASCII_A + at.nb_symbs; caractere++) {
+
             etatset_t new_ENS;
             ENS = Delta(at, ENS, caractere);
+
             for (etatset_t::const_iterator it = ENS.begin(); it != ENS.end(); it++) {
-                /*etats qu'on peut atteindre avec e */
+                /* ajout des etats atteignable par transition spontanée */
                 for (etatset_t::const_iterator it2 = map_Epsi[*it].begin(); it2 != map_Epsi[*it].end(); it2++) {
                     new_ENS.insert(*it2);
                 }
             }
 
-            if (map[new_ENS] == 0) {
+            if (map_auto_det[new_ENS] == 0) {
                 map_Inv[indice] = new_ENS;
-                map[new_ENS] = indice;
+                map_auto_det[new_ENS] = indice;
                 nb_Etats++;
                 indice++;
-                cout << " {";
+
+                /*cout << " {";
                 int nb = new_ENS.size();
                 for (etatset_t::const_iterator it2 = new_ENS.begin(); it2 != new_ENS.end(); it2++) {
                     nb--;
@@ -448,23 +506,53 @@ sAutoNDE Determinize(const sAutoNDE& at) {
                     else
                         cout << *it2 << ",";
                 }
-                cout << "}" << endl;
-
+                cout << "}"; */
+/*
                 if (ContientFinal(at, new_ENS)) {
                     r.nb_finaux++;
                     r.finaux.insert(indice);
+                    cout << "    (final)";
                 }
+
+                cout << endl;*/
             }
-            r.trans[indice_Entree][caractere - ASCII_A].insert(map[new_ENS]);
+            r.trans[indice_Entree][caractere - ASCII_A].insert(map_auto_det[new_ENS]);
             ENS = map_Inv[indice_Entree];
         }
 
         indice_Entree++;
     }
 
+
+    // affichage des nouveaux etats
+
+    map_Inv = ordonne_lexico(map_Inv);
+
+    cout << endl << "Nouveaux Etats : " << endl;
+
+    for (unsigned int i = 0; i < map_Inv.size(); i++) {
+        cout << " {";
+        int nb_nv_etats = map_Inv[i].size();
+        for (etatset_t::const_iterator it2 = map_Inv[i].begin(); it2 != map_Inv[i].end(); it2++) {
+            nb_nv_etats--;
+            if (nb_nv_etats == 0)
+                cout << *it2;
+            else
+                cout << *it2 << ",";
+        }
+        cout << "}";
+        if (i == 0)
+            cout << "      (initial)";
+        if (ContientFinal(at, map_Inv[i])) {
+            r.nb_finaux++;
+            r.finaux.insert(map_auto_det[map_Inv[i]]);
+            cout << "     (final)";
+        }
+        cout << endl;
+    }
     // affichage des nouvelles transitions
 
-    r.nb_etats = map.size();
+    r.nb_etats = map_auto_det.size();
     r.trans.resize(r.nb_etats);
 
     r.epsilon.resize(r.nb_etats);
@@ -507,13 +595,13 @@ sAutoNDE Determinize(const sAutoNDE& at) {
 
 
 // -----------------------------------------------------------------------------
-// Fonctions � compl�ter pour la seconde partie du projet
+// Fonctions à compléter pour la seconde partie du projet
 // -----------------------------------------------------------------------------
 
 ////////////////////////////////////////////////////////////////////////////////
 
 bool ToGraph(sAutoNDE& at, string path) {
-    //TODO d�finir cette fonction
+    //TODO définir cette fonction
 
     return false;
 }
@@ -726,7 +814,7 @@ int main(int argc, char* argv[]) {
     }
 
     /* Les options sont OK, on va essayer de lire le(s) automate(s) at1 (et at2)
-    et effectuer l'action sp�cifi�e. Atr stockera le r�sultat*/
+    et effectuer l'action spécifiée. Atr stockera le r�sultat*/
 
     sAutoNDE at1, at2, atr;
 
@@ -743,7 +831,7 @@ int main(int argc, char* argv[]) {
 
     switch (act) {
         case 0: //acc
-            cout << "'" << acc << "' est accept�: " << Accept(at1, acc) << endl;
+            cout << "'" << acc << "' est accepté: " << Accept(at1, acc) << endl;
             atr = at1;
             break;
         case 1: //det
@@ -775,9 +863,9 @@ int main(int argc, char* argv[]) {
     }
 
     // on affiche le r�sultat ou on l'�crit dans un fichier
-    if (!toFile)
-        cout << atr;
-    else {
+    if (!toFile) {
+        cout << endl << atr;
+    } else {
         if (graphMode) {
             ToGraph(atr, out + ".gv");
             system(("dot -Tpng " + out + ".gv -o " + out + ".png").c_str());

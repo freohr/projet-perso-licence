@@ -5,6 +5,8 @@
 package vue;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import java.awt.event.ItemListener;
@@ -18,10 +20,14 @@ import javax.swing.JButton;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
@@ -52,12 +58,40 @@ public class Vue extends JFrame implements Observer{
     
     private void buildInterface(int size)
     {
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+               
         setTitle("Le jeu de la vie");
         setSize(600, 600);
         buildMenu();
-        JComponent panel = new JPanel();
+        JComponent panel = new JPanel(layout);
+                
+        JLabel labelSize = new JLabel("Taille de la grille");
+        
+        JLabel taux = new JLabel("Taux d'initialisation (% de cellules vivantes)");
+        
+        JLabel forme = new JLabel("Forme des cellules");
+        
+        JTextField taille = new JTextField("0");
+        
+        JSlider tauxSlider = new JSlider(1, 100, 50);
+                
+        String[] cells = {"Carré", "Hexagone", "Triangle"}; 
+        JList<String> typeCells = new JList<>(cells);
+        
+        JLabel vitesse = new JLabel("Vitesse de génération (rapide <-> lent)");
+        
+        JSlider vitesseSlider = new JSlider(10, 2000, 1005);
+        
+        JButton init = new JButton("Initialiser");
+        
+        JButton pause = new JButton("Pause");
+        
+        JButton reset = new JButton("Reset");
         panel.add(buildGrid(size));
+        
         panel.add(buildButtons());
+        
         add(panel);
     }
     

@@ -19,7 +19,7 @@ public class JeuDeLaVie {
      */
     public static void main(String[] args) {
 
-        final Monde test = new Monde(15, 3, 2, 3);
+        final Monde test = new Monde(40, 3, 2, 3);
         Vue fenetre = new Vue(test.getSize());
         fenetre.setVisible(true);//On rend la fenetre visible
 

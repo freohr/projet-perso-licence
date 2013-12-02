@@ -387,6 +387,24 @@ bool isBefore(etatset_t &set1, etatset_t& set2) {
         return true;
 }
 
+bool equals(etatset_t &set1, etatset_t &set2) {
+	etatset_t::const_iterator it1 = set1.begin();
+    etatset_t::const_iterator it2 = set2.begin();
+    
+    if(set1.size() != set2.size())
+        return false;
+        
+	while (it1 != set1.end() && it2 != set2.end()) {
+        if (*it1 != *it2)
+            return false;
+
+        it1++;
+        it2++;
+	}
+    
+    return true;
+}
+
 map_etats ordonne_lexico(map_etats &map_inv) {
     map_etats temp_map;
     vector<etatset_t> temp_vector;
@@ -541,7 +559,7 @@ sAutoNDE Determinize(const sAutoNDE& at) {
                 cout << *it2 << ",";
         }
         cout << "}";
-        if (i == 0)
+        if (equals(map_Epsi[0], map_Inv[i]))
             cout << "      (initial)";
         if (ContientFinal(at, map_Inv[i])) {
             r.nb_finaux++;
@@ -602,8 +620,47 @@ sAutoNDE Determinize(const sAutoNDE& at) {
 
 bool ToGraph(sAutoNDE& at, string path) {
     //TODO définir cette fonction
+    ofstream sortie;
+    
+    sortie.open(path.c_str());
+    
+    if(!sortie.is_open())
+    {
+		cerr << "Erreur d'ouverture du fichier " << path << " pour la création graphique de l'automate" << endl;
+		return false;
+	}
+    sortie << "digraph finite_state_machine {" << endl;
+    sortie << "	rankdir=LR;" << endl;
+    sortie << "	size=\"10,10\";" << endl;
+    sortie << endl;
+    
+    // dessin des états finaux sous forme de double cercle
+    for(etatset_t::const_iterator f_it = at.finaux.begin(); f_it != at.finaux.end(); f_it++)
+		sortie << "	node [shape = doublecircle]; "<< *f_it <<" ;"<<endl;
+		
+	sortie << "	node [shape = point ]; q;" << endl;
+	sortie << "	node [shape = circle];" << endl;
+	
+	sortie << "	q -> " << at.initial << ";" << endl;
+	
+	//transitions non spontanées
+	// 0 -> 2 [label = "b"];
+	for(int i=0; i<at.trans.size(); i++) {
+		for(int j = 0; j < at.trans[i].size(); j++)
+			for(int k = 0; k < at.trans[i][j].size(); k++)
+				sortie << "	" << i << " -> " << at.trans[i][j][k] << " [label = \"" << (char)(ASCII_A + j) << "\"];" << endl;
+	}
+	
+	//transitions spontanées
+	//0 -> 1 [label = "ε"];
+	for(int i=0; i<at.epsilon.size(); i++) {
+		for(int j=0; j<at.epsilon[i].size(); j++)
+			sortie << "	" << i << " -> " << at.epsilon[i][j] << " [label = \"ε\"];" << endl;
+	}
+	
+	sortie << endl << endl << "}";
 
-    return false;
+    return true;
 }
 
 

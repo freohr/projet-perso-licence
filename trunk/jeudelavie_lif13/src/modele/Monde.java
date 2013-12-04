@@ -135,9 +135,15 @@ public class Monde extends Observable implements Runnable {
     
     public void init(int size) {
         this.size = size;
+        this.grille = new Cellule[size][size];
+        for(int i = 0; i< size; i++) 
+            for(int j = 0; j<size; j++)
+                grille[i][j] = new Cellule(0);
+        
         this.random();
-        this.notifyObservers();
         System.out.println("Initialisation monde");
+        
+        this.notifyObservers();
     }
 
     public void update() {
@@ -175,9 +181,7 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void random() {
-        Random rand = new Random();
-        System.out.println("Random");
-        System.out.println();
+        Random rand = new Random();        
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -185,6 +189,7 @@ public class Monde extends Observable implements Runnable {
 
             }
         }
+        
         this.setChanged();
     }
 

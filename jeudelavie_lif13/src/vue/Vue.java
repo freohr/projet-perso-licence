@@ -235,8 +235,14 @@ public class Vue extends JFrame implements Observer {
     }
 
     public void updateGrille(Monde world) {
+        System.out.println("Update grille");
+        System.out.println("monde.size " + world.getSize());
+        System.out.println("grille.size_x " + g.getSizeX());
+        
         // Si la grille du monde à afficher est différente de la grille d'affichage de la vue (en cas de nouveau monde par ex.)
         if (world.getSize() != g.getSizeX() || world.getSize() != g.getSizeY()) {
+            
+            System.out.println("Taille différente");
 
             Grille tmp = new Grille(world.getSize(), world.getSize());
             this.g = tmp;
@@ -244,38 +250,40 @@ public class Vue extends JFrame implements Observer {
             for (Component c : this.getComponents()) {
                 if (c instanceof JPanel) {
                     JPanel jPanel = (JPanel) c;
-                    if ("grid".equals(jPanel.getName())) {
-                        GridBagConstraints gbc = new GridBagConstraints();
-                        
-                        gbc.gridx = 0;
-                        gbc.gridy = 4;
-                        gbc.gridwidth = 3;
-                        gbc.gridheight = 1;
-                        gbc.weighty = 1;
-                        gbc.weightx = 1;
-                        gbc.fill = GridBagConstraints.NONE;
-
-                        JComponent tmpGrid = buildGrid(world.getSize());
-                        
-                        for(Component c2 : this.getComponents()) {
+                    if ("panel".equals(jPanel.getName())) {
+                        for (Component c2 : jPanel.getComponents()) {
                             if (c2 instanceof JPanel) {
                                 JPanel jPanel2 = (JPanel) c2;
-                                if("panel".equals(jPanel2.getName())) {
-                                    jPanel2.remove(jPanel);
-                                    jPanel2.add(tmpGrid, gbc);
+
+                                if ("grid".equals(jPanel.getName())) {
+                                    GridBagConstraints gbc = new GridBagConstraints();
+
+                                    gbc.gridx = 0;
+                                    gbc.gridy = 4;
+                                    gbc.gridwidth = 3;
+                                    gbc.gridheight = 1;
+                                    gbc.weighty = 1;
+                                    gbc.weightx = 1;
+                                    gbc.fill = GridBagConstraints.NONE;
+
+                                    JComponent tmpGrid = buildGrid(world.getSize());
+
+                                    jPanel.remove(jPanel2);
+                                    jPanel.add(tmpGrid, gbc);
                                 }
                             }
-                        }                        
+                        }
                     }
                 }
             }
         }
 
+        System.out.println("modif état");
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
                 // Utiliser l'arraylist changement de monde
-                for(Coordonnee coord : world.getChangement()) {
-                    if(world.getCellule(coord.getX(), coord.getY()).isAlive()) {
+                for (Coordonnee coord : world.getChangement()) {
+                    if (world.getCellule(coord.getX(), coord.getY()).isAlive()) {
                         g.getGrille()[coord.getX()][coord.getY()].setCaseColor(Case.DEAD);
                     } else {
                         g.getGrille()[coord.getX()][coord.getY()].setCaseColor(Case.ALIVE);
@@ -293,6 +301,7 @@ public class Vue extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        System.out.println("update vue");
         updateGrille((Monde) o);
     }
 
@@ -307,13 +316,13 @@ public class Vue extends JFrame implements Observer {
             for (Component c2 : c.getParent().getComponents()) {
                 if (c2 instanceof JTextField) {
                     JTextField jTextField = (JTextField) c2;
-                    if ("textFieldSize".equals(jTextField.getName())) {
-                        monde.init(new Integer(jTextField.getText()));
-                    }
+                    
+                    System.out.println("textfield");
+                    System.out.println(jTextField.getText());
+
+                    monde.init(new Integer(jTextField.getText()));
                 }
             }
-
         }
-
     }
 }

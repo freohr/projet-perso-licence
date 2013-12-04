@@ -36,6 +36,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import modele.Monde;
 
 /**
@@ -48,14 +50,13 @@ public class Vue extends JFrame implements Observer {
     protected JPanel panelPrincipal;
     protected JPanel panelGrid;
     protected Controle controle;
-    protected final Monde monde;
 
     public Vue(int size) {
         super();
 
         g = new Grille(size, size);
         buildWindow(size);
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent arg0) {
@@ -65,13 +66,13 @@ public class Vue extends JFrame implements Observer {
         });
 
     }
-    
+
     public Vue(int size, Controle controle1) {
         super();
 
         g = new Grille(size, size);
         buildInterface(size);
-        
+
         controle = controle1;
 
         addWindowListener(new WindowAdapter() {
@@ -83,7 +84,7 @@ public class Vue extends JFrame implements Observer {
         });
 
     }
-    
+
     public void setControler(Controle controle1) {
         this.controle = controle1;
     }
@@ -94,21 +95,19 @@ public class Vue extends JFrame implements Observer {
         setSize(800, 800);
         buildMenu();
         JPanel panel = new JPanel(new BorderLayout());
-        
+
         // Interface
         panel.add(buildInterface(size), BorderLayout.PAGE_START);
 
         // Grille
-        
         panel.add(buildPanelGrid(size), BorderLayout.CENTER);
 
         //panel.add(buildButtons());
         panelPrincipal = panel;
         add(panelPrincipal);
     }
-    
-    private JPanel buildInterface(int size)
-    {
+
+    private JPanel buildInterface(int size) {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
 
@@ -219,14 +218,18 @@ public class Vue extends JFrame implements Observer {
         c.gridy = 3;
         panel.add(labelVitesse, c);
 
-        JSlider sliderVitesse = new JSlider(10, 2000, 1005);
+        JSlider sliderVitesse = new JSlider(10, 2000, 1000);
         sliderVitesse.setName("sliderVitesse");
+        sliderVitesse.addChangeListener(new SpeedSliderListener());
+        sliderVitesse.setMajorTickSpacing(500);
+        sliderVitesse.setMinorTickSpacing(100);
+        sliderVitesse.setPaintTicks(true);
         c.gridx = 1;
         c.gridy = 3;
         c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(sliderVitesse, c);
-        
+
         return panel;
     }
 
@@ -244,19 +247,20 @@ public class Vue extends JFrame implements Observer {
         setJMenuBar(jm);
     }
 
-    private JPanel buildPanelGrid(int size)
-    {
+    private JPanel buildPanelGrid(int size) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setName("PanelGrid");
         GridBagConstraints c = new GridBagConstraints();
-            
+
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.NONE;
-        
+
         panel.add(buildGrid(size), c);
+        panel.setName("cellGridPanel");
+        panelGrid = panel;
         return panel;
     }
-    
+
     private JPanel buildGrid(int size) {
         JPanel panel = new JPanel(new GridLayout(size, size));
         Border blackline = BorderFactory.createLineBorder(Color.black, 1);
@@ -269,7 +273,7 @@ public class Vue extends JFrame implements Observer {
             }
         }
         panel.setBorder(blackline);
-        panelGrid = panel;
+        panel.setName("cellGrid");
         return panel;
 
     }
@@ -282,36 +286,31 @@ public class Vue extends JFrame implements Observer {
          */
 
         // Si la grille du monde à afficher est différente de la grille d'affichage de la vue (en cas de nouveau monde par ex.)
-
         if (world.getSize() != g.getSizeX() || world.getSize() != g.getSizeY()) {
-
-            System.out.println("Taille différente");
 
             Grille tmp = new Grille(world.getSize(), world.getSize());
             this.g = tmp;
 
             JComponent tmpGrid = buildGrid(world.getSize());
-            tmpGrid.setName("grid");
-            
-            System.out.println("début de modification");
+            tmpGrid.setName("cellGrid");
+
             GridBagConstraints c = new GridBagConstraints();
-            
+
             c.anchor = GridBagConstraints.CENTER;
             c.fill = GridBagConstraints.NONE;
-            
-            Container ref = panelGrid.getParent();
-            ref.remove(panelGrid);
-            panelGrid = (JPanel) tmpGrid;
-            ref.add(panelGrid, c);
 
-            
-                    SwingUtilities.updateComponentTreeUI(panelPrincipal);
+            System.out.println(panelGrid.getName());
+
+            panelGrid.remove(panelGrid.getComponent(0));
+            panelGrid.add(tmpGrid, c);
+
+            SwingUtilities.updateComponentTreeUI(panelPrincipal);
         }
 
         //System.out.println("modif état");
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
-                
+
                 if (world.getCellule(i, j).isAlive()) {
                     g.grille[i][j].setCaseColor(0);
                 } else {
@@ -326,10 +325,7 @@ public class Vue extends JFrame implements Observer {
         //System.out.println("update vue");
         updateGrille((Monde) o);
 
-
     }
-    
-    
 
     // Les event Listeners
     private class InitListener implements ActionListener {
@@ -345,29 +341,46 @@ public class Vue extends JFrame implements Observer {
 
                     //System.out.println("textfield");
                     //System.out.println(jTextField.getText());
-
                     controle.initMonde(new Integer(jTextField.getText()));
                 }
             }
         }
     }
-    
+
     private class PauseListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             controle.pause();
+            if(((JButton)e.getSource()).getText().equals("Pause")) {
+                ((JButton)e.getSource()).setText("Resume");
+            } else {
+                ((JButton)e.getSource()).setText("Pause");
+            }
+            ((JButton)e.getSource()).repaint();
         }
-        
+
     }
-    
+
     private class StopListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             controle.stop();
         }
-        
+
     }
+
+    private class SpeedSliderListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JSlider js = (JSlider) e.getSource();
+
+            controle.modifThreadSpeed(js.getValue());
+        }
+
+    }
+
 }

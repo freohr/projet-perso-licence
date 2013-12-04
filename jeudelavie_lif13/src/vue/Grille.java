@@ -13,7 +13,9 @@ package vue;
  * @author p1006149
  */
 public class Grille{
-    Case grille[][];
+    protected Case grille[][];
+    protected int sizeX;
+    protected int sizeY;
     
     public Grille(int x, int y)
     {
@@ -26,4 +28,25 @@ public class Grille{
             }
         }
     }
+
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public void setSizeX(int sizeX) {
+        this.sizeX = sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    public void setSizeY(int sizeY) {
+        this.sizeY = sizeY;
+    }
+
+    public Case[][] getGrille() {
+        return grille;
+    }
+    
 }

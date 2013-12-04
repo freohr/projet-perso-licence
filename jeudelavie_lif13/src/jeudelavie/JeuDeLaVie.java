@@ -4,7 +4,6 @@
  */
 package jeudelavie;
 
-import javax.swing.SwingUtilities;
 import modele.Monde;
 import vue.Vue;
 
@@ -20,12 +19,12 @@ public class JeuDeLaVie {
     public static void main(String[] args) {
 
         final Monde test = new Monde(40, 3, 2, 3);
-        Vue fenetre = new Vue(test.getSize());
-        fenetre.setVisible(true);//On rend la fenetre visible
-
-        test.addObserver(fenetre);
         
-        test.run();
-
+        
+        Vue fenetre;
+        fenetre = new Vue(test.getSize(), test);
+        fenetre.getMonde().addObserver(fenetre);
+        fenetre.setVisible(true);//On rend la fenetre visible
+        
     }
 }

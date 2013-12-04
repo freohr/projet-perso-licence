@@ -4,11 +4,13 @@
  */
 package vue;
 
-import Controleur.Controle;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -30,6 +32,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import javax.swing.border.Border;
+import modele.Coordonnee;
 import modele.Monde;
 
 /**
@@ -38,15 +41,17 @@ import modele.Monde;
  */
 public class Vue extends JFrame implements Observer {
 
-    Grille g;
-    JPanel panelPrincipal;
-    Controle controle;
+    protected Grille g;
+    protected JPanel panelPrincipal;
+    protected final Monde monde;
 
-    public Vue(int size) {
+    public Vue(int size, Monde monde) {
         super();
+
         panelPrincipal = new JPanel();
         g = new Grille(size, size);
         buildInterface(size);
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent arg0) {
@@ -55,17 +60,22 @@ public class Vue extends JFrame implements Observer {
             }
         });
 
+        this.monde = monde;
+    }
+
+    public Monde getMonde() {
+        return monde;
     }
 
     private void buildInterface(int size) {
 
         setTitle("Le jeu de la vie");
-        setSize(600, 600);
+        setSize(800, 800);
         buildMenu();
 
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
-        
+
         JComponent panel = new JPanel(layout);
 
         c.anchor = GridBagConstraints.CENTER;
@@ -81,9 +91,9 @@ public class Vue extends JFrame implements Observer {
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
         panel.add(labelSize, c);
-        
+
         JPanel panelTaux = new JPanel(layout);
-        
+
         JLabel labelTaux = new JLabel("Taux d'initialisation");
         labelTaux.setHorizontalAlignment(JLabel.CENTER);
         c.gridx = 0;
@@ -91,7 +101,7 @@ public class Vue extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
         panelTaux.add(labelTaux, c);
-        
+
         JLabel labelPercent = new JLabel("(% de cellules vivantes)");
         labelPercent.setHorizontalAlignment(JLabel.CENTER);
         c.gridx = 0;
@@ -99,7 +109,7 @@ public class Vue extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
         panelTaux.add(labelPercent, c);
-        
+
         c.gridx = 0;
         c.gridy = 1;
         panel.add(panelTaux, c);
@@ -139,6 +149,7 @@ public class Vue extends JFrame implements Observer {
         JButton boutonInit = new JButton("Initialiser");
         c.gridx = 2;
         c.gridy = 0;
+        boutonInit.addActionListener(new InitListener());
         panel.add(boutonInit, c);
 
         JButton boutonPause = new JButton("Pause");
@@ -172,12 +183,10 @@ public class Vue extends JFrame implements Observer {
         c.weighty = 1;
         c.weightx = 1;
         c.fill = GridBagConstraints.NONE;
-        
-        
-        JComponent grid = buildGrid(size, 400);
-        grid.setSize(400, 400);
-        
-        panel.add(grid,c);
+
+        JComponent grid = buildGrid(size);
+
+        panel.add(grid, c);
 
         //panel.add(buildButtons());
         add(panel);
@@ -197,7 +206,7 @@ public class Vue extends JFrame implements Observer {
         setJMenuBar(jm);
     }
 
-    private JComponent buildGrid(int size, int pixelCount) {
+    private JComponent buildGrid(int size) {
 
         JComponent panel = new JPanel(new GridLayout(size, size));
         Border blackline = BorderFactory.createLineBorder(Color.black, 1);
@@ -209,7 +218,6 @@ public class Vue extends JFrame implements Observer {
             }
         }
         panel.setBorder(blackline);
-        panel.setSize(pixelCount, pixelCount);
         return panel;
 
     }
@@ -226,14 +234,58 @@ public class Vue extends JFrame implements Observer {
         return panel;
     }
 
-    public void update(Monde world) {
+    public void updateGrille(Monde world) {
+        // Si la grille du monde à afficher est différente de la grille d'affichage de la vue (en cas de nouveau monde par ex.)
+        if (world.getSize() != g.getSizeX() || world.getSize() != g.getSizeY()) {
+
+            Grille tmp = new Grille(world.getSize(), world.getSize());
+            this.g = tmp;
+
+            for (Component c : this.getComponents()) {
+                if (c instanceof JPanel) {
+                    JPanel jPanel = (JPanel) c;
+                    if ("grid".equals(jPanel.getName())) {
+                        GridBagConstraints gbc = new GridBagConstraints();
+                        
+                        gbc.gridx = 0;
+                        gbc.gridy = 4;
+                        gbc.gridwidth = 3;
+                        gbc.gridheight = 1;
+                        gbc.weighty = 1;
+                        gbc.weightx = 1;
+                        gbc.fill = GridBagConstraints.NONE;
+
+                        JComponent tmpGrid = buildGrid(world.getSize());
+                        
+                        for(Component c2 : this.getComponents()) {
+                            if (c2 instanceof JPanel) {
+                                JPanel jPanel2 = (JPanel) c2;
+                                if("panel".equals(jPanel2.getName())) {
+                                    jPanel2.remove(jPanel);
+                                    jPanel2.add(tmpGrid, gbc);
+                                }
+                            }
+                        }                        
+                    }
+                }
+            }
+        }
+
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
-                if (world.getCellule(i, j).isAlive()) {
-                    g.grille[i][j].setCaseColor(0);
-                } else {
-                    g.grille[i][j].setCaseColor(1);
+                // Utiliser l'arraylist changement de monde
+                for(Coordonnee coord : world.getChangement()) {
+                    if(world.getCellule(coord.getX(), coord.getY()).isAlive()) {
+                        g.getGrille()[coord.getX()][coord.getY()].setCaseColor(Case.DEAD);
+                    } else {
+                        g.getGrille()[coord.getX()][coord.getY()].setCaseColor(Case.ALIVE);
+                    }
                 }
+                /*if (monde.getCellule(i, j).isAlive()) {
+                 g.grille[i][j].setCaseColor(0);
+                 } else {
+                 g.grille[i][j].setCaseColor(1);
+                 }*/
             }
         }
 
@@ -241,6 +293,27 @@ public class Vue extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        update((Monde) o);
+        updateGrille((Monde) o);
+    }
+
+    // Les event Listeners
+    private class InitListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("appui bouton");
+            JComponent c = (JComponent) e.getSource();
+
+            for (Component c2 : c.getParent().getComponents()) {
+                if (c2 instanceof JTextField) {
+                    JTextField jTextField = (JTextField) c2;
+                    if ("textFieldSize".equals(jTextField.getName())) {
+                        monde.init(new Integer(jTextField.getText()));
+                    }
+                }
+            }
+
+        }
+
     }
 }

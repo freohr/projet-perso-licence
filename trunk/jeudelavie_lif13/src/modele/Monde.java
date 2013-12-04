@@ -23,9 +23,35 @@ public class Monde extends Observable implements Runnable {
     protected Regles regle;
     protected ArrayList<Coordonnee> changement;
     protected boolean useteams;
-
     protected Set<Integer> teams;
 
+    // Données nécéssaires au threading
+    protected int threadSpeed;
+    protected boolean pauseThreadFlag;
+    protected boolean stopThreadFlag;
+
+    
+    
+    // Les constructeurs
+    public Monde(int size) {
+        this.size = size;
+        this.threadSpeed = 500;
+
+        this.regle = new Regles(3, 2, 3);
+        grille = new Cellule[size][size];
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grille[i][j] = new Cellule(0);
+            }
+        }
+
+        changement = new ArrayList<>();
+
+        pauseThreadFlag = false;
+        stopThreadFlag = false;
+    }
+    
     /**
      *
      * @param size la taille de la grille représentant l'environnement
@@ -38,6 +64,7 @@ public class Monde extends Observable implements Runnable {
      */
     public Monde(int size, int reveil, int survie, int mort) {
         this.size = size;
+        this.threadSpeed = 500;
 
         this.regle = new Regles(reveil, survie, mort);
         grille = new Cellule[size][size];
@@ -50,6 +77,8 @@ public class Monde extends Observable implements Runnable {
 
         changement = new ArrayList<>();
 
+        pauseThreadFlag = false;
+        stopThreadFlag = false;
     }
 
     public Monde(int size, int reveil, int survie, int mort, int nbteams) {
@@ -80,8 +109,35 @@ public class Monde extends Observable implements Runnable {
         return grille[i][j];
     }
 
+    public ArrayList<Coordonnee> getChangement() {
+        return changement;
+    }
+    
     public Regles getRegle() {
         return regle;
+    }
+
+    public int getThreadSpeed() {
+        return threadSpeed;
+    }
+
+    public void setThreadSpeed(int threadSpeed) {
+        this.threadSpeed = threadSpeed;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public void setUseteams(boolean useteams) {
+        this.useteams = useteams;
+    }
+    
+    public void init(int size) {
+        this.size = size;
+        this.random();
+        this.notifyObservers();
+        System.out.println("Initialisation monde");
     }
 
     public void update() {
@@ -132,8 +188,12 @@ public class Monde extends Observable implements Runnable {
         this.setChanged();
     }
 
+    // Le threading du modèle
     @Override
     public void run() {
+        stopThreadFlag = false;
+        pauseThreadFlag = false;
+
         System.out.println("Lancement du modele");
         random();
         notifyObservers();
@@ -144,18 +204,34 @@ public class Monde extends Observable implements Runnable {
             Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        while (true) {
+        while (!stopThreadFlag) {
+
+            if (!pauseThreadFlag) {
+                Thread.yield();
+            }
 
             update();
-            //random();
+
             notifyObservers();
             try {
-                Thread.sleep(200);
+                Thread.sleep(this.threadSpeed);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
 
+    }
+
+    public void pause() {
+        pauseThreadFlag = true;
+    }
+
+    public void resume() {
+        pauseThreadFlag = false;
+    }
+
+    public void stop() {
+        stopThreadFlag = true;
     }
 }

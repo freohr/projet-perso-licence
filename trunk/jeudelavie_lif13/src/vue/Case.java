@@ -12,6 +12,14 @@ import javax.swing.JPanel;
  * @author p1006149
  */
 public class Case extends JPanel{
+    public static final int ALIVE = 0;
+    public static final int DEAD = 1;
+    
+    /** TODO
+     * définir les couleurs des équipes
+     * rajouter les numéros des équipes en constante statique
+     */
+    
     
     public Case ()
     {
@@ -24,11 +32,11 @@ public class Case extends JPanel{
     {
         switch (color)
         {
-            case 0:
+            case Case.ALIVE:
                 setBackground(Color.green);
                 break;
             
-            case 1:
+            case Case.DEAD:
                 setBackground(Color.white);
                 break;
                 

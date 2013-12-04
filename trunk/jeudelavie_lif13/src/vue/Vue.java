@@ -4,9 +4,11 @@
  */
 package vue;
 
+import java.awt.BorderLayout;
 import Controleur.Controle;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -44,13 +46,15 @@ public class Vue extends JFrame implements Observer {
 
     protected Grille g;
     protected JPanel panelPrincipal;
+    protected JPanel panelGrid;
     protected Controle controle;
+    protected final Monde monde;
 
     public Vue(int size) {
         super();
 
         g = new Grille(size, size);
-        buildInterface(size);
+        buildWindow(size);
         
         addWindowListener(new WindowAdapter() {
             @Override
@@ -84,17 +88,32 @@ public class Vue extends JFrame implements Observer {
         this.controle = controle1;
     }
 
-    private void buildInterface(int size) {
+    private void buildWindow(int size) {
 
         setTitle("Le jeu de la vie");
         setSize(800, 800);
         buildMenu();
+        JPanel panel = new JPanel(new BorderLayout());
+        
+        // Interface
+        panel.add(buildInterface(size), BorderLayout.PAGE_START);
 
+        // Grille
+        
+        panel.add(buildPanelGrid(size), BorderLayout.CENTER);
+
+        //panel.add(buildButtons());
+        panelPrincipal = panel;
+        add(panelPrincipal);
+    }
+    
+    private JPanel buildInterface(int size)
+    {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
 
         JPanel panel = new JPanel(layout);
-        panel.setName("background");
+        panel.setName("interface");
         System.out.println("panel_name : " + panel.getName());
 
         c.anchor = GridBagConstraints.CENTER;
@@ -207,24 +226,8 @@ public class Vue extends JFrame implements Observer {
         c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(sliderVitesse, c);
-
-        // Grille
-        c.gridx = 0;
-        c.gridy = 4;
-        c.gridwidth = 3;
-        c.gridheight = 1;
-        c.weighty = 1;
-        c.weightx = 1;
-        c.fill = GridBagConstraints.NONE;
-
-        JComponent grid = buildGrid(size);
-        grid.setName("grid");
-
-        panel.add(grid, c);
-
-        //panel.add(buildButtons());
-        panelPrincipal = panel;
-        add(panelPrincipal);
+        
+        return panel;
     }
 
     private void buildMenu() {
@@ -241,10 +244,23 @@ public class Vue extends JFrame implements Observer {
         setJMenuBar(jm);
     }
 
-    private JComponent buildGrid(int size) {
-
-        JComponent panel = new JPanel(new GridLayout(size, size));
+    private JPanel buildPanelGrid(int size)
+    {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setName("PanelGrid");
+        GridBagConstraints c = new GridBagConstraints();
+            
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.NONE;
+        
+        panel.add(buildGrid(size), c);
+        return panel;
+    }
+    
+    private JPanel buildGrid(int size) {
+        JPanel panel = new JPanel(new GridLayout(size, size));
         Border blackline = BorderFactory.createLineBorder(Color.black, 1);
+        panel.setName("grid");
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -253,20 +269,9 @@ public class Vue extends JFrame implements Observer {
             }
         }
         panel.setBorder(blackline);
+        panelGrid = panel;
         return panel;
 
-    }
-
-    private JComponent buildButtons() {
-        JComponent panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        JButton butt = new JButton("recommencer");
-        panel.add(butt);
-        JButton butt2 = new JButton("pause");
-        panel.add(butt2);
-        JButton butt3 = new JButton("continuer");
-        panel.add(butt3);
-        return panel;
     }
 
     public void updateGrille(Monde world) {
@@ -285,31 +290,22 @@ public class Vue extends JFrame implements Observer {
             Grille tmp = new Grille(world.getSize(), world.getSize());
             this.g = tmp;
 
-            GridBagConstraints gbc = new GridBagConstraints();
-
-            gbc.gridx = 0;
-            gbc.gridy = 4;
-            gbc.gridwidth = 3;
-            gbc.gridheight = 1;
-            gbc.weighty = 1;
-            gbc.weightx = 1;
-            gbc.fill = GridBagConstraints.NONE;
-            gbc.anchor = GridBagConstraints.CENTER;
-
             JComponent tmpGrid = buildGrid(world.getSize());
             tmpGrid.setName("grid");
-
-
-            for (Component c : panelPrincipal.getComponents()) {
-                if ("grid".equals(c.getName())) {
-                    panelPrincipal.remove(c);
-                    panelPrincipal.add(tmpGrid, gbc);
-                    SwingUtilities.updateComponentTreeUI(panelPrincipal);
-                    System.out.println("ajout nouvelle affichage grille");
-
-                }
-            }
             
+            System.out.println("début de modification");
+            GridBagConstraints c = new GridBagConstraints();
+            
+            c.anchor = GridBagConstraints.CENTER;
+            c.fill = GridBagConstraints.NONE;
+            
+            Container ref = panelGrid.getParent();
+            ref.remove(panelGrid);
+            panelGrid = (JPanel) tmpGrid;
+            ref.add(panelGrid, c);
+
+            
+                    SwingUtilities.updateComponentTreeUI(panelPrincipal);
         }
 
         //System.out.println("modif état");

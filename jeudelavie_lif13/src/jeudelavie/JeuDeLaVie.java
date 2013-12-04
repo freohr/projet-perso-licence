@@ -4,6 +4,7 @@
  */
 package jeudelavie;
 
+import Controleur.Controle;
 import modele.Monde;
 import vue.Vue;
 
@@ -20,11 +21,17 @@ public class JeuDeLaVie {
 
         final Monde test = new Monde(40, 3, 2, 3);
         
+        Controle controle = new Controle();
         
         Vue fenetre;
-        fenetre = new Vue(test.getSize(), test);
-        fenetre.getMonde().addObserver(fenetre);
+        fenetre = new Vue(test.getSize());
+        
+        test.addObserver(fenetre);
+        controle.setModele(test);
+        fenetre.setControler(controle);
+        
         fenetre.setVisible(true);//On rend la fenetre visible
+        test.run();
         
     }
 }

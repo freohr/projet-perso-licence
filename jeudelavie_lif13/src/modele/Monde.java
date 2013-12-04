@@ -24,18 +24,15 @@ public class Monde extends Observable implements Runnable {
     protected ArrayList<Coordonnee> changement;
     protected boolean useteams;
     protected Set<Integer> teams;
-
     // Données nécéssaires au threading
     protected int threadSpeed;
     protected boolean pauseThreadFlag;
     protected boolean stopThreadFlag;
 
-    
-    
     // Les constructeurs
     public Monde(int size) {
         this.size = size;
-        this.threadSpeed = 500;
+        this.threadSpeed = 1500;
 
         this.regle = new Regles(3, 2, 3);
         grille = new Cellule[size][size];
@@ -51,7 +48,7 @@ public class Monde extends Observable implements Runnable {
         pauseThreadFlag = false;
         stopThreadFlag = false;
     }
-    
+
     /**
      *
      * @param size la taille de la grille représentant l'environnement
@@ -64,7 +61,7 @@ public class Monde extends Observable implements Runnable {
      */
     public Monde(int size, int reveil, int survie, int mort) {
         this.size = size;
-        this.threadSpeed = 500;
+        this.threadSpeed = 1500;
 
         this.regle = new Regles(reveil, survie, mort);
         grille = new Cellule[size][size];
@@ -112,13 +109,21 @@ public class Monde extends Observable implements Runnable {
     public ArrayList<Coordonnee> getChangement() {
         return changement;
     }
-    
+
     public Regles getRegle() {
         return regle;
     }
 
     public int getThreadSpeed() {
         return threadSpeed;
+    }
+
+    public boolean isPaused() {
+        return pauseThreadFlag;
+    }
+
+    public boolean isStopped() {
+        return stopThreadFlag;
     }
 
     public void setThreadSpeed(int threadSpeed) {
@@ -132,17 +137,19 @@ public class Monde extends Observable implements Runnable {
     public void setUseteams(boolean useteams) {
         this.useteams = useteams;
     }
-    
+
     public void init(int size) {
         this.size = size;
         this.grille = new Cellule[size][size];
-        for(int i = 0; i< size; i++) 
-            for(int j = 0; j<size; j++)
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 grille[i][j] = new Cellule(0);
-        
+            }
+        }
+
         this.random();
         System.out.println("Initialisation monde");
-        
+
         this.notifyObservers();
     }
 
@@ -181,7 +188,7 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void random() {
-        Random rand = new Random();        
+        Random rand = new Random();
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -189,7 +196,7 @@ public class Monde extends Observable implements Runnable {
 
             }
         }
-        
+
         this.setChanged();
     }
 
@@ -202,18 +209,26 @@ public class Monde extends Observable implements Runnable {
         System.out.println("Lancement du modele");
         random();
         notifyObservers();
+        System.out.println("observateurs notifiés");
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        /*try {
+         * Thread.sleep(1000);
+         * } catch (InterruptedException ex) {
+         * Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+         * }*/
 
         while (!stopThreadFlag) {
 
-            if (!pauseThreadFlag) {
-                Thread.yield();
+            synchronized (this) {
+                if (pauseThreadFlag) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
+
 
             update();
 
@@ -232,11 +247,12 @@ public class Monde extends Observable implements Runnable {
         pauseThreadFlag = true;
     }
 
-    public void resume() {
+    public synchronized void resume() {
         pauseThreadFlag = false;
+        notify();
     }
 
     public void stop() {
-        stopThreadFlag = true;
+        
     }
 }

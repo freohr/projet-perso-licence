@@ -4,6 +4,7 @@
  */
 package vue;
 
+import Controleur.Controle;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -28,13 +29,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
-import javax.swing.JRootPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import javax.swing.border.Border;
-import modele.Coordonnee;
 import modele.Monde;
 
 /**
@@ -45,13 +44,31 @@ public class Vue extends JFrame implements Observer {
 
     protected Grille g;
     protected JPanel panelPrincipal;
-    protected final Monde monde;
+    protected Controle controle;
 
-    public Vue(int size, Monde monde) {
+    public Vue(int size) {
         super();
 
         g = new Grille(size, size);
         buildInterface(size);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent arg0) {
+                super.windowClosing(arg0);
+                System.exit(0);
+            }
+        });
+
+    }
+    
+    public Vue(int size, Controle controle1) {
+        super();
+
+        g = new Grille(size, size);
+        buildInterface(size);
+        
+        controle = controle1;
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -61,11 +78,10 @@ public class Vue extends JFrame implements Observer {
             }
         });
 
-        this.monde = monde;
     }
-
-    public Monde getMonde() {
-        return monde;
+    
+    public void setControler(Controle controle1) {
+        this.controle = controle1;
     }
 
     private void buildInterface(int size) {
@@ -165,15 +181,17 @@ public class Vue extends JFrame implements Observer {
 
         JButton boutonPause = new JButton("Pause");
         boutonPause.setName("boutonPause");
+        boutonPause.addActionListener(new PauseListener());
         c.gridx = 2;
         c.gridy = 1;
         panel.add(boutonPause, c);
 
-        JButton boutonReset = new JButton("Reset");
-        boutonReset.setName("boutonReset");
+        JButton boutonStop = new JButton("Stop");
+        boutonStop.setName("boutonStop");
+        //boutonStop.addActionListener(new StopListener());
         c.gridx = 2;
         c.gridy = 2;
-        panel.add(boutonReset, c);
+        panel.add(boutonStop, c);
 
         // Slider de vitesse (ligne 4)
         JLabel labelVitesse = new JLabel("Vitesse de génération (rapide <-> lent)");
@@ -291,16 +309,14 @@ public class Vue extends JFrame implements Observer {
 
                 }
             }
-
-
+            
         }
 
         //System.out.println("modif état");
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
-                // Utiliser l'arraylist changement de monde
                 
-                if (monde.getCellule(i, j).isAlive()) {
+                if (world.getCellule(i, j).isAlive()) {
                     g.grille[i][j].setCaseColor(0);
                 } else {
                     g.grille[i][j].setCaseColor(1);
@@ -316,6 +332,8 @@ public class Vue extends JFrame implements Observer {
 
 
     }
+    
+    
 
     // Les event Listeners
     private class InitListener implements ActionListener {
@@ -332,9 +350,28 @@ public class Vue extends JFrame implements Observer {
                     //System.out.println("textfield");
                     //System.out.println(jTextField.getText());
 
-                    monde.init(new Integer(jTextField.getText()));
+                    controle.initMonde(new Integer(jTextField.getText()));
                 }
             }
         }
+    }
+    
+    private class PauseListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controle.pause();
+        }
+        
+    }
+    
+    private class StopListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            controle.stop();
+        }
+        
     }
 }

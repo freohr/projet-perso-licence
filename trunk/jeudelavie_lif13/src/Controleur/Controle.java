@@ -52,4 +52,8 @@ public class Controle {
             monde.stop();
         }
     }
+    
+    public void modifThreadSpeed(int speed) {
+        monde.setThreadSpeed(speed);
+    }
 }

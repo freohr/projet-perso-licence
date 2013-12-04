@@ -19,6 +19,9 @@ public class Grille{
     
     public Grille(int x, int y)
     {
+        this.sizeX = x;
+        this.sizeY = y;
+        
         grille = new Case[x][y];
         for (int i = 0; i<x; i++)
         {

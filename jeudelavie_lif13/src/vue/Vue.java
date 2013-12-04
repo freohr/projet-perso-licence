@@ -28,8 +28,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
+import javax.swing.JRootPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import javax.swing.border.Border;
 import modele.Coordonnee;
@@ -48,7 +50,6 @@ public class Vue extends JFrame implements Observer {
     public Vue(int size, Monde monde) {
         super();
 
-        panelPrincipal = new JPanel();
         g = new Grille(size, size);
         buildInterface(size);
 
@@ -76,25 +77,30 @@ public class Vue extends JFrame implements Observer {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
 
-        JComponent panel = new JPanel(layout);
+        JPanel panel = new JPanel(layout);
+        panel.setName("background");
+        System.out.println("panel_name : " + panel.getName());
 
         c.anchor = GridBagConstraints.CENTER;
         c.gridwidth = 1;
         c.gridheight = 1;
-        c.weightx = 0.1;
-        c.weighty = 0.1;
+        c.weightx = 0.3;
+        c.weighty = 0.3;
 
         // Colonne 1
         JLabel labelSize = new JLabel("Taille de la grille");
         labelSize.setHorizontalAlignment(JLabel.CENTER);
+        labelSize.setName("labelSize");
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
         panel.add(labelSize, c);
 
         JPanel panelTaux = new JPanel(layout);
+        panelTaux.setName("panelTaux");
 
         JLabel labelTaux = new JLabel("Taux d'initialisation");
+        labelTaux.setName("labelTaux");
         labelTaux.setHorizontalAlignment(JLabel.CENTER);
         c.gridx = 0;
         c.gridy = 1;
@@ -103,6 +109,7 @@ public class Vue extends JFrame implements Observer {
         panelTaux.add(labelTaux, c);
 
         JLabel labelPercent = new JLabel("(% de cellules vivantes)");
+        labelPercent.setName("labelPercent");
         labelPercent.setHorizontalAlignment(JLabel.CENTER);
         c.gridx = 0;
         c.gridy = 2;
@@ -122,13 +129,15 @@ public class Vue extends JFrame implements Observer {
         panel.add(labelForme, c);
 
         //Colonne 2
-        JTextField textFieldTaille = new JTextField("0");
+        JTextField textFieldTaille = new JTextField(new String() + size);
+        textFieldTaille.setName("textFieldTaille");
         c.gridx = 1;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(textFieldTaille, c);
 
         JSlider sliderTaux = new JSlider(1, 100, 50);
+        sliderTaux.setName("sliderTaux");
         c.gridx = 1;
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -136,6 +145,7 @@ public class Vue extends JFrame implements Observer {
 
         String[] cells = {"Carré", "Hexagone", "Triangle"};
         JComboBox<String> listCells = new JComboBox<>(cells);
+        listCells.setName("listCells");
         c.gridx = 1;
         c.gridy = 2;
         c.fill = GridBagConstraints.NONE;
@@ -147,28 +157,33 @@ public class Vue extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
 
         JButton boutonInit = new JButton("Initialiser");
+        boutonInit.setName("boutonName");
         c.gridx = 2;
         c.gridy = 0;
         boutonInit.addActionListener(new InitListener());
         panel.add(boutonInit, c);
 
         JButton boutonPause = new JButton("Pause");
+        boutonPause.setName("boutonPause");
         c.gridx = 2;
         c.gridy = 1;
         panel.add(boutonPause, c);
 
         JButton boutonReset = new JButton("Reset");
+        boutonReset.setName("boutonReset");
         c.gridx = 2;
         c.gridy = 2;
         panel.add(boutonReset, c);
 
         // Slider de vitesse (ligne 4)
         JLabel labelVitesse = new JLabel("Vitesse de génération (rapide <-> lent)");
+        labelVitesse.setName("labelVitesse");
         c.gridx = 0;
         c.gridy = 3;
         panel.add(labelVitesse, c);
 
         JSlider sliderVitesse = new JSlider(10, 2000, 1005);
+        sliderVitesse.setName("sliderVitesse");
         c.gridx = 1;
         c.gridy = 3;
         c.gridwidth = 2;
@@ -185,11 +200,13 @@ public class Vue extends JFrame implements Observer {
         c.fill = GridBagConstraints.NONE;
 
         JComponent grid = buildGrid(size);
+        grid.setName("grid");
 
         panel.add(grid, c);
 
         //panel.add(buildButtons());
-        add(panel);
+        panelPrincipal = panel;
+        add(panelPrincipal);
     }
 
     private void buildMenu() {
@@ -235,74 +252,69 @@ public class Vue extends JFrame implements Observer {
     }
 
     public void updateGrille(Monde world) {
-        System.out.println("Update grille");
-        System.out.println("monde.size " + world.getSize());
-        System.out.println("grille.size_x " + g.getSizeX());
-        
+        //System.out.println("Update grille");
+        /*
+         * System.out.println("monde.size " + world.getSize());
+         * System.out.println("grille.size_x " + g.getSizeX());
+         */
+
         // Si la grille du monde à afficher est différente de la grille d'affichage de la vue (en cas de nouveau monde par ex.)
+
         if (world.getSize() != g.getSizeX() || world.getSize() != g.getSizeY()) {
-            
+
             System.out.println("Taille différente");
 
             Grille tmp = new Grille(world.getSize(), world.getSize());
             this.g = tmp;
 
-            for (Component c : this.getComponents()) {
-                if (c instanceof JPanel) {
-                    JPanel jPanel = (JPanel) c;
-                    if ("panel".equals(jPanel.getName())) {
-                        for (Component c2 : jPanel.getComponents()) {
-                            if (c2 instanceof JPanel) {
-                                JPanel jPanel2 = (JPanel) c2;
+            GridBagConstraints gbc = new GridBagConstraints();
 
-                                if ("grid".equals(jPanel.getName())) {
-                                    GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            gbc.gridwidth = 3;
+            gbc.gridheight = 1;
+            gbc.weighty = 1;
+            gbc.weightx = 1;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.anchor = GridBagConstraints.CENTER;
 
-                                    gbc.gridx = 0;
-                                    gbc.gridy = 4;
-                                    gbc.gridwidth = 3;
-                                    gbc.gridheight = 1;
-                                    gbc.weighty = 1;
-                                    gbc.weightx = 1;
-                                    gbc.fill = GridBagConstraints.NONE;
+            JComponent tmpGrid = buildGrid(world.getSize());
+            tmpGrid.setName("grid");
 
-                                    JComponent tmpGrid = buildGrid(world.getSize());
 
-                                    jPanel.remove(jPanel2);
-                                    jPanel.add(tmpGrid, gbc);
-                                }
-                            }
-                        }
-                    }
+            for (Component c : panelPrincipal.getComponents()) {
+                if ("grid".equals(c.getName())) {
+                    panelPrincipal.remove(c);
+                    panelPrincipal.add(tmpGrid, gbc);
+                    SwingUtilities.updateComponentTreeUI(panelPrincipal);
+                    System.out.println("ajout nouvelle affichage grille");
+
                 }
             }
+
+
         }
 
-        System.out.println("modif état");
+        //System.out.println("modif état");
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
                 // Utiliser l'arraylist changement de monde
-                for (Coordonnee coord : world.getChangement()) {
-                    if (world.getCellule(coord.getX(), coord.getY()).isAlive()) {
-                        g.getGrille()[coord.getX()][coord.getY()].setCaseColor(Case.DEAD);
-                    } else {
-                        g.getGrille()[coord.getX()][coord.getY()].setCaseColor(Case.ALIVE);
-                    }
+                
+                if (monde.getCellule(i, j).isAlive()) {
+                    g.grille[i][j].setCaseColor(0);
+                } else {
+                    g.grille[i][j].setCaseColor(1);
                 }
-                /*if (monde.getCellule(i, j).isAlive()) {
-                 g.grille[i][j].setCaseColor(0);
-                 } else {
-                 g.grille[i][j].setCaseColor(1);
-                 }*/
             }
         }
-
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("update vue");
+        //System.out.println("update vue");
         updateGrille((Monde) o);
+
+
     }
 
     // Les event Listeners
@@ -310,15 +322,15 @@ public class Vue extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("appui bouton");
+            //System.out.println("appui bouton");
             JComponent c = (JComponent) e.getSource();
 
             for (Component c2 : c.getParent().getComponents()) {
                 if (c2 instanceof JTextField) {
                     JTextField jTextField = (JTextField) c2;
-                    
-                    System.out.println("textfield");
-                    System.out.println(jTextField.getText());
+
+                    //System.out.println("textfield");
+                    //System.out.println(jTextField.getText());
 
                     monde.init(new Integer(jTextField.getText()));
                 }

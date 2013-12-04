@@ -44,4 +44,9 @@ public class Case extends JPanel{
                 break;
         }
     }
+    
+    public Color getCaseColor()
+    {
+        return this.getBackground();
+    }
 }

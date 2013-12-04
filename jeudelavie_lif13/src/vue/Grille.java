@@ -4,9 +4,10 @@
  */
 
 
-//a virer
 
 package vue;
+
+import java.awt.Color;
 
 /**
  *
@@ -30,6 +31,8 @@ public class Grille{
                 grille[i][j] = new Case();
             }
         }
+        this.sizeX = x;
+        this.sizeY = y;
     }
 
     public int getSizeX() {
@@ -50,6 +53,23 @@ public class Grille{
 
     public Case[][] getGrille() {
         return grille;
+    }
+    
+    public void afficher_term()
+    {
+        System.out.println("affichage de la grille :");
+        for(int i = 0; i<this.sizeX; i++)
+        {
+            for (int j = 0; j<this.sizeY; j++)
+            {
+                if(this.grille[i][j].getCaseColor() == Color.white)
+                    System.out.print("0");
+                else
+                    System.out.print("1");
+                System.out.print(" ");
+            }
+            System.out.println("");
+        }
     }
     
 }

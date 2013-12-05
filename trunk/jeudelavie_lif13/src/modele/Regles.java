@@ -9,6 +9,7 @@ package modele;
  * @author p1006099
  */
 public class Regles {
+
     protected int reveil;
     protected int survie;
     protected int mort;
@@ -30,5 +31,4 @@ public class Regles {
     public int getMort() {
         return mort;
     }
-    
 }

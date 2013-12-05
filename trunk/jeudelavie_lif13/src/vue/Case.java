@@ -5,6 +5,7 @@
 package vue;
 
 import Controleur.Controle;
+import Utils.CellStates;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,67 +15,53 @@ import javax.swing.JPanel;
  *
  * @author p1006149
  */
-public class Case extends JPanel{
-    public static final int ALIVE = 0;
-    public static final int DEAD = 1;
-    
+public class Case extends JPanel {
+
     protected int x;
     protected int y;
     protected Controle controle;
-    
-    /** TODO
-     * définir les couleurs des équipes
-     * rajouter les numéros des équipes en constante statique
-     */
-    
-    
-    public Case (int x, int y, Controle controle)
-    {
+
+    public Case(int x, int y, Controle controle) {
         super();
         this.x = x;
         this.y = y;
         this.controle = controle;
         setBackground(Color.white);
-        addMouseListener(new ClickListener()); 
+        addMouseListener(new ClickListener());
     }
-    
-    public Case (int x, int y)
-    {
+
+    public Case(int x, int y) {
         super();
         this.x = x;
         this.y = y;
         setBackground(Color.white);
     }
-    
-    
-    
-    public void setCaseColor (int color)
-    {
-        switch (color)
-        {
-            case Case.ALIVE:
-                setBackground(Color.green);
+
+    public void setCaseColor(int color) {
+        switch (color) {
+            case CellStates.ALIVE:
+                setBackground(new Color(51,153,51));
                 break;
-            
-            case Case.DEAD:
-                setBackground(Color.white);
+
+            case CellStates.DEAD:
+                setBackground(new Color(245,245,245));
                 break;
-                
-            default :
+
+            default:
                 break;
         }
     }
-    
-    public Color getCaseColor()
-    {
+
+    public Color getCaseColor() {
         return this.getBackground();
     }
-    
+
     private class ClickListener extends MouseAdapter {
+
         @Override
-            public void mouseClicked(MouseEvent e) {
-                Case c = (Case) e.getSource();
-                controle.changeCell(c.x, c.y);
-            }
+        public void mouseClicked(MouseEvent e) {
+            Case c = (Case) e.getSource();
+            controle.changeCell(c.x, c.y);
+        }
     }
 }

@@ -27,7 +27,6 @@ public class Monde extends Observable implements Runnable {
     // Données nécéssaires au threading
     protected int threadSpeed;
     protected boolean pauseThreadFlag;
-    protected boolean stopThreadFlag;
 
     // Les constructeurs
     public Monde(int size) {
@@ -46,7 +45,6 @@ public class Monde extends Observable implements Runnable {
         changement = new ArrayList<>();
 
         pauseThreadFlag = false;
-        stopThreadFlag = false;
     }
 
     /**
@@ -75,7 +73,6 @@ public class Monde extends Observable implements Runnable {
         changement = new ArrayList<>();
 
         pauseThreadFlag = false;
-        stopThreadFlag = false;
     }
 
     public Monde(int size, int reveil, int survie, int mort, int nbteams) {
@@ -120,10 +117,6 @@ public class Monde extends Observable implements Runnable {
 
     public boolean isPaused() {
         return pauseThreadFlag;
-    }
-
-    public boolean isStopped() {
-        return stopThreadFlag;
     }
 
     public void setThreadSpeed(int threadSpeed) {
@@ -187,7 +180,7 @@ public class Monde extends Observable implements Runnable {
                         }
                     }
                 }
-                if ((!grille[i][j].isAlive() && alive >= regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
+                if ((!grille[i][j].isAlive() && alive == regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
                     changement.add(new Coordonnee(i, j));
                 }
             }
@@ -203,7 +196,6 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void random() {
-        System.out.println("Random pas taux");
         Random rand = new Random();
 
         for (int i = 0; i < size; i++) {
@@ -217,7 +209,6 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void random(int taux) {
-        System.out.println("Random Taux");
         Random rand = new Random();
 
         for (int i = 0; i < size; i++) {
@@ -234,13 +225,10 @@ public class Monde extends Observable implements Runnable {
     // Le threading du modèle
     @Override
     public void run() {
-        stopThreadFlag = false;
-        pauseThreadFlag = false;
+        pauseThreadFlag = true;
 
-        System.out.println("Lancement du modele");
         random();
         notifyObservers();
-        System.out.println("observateurs notifiés");
 
         /*try {
          * Thread.sleep(1000);
@@ -248,7 +236,7 @@ public class Monde extends Observable implements Runnable {
          * Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
          * }*/
 
-        while (!stopThreadFlag) {
+        while (true) {
 
             synchronized (this) {
                 if (pauseThreadFlag) {
@@ -287,18 +275,19 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void empty() {
-        for(Cellule[] cell : this.grille) {
-            for(Cellule cell2 : cell)
+        for (Cellule[] cell : this.grille) {
+            for (Cellule cell2 : cell) {
                 cell2.setAlive(false);
+            }
         }
-        
+
         this.setChanged();
         notifyObservers();
     }
 
     public void inverseCell(int x, int y) {
         grille[x][y].setAlive(!grille[x][y].isAlive());
-        
+
         this.setChanged();
         notifyObservers();
     }

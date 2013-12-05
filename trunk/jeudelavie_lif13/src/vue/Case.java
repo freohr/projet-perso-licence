@@ -4,7 +4,10 @@
  */
 package vue;
 
+import Controleur.Controle;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 
 /**
@@ -15,18 +18,34 @@ public class Case extends JPanel{
     public static final int ALIVE = 0;
     public static final int DEAD = 1;
     
+    protected int x;
+    protected int y;
+    protected Controle controle;
+    
     /** TODO
      * définir les couleurs des équipes
      * rajouter les numéros des équipes en constante statique
      */
     
     
-    public Case ()
+    public Case (int x, int y, Controle controle)
     {
         super();
-        
+        this.x = x;
+        this.y = y;
+        this.controle = controle;
         setBackground(Color.white);
+        addMouseListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Case c = (Case) e.getSource();
+                controle.changeCell(c.x, c.y);
+            }
+        });
     }
+    
+    
     
     public void setCaseColor (int color)
     {

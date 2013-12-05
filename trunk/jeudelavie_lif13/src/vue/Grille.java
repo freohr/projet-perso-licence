@@ -7,6 +7,7 @@
 
 package vue;
 
+import Controleur.Controle;
 import java.awt.Color;
 
 /**
@@ -18,7 +19,7 @@ public class Grille{
     protected int sizeX;
     protected int sizeY;
     
-    public Grille(int x, int y)
+    public Grille(int x, int y, Controle controle)
     {
         this.sizeX = x;
         this.sizeY = y;
@@ -28,7 +29,7 @@ public class Grille{
         {
             for (int j =0; j<y; j++)
             {
-                grille[i][j] = new Case();
+                grille[i][j] = new Case(i, j);
             }
         }
         this.sizeX = x;

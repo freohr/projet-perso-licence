@@ -23,11 +23,13 @@ public class JeuDeLaVie {
         
         Controle controle = new Controle();
         
+        
+        controle.setModele(test);
+        
         Vue fenetre;
         fenetre = new Vue(test.getSize());
         
         test.addObserver(fenetre);
-        controle.setModele(test);
         fenetre.setControler(controle);
         
         fenetre.setVisible(true);//On rend la fenetre visible

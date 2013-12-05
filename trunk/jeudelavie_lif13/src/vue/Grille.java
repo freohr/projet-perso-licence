@@ -29,6 +29,23 @@ public class Grille{
         {
             for (int j =0; j<y; j++)
             {
+                grille[i][j] = new Case(i, j, controle);
+            }
+        }
+        this.sizeX = x;
+        this.sizeY = y;
+    }
+    
+    public Grille(int x, int y)
+    {
+        this.sizeX = x;
+        this.sizeY = y;
+        
+        grille = new Case[x][y];
+        for (int i = 0; i<x; i++)
+        {
+            for (int j =0; j<y; j++)
+            {
                 grille[i][j] = new Case(i, j);
             }
         }

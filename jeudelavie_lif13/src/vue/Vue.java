@@ -38,6 +38,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.SliderUI;
 import modele.Monde;
 
 /**
@@ -49,6 +50,7 @@ public class Vue extends JFrame implements Observer {
     protected Grille g;
     protected JPanel panelPrincipal;
     protected JPanel panelGrid;
+    protected JLabel labelTaux;
     protected Controle controle;
 
     public Vue(int size) {
@@ -142,18 +144,27 @@ public class Vue extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
         panelTaux.add(labelTaux, c);
 
-        JLabel labelPercent = new JLabel("(% de cellules vivantes)");
-        labelPercent.setName("labelPercent");
-        labelPercent.setHorizontalAlignment(JLabel.CENTER);
+        JLabel labelInfoTaux = new JLabel("(% de cellules vivantes)");
+        labelInfoTaux.setName("labelInfoTaux");
+        labelInfoTaux.setHorizontalAlignment(JLabel.CENTER);
         c.gridx = 0;
         c.gridy = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
-        panelTaux.add(labelPercent, c);
+        panelTaux.add(labelInfoTaux, c);
+        
+        JLabel labelPercentTaux = new JLabel("50%");
+        c.gridx = 1;
+        c.gridy = 1;
+        c.anchor = GridBagConstraints.CENTER;
+        this.labelTaux = labelPercentTaux;
+        panelTaux.add(labelPercentTaux, c);
 
         c.gridx = 0;
         c.gridy = 1;
         panel.add(panelTaux, c);
+        
+        c.gridheight = 1;
 
         JLabel labelForme = new JLabel("Forme des cellules");
         labelForme.setHorizontalAlignment(JLabel.CENTER);
@@ -172,6 +183,7 @@ public class Vue extends JFrame implements Observer {
 
         JSlider sliderTaux = new JSlider(1, 100, 50);
         sliderTaux.setName("sliderTaux");
+        sliderTaux.addChangeListener(new TauxSliderListener());
         c.gridx = 1;
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -204,18 +216,19 @@ public class Vue extends JFrame implements Observer {
         c.gridy = 1;
         panel.add(boutonPause, c);
 
-        JButton boutonStop = new JButton("Stop");
-        boutonStop.setName("boutonStop");
-        //boutonStop.addActionListener(new StopListener());
+        JButton boutonReset = new JButton("Reset");
+        boutonReset.setName("boutonReset");
+        boutonReset.addActionListener(new ResetListener());
         c.gridx = 2;
         c.gridy = 2;
-        panel.add(boutonStop, c);
+        panel.add(boutonReset, c);
 
         // Slider de vitesse (ligne 4)
         JLabel labelVitesse = new JLabel("Vitesse de génération (rapide <-> lent)");
         labelVitesse.setName("labelVitesse");
         c.gridx = 0;
         c.gridy = 3;
+        c.anchor = GridBagConstraints.CENTER;
         panel.add(labelVitesse, c);
 
         JSlider sliderVitesse = new JSlider(10, 2000, 1000);
@@ -224,6 +237,7 @@ public class Vue extends JFrame implements Observer {
         sliderVitesse.setMajorTickSpacing(500);
         sliderVitesse.setMinorTickSpacing(100);
         sliderVitesse.setPaintTicks(true);
+        sliderVitesse.setSnapToTicks(true);
         c.gridx = 1;
         c.gridy = 3;
         c.gridwidth = 2;
@@ -362,12 +376,12 @@ public class Vue extends JFrame implements Observer {
 
     }
 
-    private class StopListener implements ActionListener {
+    private class ResetListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            controle.stop();
+            controle.reset();
         }
 
     }
@@ -381,6 +395,18 @@ public class Vue extends JFrame implements Observer {
             controle.modifThreadSpeed(js.getValue());
         }
 
+    }
+    
+    private class TauxSliderListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JSlider js = (JSlider) e.getSource();
+            
+            labelTaux.setText(js.getValue() + "%");
+            controle.setTaux(js.getValue());
+        }
+        
     }
 
 }

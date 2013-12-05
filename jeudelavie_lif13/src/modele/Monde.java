@@ -153,6 +153,21 @@ public class Monde extends Observable implements Runnable {
         this.notifyObservers();
     }
 
+    public void init(int size, int taux) {
+        this.size = size;
+        this.grille = new Cellule[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grille[i][j] = new Cellule(0);
+            }
+        }
+
+        this.random(taux);
+        System.out.println("Initialisation monde");
+
+        this.notifyObservers();
+    }
+
     public void update() {
         int alive;
         changement.clear();
@@ -188,12 +203,28 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void random() {
+        System.out.println("Random pas taux");
         Random rand = new Random();
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grille[i][j].alive = rand.nextBoolean();
 
+            }
+        }
+
+        this.setChanged();
+    }
+
+    public void random(int taux) {
+        System.out.println("Random Taux");
+        Random rand = new Random();
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if ((Math.round(rand.nextFloat() * 100)) <= taux) {
+                    grille[i][j].alive = true;
+                }
             }
         }
 
@@ -253,6 +284,22 @@ public class Monde extends Observable implements Runnable {
     }
 
     public void stop() {
+    }
+
+    public void empty() {
+        for(Cellule[] cell : this.grille) {
+            for(Cellule cell2 : cell)
+                cell2.setAlive(false);
+        }
         
+        this.setChanged();
+        notifyObservers();
+    }
+
+    public void inverseCell(int x, int y) {
+        grille[x][y].setAlive(!grille[x][y].isAlive());
+        
+        this.setChanged();
+        notifyObservers();
     }
 }

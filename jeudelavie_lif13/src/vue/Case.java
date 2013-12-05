@@ -35,14 +35,15 @@ public class Case extends JPanel{
         this.y = y;
         this.controle = controle;
         setBackground(Color.white);
-        addMouseListener(new MouseAdapter() {
-            
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Case c = (Case) e.getSource();
-                controle.changeCell(c.x, c.y);
-            }
-        });
+        addMouseListener(new ClickListener()); 
+    }
+    
+    public Case (int x, int y)
+    {
+        super();
+        this.x = x;
+        this.y = y;
+        setBackground(Color.white);
     }
     
     
@@ -67,5 +68,13 @@ public class Case extends JPanel{
     public Color getCaseColor()
     {
         return this.getBackground();
+    }
+    
+    private class ClickListener extends MouseAdapter {
+        @Override
+            public void mouseClicked(MouseEvent e) {
+                Case c = (Case) e.getSource();
+                controle.changeCell(c.x, c.y);
+            }
     }
 }

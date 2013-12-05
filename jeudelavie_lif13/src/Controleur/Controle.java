@@ -27,7 +27,7 @@ public class Controle {
     public Monde getMonde() {
         return monde;
     }
-    
+
     public void setModele(Monde monde) {
         this.monde = monde;
     }
@@ -37,21 +37,23 @@ public class Controle {
     }
 
     public void setTaux(int taux) {
-        if(taux >= 0 && taux <= 100)
+        if (taux >= 0 && taux <= 100) {
             this.taux = taux;
-        else
+        } else {
             this.taux = 50;
-    }
-    
-    public void initMonde(int size) {
-        if (size > 0) {
-            if(taux == 50)
-                monde.init(size);
-            else
-                monde.init(size, taux);
         }
     }
-    
+
+    public void initMonde(int size) {
+        if (size > 0) {
+            if (taux == 50) {
+                monde.init(size);
+            } else {
+                monde.init(size, taux);
+            }
+        }
+    }
+
     public void pause() {
         if (monde.isPaused()) {
             monde.resume();
@@ -60,16 +62,7 @@ public class Controle {
         }
 
     }
-    
-    public void stop() {
-        if(monde.isStopped()) {
-            monde.random();
-            monde.run();
-        } else {
-            monde.stop();
-        }
-    }
-    
+
     public void modifThreadSpeed(int speed) {
         monde.setThreadSpeed(speed);
     }
@@ -79,7 +72,8 @@ public class Controle {
     }
 
     public void changeCell(int x, int y) {
-        if(x >= 0 && x < monde.getSize() && y >= 0 && y < monde.getSize())
+        if (x >= 0 && x < monde.getSize() && y >= 0 && y < monde.getSize()) {
             monde.inverseCell(x, y);
+        }
     }
 }

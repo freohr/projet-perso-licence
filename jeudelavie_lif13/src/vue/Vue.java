@@ -6,9 +6,9 @@ package vue;
 
 import java.awt.BorderLayout;
 import Controleur.Controle;
+import Utils.CellStates;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -20,7 +20,6 @@ import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
@@ -38,7 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.SliderUI;
 import modele.Monde;
 
 /**
@@ -135,14 +133,14 @@ public class Vue extends JFrame implements Observer {
         JPanel panelTaux = new JPanel(layout);
         panelTaux.setName("panelTaux");
 
-        JLabel labelTaux = new JLabel("Taux d'initialisation");
-        labelTaux.setName("labelTaux");
-        labelTaux.setHorizontalAlignment(JLabel.CENTER);
+        JLabel labelTauxInit = new JLabel("Taux d'initialisation");
+        labelTauxInit.setName("labelTaux");
+        labelTauxInit.setHorizontalAlignment(JLabel.CENTER);
         c.gridx = 0;
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
-        panelTaux.add(labelTaux, c);
+        panelTaux.add(labelTauxInit, c);
 
         JLabel labelInfoTaux = new JLabel("(% de cellules vivantes)");
         labelInfoTaux.setName("labelInfoTaux");
@@ -152,7 +150,7 @@ public class Vue extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
         panelTaux.add(labelInfoTaux, c);
-        
+
         JLabel labelPercentTaux = new JLabel("50%");
         c.gridx = 1;
         c.gridy = 1;
@@ -163,7 +161,7 @@ public class Vue extends JFrame implements Observer {
         c.gridx = 0;
         c.gridy = 1;
         panel.add(panelTaux, c);
-        
+
         c.gridheight = 1;
 
         JLabel labelForme = new JLabel("Forme des cellules");
@@ -209,7 +207,7 @@ public class Vue extends JFrame implements Observer {
         boutonInit.addActionListener(new InitListener());
         panel.add(boutonInit, c);
 
-        JButton boutonPause = new JButton("Pause");
+        JButton boutonPause = new JButton("Lancer");
         boutonPause.setName("boutonPause");
         boutonPause.addActionListener(new PauseListener());
         c.gridx = 2;
@@ -326,9 +324,9 @@ public class Vue extends JFrame implements Observer {
             for (int j = 0; j < world.getSize(); j++) {
 
                 if (world.getCellule(i, j).isAlive()) {
-                    g.grille[i][j].setCaseColor(0);
+                    g.grille[i][j].setCaseColor(CellStates.ALIVE);
                 } else {
-                    g.grille[i][j].setCaseColor(1);
+                    g.grille[i][j].setCaseColor(CellStates.DEAD);
                 }
             }
         }
@@ -366,14 +364,13 @@ public class Vue extends JFrame implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
             controle.pause();
-            if(((JButton)e.getSource()).getText().equals("Pause")) {
-                ((JButton)e.getSource()).setText("Resume");
+            if (((JButton) e.getSource()).getText().equals("Pause")) {
+                ((JButton) e.getSource()).setText("Resume");
             } else {
-                ((JButton)e.getSource()).setText("Pause");
+                ((JButton) e.getSource()).setText("Pause");
             }
-            ((JButton)e.getSource()).repaint();
+            ((JButton) e.getSource()).repaint();
         }
-
     }
 
     private class ResetListener implements ActionListener {
@@ -383,7 +380,6 @@ public class Vue extends JFrame implements Observer {
 
             controle.reset();
         }
-
     }
 
     private class SpeedSliderListener implements ChangeListener {
@@ -394,19 +390,16 @@ public class Vue extends JFrame implements Observer {
 
             controle.modifThreadSpeed(js.getValue());
         }
-
     }
-    
+
     private class TauxSliderListener implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider js = (JSlider) e.getSource();
-            
+
             labelTaux.setText(js.getValue() + "%");
             controle.setTaux(js.getValue());
         }
-        
     }
-
 }

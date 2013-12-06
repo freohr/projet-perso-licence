@@ -271,9 +271,6 @@ public class Monde extends Observable implements Runnable {
         notify();
     }
 
-    public void stop() {
-    }
-
     public void empty() {
         for (Cellule[] cell : this.grille) {
             for (Cellule cell2 : cell) {
@@ -288,6 +285,18 @@ public class Monde extends Observable implements Runnable {
     public void inverseCell(int x, int y) {
         grille[x][y].setAlive(!grille[x][y].isAlive());
 
+        this.setChanged();
+        notifyObservers();
+    }
+
+    public void setCellAlive(int x, int y) {
+        getCellule(x, y).setAlive(true);
+        this.setChanged();
+        notifyObservers();
+    }
+    
+    public void setCellDead(int x, int y) {
+        getCellule(x, y).setAlive(false);
         this.setChanged();
         notifyObservers();
     }

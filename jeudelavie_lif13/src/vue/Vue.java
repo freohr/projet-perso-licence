@@ -71,7 +71,7 @@ public class Vue extends JFrame implements Observer {
         super();
 
         g = new Grille(size, size, controle1);
-        buildInterface(size);
+        buildWindow(size);
 
         controle = controle1;
 

@@ -20,6 +20,8 @@ public class Case extends JPanel {
     protected int x;
     protected int y;
     protected Controle controle;
+    public static boolean mouseDown = false;
+    public static int mouseButton;
 
     public Case(int x, int y, Controle controle) {
         super();
@@ -40,11 +42,11 @@ public class Case extends JPanel {
     public void setCaseColor(int color) {
         switch (color) {
             case CellStates.ALIVE:
-                setBackground(new Color(51,153,51));
+                setBackground(new Color(51, 153, 51));
                 break;
 
             case CellStates.DEAD:
-                setBackground(new Color(245,245,245));
+                setBackground(new Color(245, 245, 245));
                 break;
 
             default:
@@ -62,6 +64,29 @@ public class Case extends JPanel {
         public void mouseClicked(MouseEvent e) {
             Case c = (Case) e.getSource();
             controle.changeCell(c.x, c.y);
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            Case.mouseDown = true;
+            Case.mouseButton = e.getButton();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            Case.mouseDown = false;
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            Case c = (Case) e.getSource();
+            if (Case.mouseDown && Case.mouseButton == MouseEvent.BUTTON1) {
+                controle.setCellAlive(c.x, c.y);
+            }
+
+            if (Case.mouseDown && Case.mouseButton == MouseEvent.BUTTON3) {
+                controle.setCellDead(c.x, c.y);
+            }
         }
     }
 }

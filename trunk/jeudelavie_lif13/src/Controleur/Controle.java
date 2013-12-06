@@ -76,4 +76,12 @@ public class Controle {
             monde.inverseCell(x, y);
         }
     }
+
+    public void setCellAlive(int x, int y) {
+        monde.setCellAlive(x, y);
+    }
+    
+    public void setCellDead(int x, int y) {
+        monde.setCellDead(x, y);
+    }
 }

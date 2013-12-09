@@ -354,7 +354,7 @@ ostream& operator<<(ostream& out, const sAutoNDE& at) {
 /*
 sAutoNDE Determinize(const sAutoNDE& at){
         sAutoNDE r;
-	
+
 
         return r;
 
@@ -366,7 +366,7 @@ typedef map<etat_t, etatset_t > map_etats; /* pour tout état, on a un set de tr
 bool isBefore(etatset_t &set1, etatset_t& set2) {
     etatset_t::const_iterator it1 = set1.begin();
     etatset_t::const_iterator it2 = set2.begin();
-    
+
     if(set1.size() > set2.size())
         return true;
 
@@ -378,7 +378,7 @@ bool isBefore(etatset_t &set1, etatset_t& set2) {
 
         it1++;
         it2++;
-        
+
     }
 
     if (it1 == set1.end())
@@ -390,10 +390,10 @@ bool isBefore(etatset_t &set1, etatset_t& set2) {
 bool equals(etatset_t &set1, etatset_t &set2) {
 	etatset_t::const_iterator it1 = set1.begin();
     etatset_t::const_iterator it2 = set2.begin();
-    
+
     if(set1.size() != set2.size())
         return false;
-        
+
 	while (it1 != set1.end() && it2 != set2.end()) {
         if (*it1 != *it2)
             return false;
@@ -401,7 +401,7 @@ bool equals(etatset_t &set1, etatset_t &set2) {
         it1++;
         it2++;
 	}
-    
+
     return true;
 }
 
@@ -413,7 +413,7 @@ map_etats ordonne_lexico(map_etats &map_inv) {
     vector<etatset_t>::iterator tmp_it = temp_vector.begin();
 
     for (inv_it = map_inv.begin(); inv_it != map_inv.end(); inv_it++) {
- 
+
         if (temp_vector.size() == 0) {
             temp_vector.insert(temp_vector.begin(), inv_it->second);
         } else {
@@ -621,9 +621,9 @@ sAutoNDE Determinize(const sAutoNDE& at) {
 bool ToGraph(sAutoNDE& at, string path) {
     //TODO définir cette fonction
     ofstream sortie;
-    
+
     sortie.open(path.c_str());
-    
+
     if(!sortie.is_open())
     {
 		cerr << "Erreur d'ouverture du fichier " << path << " pour la création graphique de l'automate" << endl;
@@ -633,31 +633,33 @@ bool ToGraph(sAutoNDE& at, string path) {
     sortie << "	rankdir=LR;" << endl;
     sortie << "	size=\"10,10\";" << endl;
     sortie << endl;
-    
+
     // dessin des états finaux sous forme de double cercle
     for(etatset_t::const_iterator f_it = at.finaux.begin(); f_it != at.finaux.end(); f_it++)
 		sortie << "	node [shape = doublecircle]; "<< *f_it <<" ;"<<endl;
-		
+
 	sortie << "	node [shape = point ]; q;" << endl;
 	sortie << "	node [shape = circle];" << endl;
-	
+
 	sortie << "	q -> " << at.initial << ";" << endl;
-	
+
 	//transitions non spontanées
 	// 0 -> 2 [label = "b"];
-	for(int i=0; i<at.trans.size(); i++) {
-		for(int j = 0; j < at.trans[i].size(); j++)
-			for(int k = 0; k < at.trans[i][j].size(); k++)
-				sortie << "	" << i << " -> " << at.trans[i][j][k] << " [label = \"" << (char)(ASCII_A + j) << "\"];" << endl;
+	for(unsigned int j = 0; j < at.trans.size(); j++) {
+        for(unsigned int i = 0; i < at.trans.at(i).size(); i++) {
+            for(etatset_t::const_iterator eset_it = at.trans.at(j).at(i).begin(); eset_it != at.trans.at(j).at(i).end(); eset_it++)
+                sortie << "	" << j << " -> " << (*eset_it) << " [label = \"" << (char)(ASCII_A + i) << "\"];" << endl;
+        }
 	}
-	
+
 	//transitions spontanées
 	//0 -> 1 [label = "ε"];
-	for(int i=0; i<at.epsilon.size(); i++) {
-		for(int j=0; j<at.epsilon[i].size(); j++)
-			sortie << "	" << i << " -> " << at.epsilon[i][j] << " [label = \"ε\"];" << endl;
-	}
-	
+	for(unsigned int i = 0; i < at.epsilon.size(); i++) {
+        for(etatset_t::const_iterator esp_it2 = at.epsilon.at(i).begin(); esp_it2 != at.epsilon.at(i).end(); esp_it2++) {
+            sortie << "	" << i << " -> " << (*esp_it2) << " [label = \"ε\"];" << endl;
+        }
+    }
+
 	sortie << endl << endl << "}";
 
     return true;
@@ -673,27 +675,27 @@ bool ToGraph(sAutoNDE& at, string path) {
 sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
     assert(x.nb_symbs == y.nb_symbs); // on vérifie que les deux alphabets sont égaux
     sAutoNDE r;
-    
+
     // ceci fait l'union, a modifier
 	r.nb_symbs = x.nb_symbs;
 	// l'etat en plus sera le nouvel etat initial, un etat possédant deux
 	// transitions spontanées vers les etats initiaux des automates x et y
 	r.nb_etats = x.nb_etats + y.nb_etats + 1;
 	r.nb_finaux = x.nb_finaux + y.nb_finaux;
-	
+
 	// création de l'etat initial
 	r.initial = 0;
 	etatset_t etat_initial;
 	etat_initial.insert(1+x.initial);
 	etat_initial.insert(1+x.nb_etats+y.initial);
 	r.epsilon[0] = etat_initial;
-	
+
 	// on redéfinis la taille des tableaux
 	r.epsilon.resize(r.nb_etats);
     r.trans.resize(r.nb_etats);
     for(unsigned int i = 0; i<r.nb_etats; ++i)
 		r.trans[i].resize(r.nb_symbs);
-      
+
 	// on ajoute les transitions de x et y
 	// on parcours le nombre d'etats moins un car on a déjà crée l'etat
 	// initial
@@ -710,7 +712,7 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
 			r.trans[i+1] = y.trans[i-x.nb_etats];
 		}
 	}
-	
+
 	// on ajoute les états finaux
 	for(etatset_t::const_iterator x_it = x.finaux.begin(); x_it != x.finaux.end(); x_it ++)
 	{
@@ -720,7 +722,7 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
 	{
 		r.finaux.insert(x.nb_finaux + 1 + (*y_it));
 	}
-	
+
 
     return r;
 }
@@ -732,26 +734,26 @@ sAutoNDE Union(const sAutoNDE& x, const sAutoNDE& y) {
     sAutoNDE r = Append(x, y);
 
     //TODO d�finir cette fonction
-    
+
     r.nb_symbs = x.nb_symbs;
 	// l'etat en plus sera le nouvel etat initial, un etat possédant deux
 	// transitions spontanées vers les etats initiaux des automates x et y
 	r.nb_etats = x.nb_etats + y.nb_etats + 1;
 	r.nb_finaux = x.nb_finaux + y.nb_finaux;
-	
+
 	// création de l'etat initial
 	r.initial = 0;
 	etatset_t etat_initial;
 	etat_initial.insert(1+x.initial);
 	etat_initial.insert(1+x.nb_etats+y.initial);
 	r.epsilon[0] = etat_initial;
-	
+
 	// on redéfinis la taille des tableaux
 	r.epsilon.resize(r.nb_etats);
     r.trans.resize(r.nb_etats);
     for(unsigned int i = 0; i<r.nb_etats; ++i)
 		r.trans[i].resize(r.nb_symbs);
-      
+
 	// on ajoute les transitions de x et y
 	// on parcours le nombre d'etats moins un car on a déjà crée l'etat
 	// initial
@@ -768,7 +770,7 @@ sAutoNDE Union(const sAutoNDE& x, const sAutoNDE& y) {
 			r.trans[i+1] = y.trans[i-x.nb_etats];
 		}
 	}
-	
+
 	// on ajoute les états finaux
 	for(etatset_t::const_iterator x_it = x.finaux.begin(); x_it != x.finaux.end(); x_it ++)
 	{

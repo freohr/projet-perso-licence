@@ -84,4 +84,8 @@ public class Controle {
     public void setCellDead(int x, int y) {
         monde.setCellDead(x, y);
     }
+
+    public void setNbThreads(int value) {
+        monde.setNbThreads(value);
+    }
 }

@@ -26,12 +26,14 @@ public class Monde extends Observable implements Runnable {
     protected Set<Integer> teams;
     // Données nécéssaires au threading
     protected int threadSpeed;
+    protected int nbThreads;
     protected boolean pauseThreadFlag;
 
     // Les constructeurs
     public Monde(int size) {
         this.size = size;
         this.threadSpeed = 1500;
+        this.nbThreads = 2;
 
         this.regle = new Regles(3, 2, 3);
         grille = new Cellule[size][size];
@@ -60,6 +62,8 @@ public class Monde extends Observable implements Runnable {
     public Monde(int size, int reveil, int survie, int mort) {
         this.size = size;
         this.threadSpeed = 1500;
+        
+        this.nbThreads = 2;
 
         this.regle = new Regles(reveil, survie, mort);
         grille = new Cellule[size][size];
@@ -78,6 +82,8 @@ public class Monde extends Observable implements Runnable {
     public Monde(int size, int reveil, int survie, int mort, int nbteams) {
         this.size = size;
         this.useteams = true;
+        
+        this.nbThreads = 2;
 
         this.regle = new Regles(reveil, survie, mort);
         grille = new Cellule[size][size];
@@ -131,7 +137,15 @@ public class Monde extends Observable implements Runnable {
         this.useteams = useteams;
     }
 
-    public void init(int size) {
+    public int getNbThreads() {
+        return nbThreads;
+    }
+
+    public void setNbThreads(int nbThreads) {
+        this.nbThreads = nbThreads;
+    }
+    
+    synchronized public void init(int size) {
         this.size = size;
         this.grille = new Cellule[size][size];
         for (int i = 0; i < size; i++) {
@@ -141,12 +155,11 @@ public class Monde extends Observable implements Runnable {
         }
 
         this.random();
-        System.out.println("Initialisation monde");
 
         this.notifyObservers();
     }
 
-    public void init(int size, int taux) {
+    synchronized public void init(int size, int taux) {
         this.size = size;
         this.grille = new Cellule[size][size];
         for (int i = 0; i < size; i++) {
@@ -156,7 +169,6 @@ public class Monde extends Observable implements Runnable {
         }
 
         this.random(taux);
-        System.out.println("Initialisation monde");
 
         this.notifyObservers();
     }
@@ -165,23 +177,52 @@ public class Monde extends Observable implements Runnable {
         int alive;
         changement.clear();
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                alive = 0;
+        if (nbThreads > 1) {
+            System.out.println("");
+            int minx = 0, maxx = 0, miny = 0, maxy = 0;
 
-                for (int x = -1; x < 2; x++) {
-                    for (int y = - 1; y < 2; y++) {
-                        if ((i + x >= 0 && j + y >= 0) && (i + x < size && j + y < size)) {
-                            if (!(x == 0 && y == 0)) {
-                                if (grille[i + x][j + y].isAlive()) {
-                                    alive++;
+            for (int i = 0; i < nbThreads; i++) {
+                minx = maxx;
+
+                maxx += size / nbThreads;
+                if (i == nbThreads - 1) {
+                    maxx = size;
+                }
+                
+                miny = 0;
+                maxy = 0;
+                for (int j = 0; j < nbThreads; j++) {
+                    miny = maxy;
+                    maxy += size / nbThreads;
+
+                    if (j == nbThreads - 1) {
+                        maxy = size;
+                    }
+
+                    sousGrille tmp = new sousGrille(minx, maxx, miny, maxy);
+                    tmp.run();
+                }
+            }
+
+        } else {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    alive = 0;
+
+                    for (int x = -1; x < 2; x++) {
+                        for (int y = - 1; y < 2; y++) {
+                            if ((i + x >= 0 && j + y >= 0) && (i + x < size && j + y < size)) {
+                                if (!(x == 0 && y == 0)) {
+                                    if (grille[i + x][j + y].isAlive()) {
+                                        alive++;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                if ((!grille[i][j].isAlive() && alive == regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
-                    changement.add(new Coordonnee(i, j));
+                    if ((!grille[i][j].isAlive() && alive == regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
+                        changement.add(new Coordonnee(i, j));
+                    }
                 }
             }
         }
@@ -294,10 +335,56 @@ public class Monde extends Observable implements Runnable {
         this.setChanged();
         notifyObservers();
     }
-    
+
     public void setCellDead(int x, int y) {
         getCellule(x, y).setAlive(false);
         this.setChanged();
         notifyObservers();
+    }
+
+    private class sousGrille implements Runnable {
+
+        int minx;
+        int maxx;
+        int miny;
+        int maxy;
+
+        public sousGrille(int minx, int maxx, int miny, int maxy) {
+            this.minx = minx;
+            this.maxx = maxx;
+            this.miny = miny;
+            this.maxy = maxy;
+        }
+
+        @Override
+        public void run() {
+            int alive;
+            
+            for (int i = minx; i < maxx; i++) {
+                for (int j = miny; j < maxy; j++) {
+
+                    alive = 0;
+                    for (int x = -1; x < 2; x++) {
+                        for (int y = - 1; y < 2; y++) {
+                            if ((i + x >= 0 && j + y >= 0) && (i + x < size && j + y < size)) {
+                                if (!(x == 0 && y == 0)) {
+                                    if (grille[i + x][j + y].isAlive()) {
+                                        alive++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    synchronized (changement) {
+                        if ((!grille[i][j].isAlive() && alive == regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
+                            changement.add(new Coordonnee(i, j));
+                        }
+
+                    }
+
+                }
+            }
+
+        }
     }
 }

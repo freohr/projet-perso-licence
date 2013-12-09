@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<preconstruit>
+    <planeur taillex=3 tailley=3>
+        <case x=0 y=0>
+            alive
+        </case>
+        <case x=0 y=1>
+            alive
+        </case>
+        <case x=0 y=2>
+        alive
+        </case>
+        <case x=1 y=0>
+        </case>
+        <case x=1 y=1>
+        </case>
+        <case x=1 y=2>
+        </case>
+        <case x=2 y=0>
+        </case>
+        <case x=2 y=1>
+        </case>
+        <case x=2 y=2>
+        </case>
+    </planeur>
+    
+</preconstruit>

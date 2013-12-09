@@ -221,19 +221,21 @@ public class Vue extends JFrame implements Observer {
         c.gridy = 2;
         panel.add(boutonReset, c);
 
-        // Slider de vitesse (ligne 4)
-        JLabel labelVitesse = new JLabel("Vitesse de génération (rapide <-> lent)");
-        labelVitesse.setName("labelVitesse");
+        // Slider de vitesse de génération(ligne 4)
+        JLabel labelVitesseGeneration = new JLabel("Vitesse de génération (rapide <-> lent)");
+        labelVitesseGeneration.setName("labelVitesse");
         c.gridx = 0;
         c.gridy = 3;
         c.anchor = GridBagConstraints.CENTER;
-        panel.add(labelVitesse, c);
+        panel.add(labelVitesseGeneration, c);
 
-        JSlider sliderVitesse = new JSlider(10, 2000, 1000);
+        JSlider sliderVitesse = new JSlider(0, 2000, 1000);
         sliderVitesse.setName("sliderVitesse");
         sliderVitesse.addChangeListener(new SpeedSliderListener());
         sliderVitesse.setMajorTickSpacing(500);
         sliderVitesse.setMinorTickSpacing(100);
+        sliderVitesse.setLabelTable(sliderVitesse.createStandardLabels(500));
+        sliderVitesse.setPaintLabels(true);
         sliderVitesse.setPaintTicks(true);
         sliderVitesse.setSnapToTicks(true);
         c.gridx = 1;
@@ -241,6 +243,31 @@ public class Vue extends JFrame implements Observer {
         c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(sliderVitesse, c);
+        
+        //Slider de vitesse de calcul(ligne5)
+        JLabel labelVitesseCalcul = new JLabel("Vitesse de calcul (nb de threads)");
+        labelVitesseCalcul.setName("labelVitesseCalcul");
+        c.gridx = 0;
+        c.gridy = 4;
+        c.anchor = GridBagConstraints.CENTER;
+        panel.add(labelVitesseCalcul,c);
+        
+        JSlider sliderVitesseCalcul = new JSlider(0, 20, 1);
+        sliderVitesseCalcul.setName("sliderVitesseCalcul");
+        sliderVitesseCalcul.addChangeListener(new NbThreadsListener());
+        sliderVitesseCalcul.setMajorTickSpacing(5);
+        sliderVitesseCalcul.setMinorTickSpacing(1);
+        sliderVitesseCalcul.setLabelTable(sliderVitesseCalcul.createStandardLabels(5));
+        sliderVitesseCalcul.setPaintLabels(true);
+        sliderVitesseCalcul.setPaintTicks(true);
+        sliderVitesseCalcul.setSnapToTicks(true);
+        c.gridx = 1;
+        c.gridy = 4;
+        c.gridwidth = 2;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(sliderVitesseCalcul, c);
+        
+        
 
         return panel;
     }
@@ -401,5 +428,16 @@ public class Vue extends JFrame implements Observer {
             labelTaux.setText(js.getValue() + "%");
             controle.setTaux(js.getValue());
         }
+    }
+    
+    private class NbThreadsListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JSlider js = (JSlider) e.getSource();
+            
+            controle.setNbThreads(js.getValue());
+        }
+        
     }
 }

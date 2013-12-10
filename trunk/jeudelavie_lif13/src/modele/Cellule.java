@@ -10,11 +10,13 @@ package modele;
  */
 public class Cellule {
     protected boolean alive;
+    protected boolean underMotif;
     protected int x;
     protected int y;
     protected int team;
 
     public Cellule(int team) {
+        this.underMotif = false;
         this.alive = false;
         this.team = team;
     }
@@ -42,6 +44,14 @@ public class Cellule {
 
     public int getTeam() {
         return team;
+    }
+
+    public boolean isUnderMotif() {
+        return underMotif;
+    }
+
+    public void setUnderMotif(boolean underMotif) {
+        this.underMotif = underMotif;
     }
     
 }

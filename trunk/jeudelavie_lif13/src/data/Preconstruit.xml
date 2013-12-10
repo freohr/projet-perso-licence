@@ -6,36 +6,42 @@ and open the template in the editor.
 
 
 <preconstruit>
-    <planeur taillex="3" tailley="3">
-        <case x="0" y="0">
-            dead
-        </case>
-        <case x="0" y="1">
-            alive
-        </case>
-        <case x="0" y="2">
-            dead
-        </case>
-        <case x="1" y="0">
-            dead
-        </case>
-        <case x="1" y="1">
-            dead
-        </case>
-        <case x="1" y="2">
-            alive
-        </case>
-        <case x="2" y="0">
-            alive
-        </case>
-        <case x="2" y="1">
-            alive
-        </case>
-        <case x="2" y="2">
-            alive
-        </case>
-    </planeur>
-    <horloge taillex="12" tailley="12">
+    <list>
+        <figure>Planneur</figure>
+        <figure>Horloge</figure>
+    </list>
+    <motifs>
+        <planeur taillex="3" tailley="3">
+            <case x="0" y="0">
+                dead
+            </case>
+            <case x="0" y="1">
+                alive
+            </case>
+            <case x="0" y="2">
+                dead
+            </case>
+            <case x="1" y="0">
+                dead
+            </case>
+            <case x="1" y="1">
+                dead
+            </case>
+            <case x="1" y="2">
+                alive
+            </case>
+            <case x="2" y="0">
+                alive
+            </case>
+            <case x="2" y="1">
+                alive
+            </case>
+            <case x="2" y="2">
+                alive
+            </case>
+        </planeur>
+        <horloge taillex="12" tailley="12">
         
-    </horloge>
+        </horloge>
+    </motifs>
 </preconstruit>

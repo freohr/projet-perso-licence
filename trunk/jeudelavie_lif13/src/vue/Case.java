@@ -63,7 +63,11 @@ public class Case extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             Case c = (Case) e.getSource();
-            controle.changeCell(c.x, c.y);
+            if (controle.hasMotif()) {
+                controle.applyMotif();
+            } else {
+                controle.changeCell(c.x, c.y);
+            }
         }
 
         @Override
@@ -86,6 +90,11 @@ public class Case extends JPanel {
 
             if (Case.mouseDown && Case.mouseButton == MouseEvent.BUTTON3) {
                 controle.setCellDead(c.x, c.y);
+            }
+
+            if (controle.hasMotif()) {
+                controle.setOffset(c.x, c.y);
+                controle.showMotif();
             }
         }
     }

@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
 /**
@@ -364,6 +365,9 @@ public class Monde extends Observable implements Runnable {
         for(int i = 0; i< size; i++)
             for(int j = 0; j< size; j++)
                 grille[i][j].setUnderMotif(false);
+        
+        this.setChanged();
+        notifyObservers();
     }
     
     public void showMotif() {
@@ -458,6 +462,15 @@ public class Monde extends Observable implements Runnable {
         getCellule(x, y).setAlive(false);
         this.setChanged();
         notifyObservers();
+    }
+
+    public void save(String path) {
+        try {
+            XML.saveGrille(this, path);
+        } catch (ParserConfigurationException | TransformerException ex) {
+            Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erreur lors de la sauvegarde du fichier " + path);
+        }
     }
 
     private class sousGrille implements Runnable {

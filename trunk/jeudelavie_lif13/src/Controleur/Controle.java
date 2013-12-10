@@ -94,10 +94,11 @@ public class Controle {
         monde.setMotifOffsetX(x);
         monde.setMotifOffsetY(y);
     }
-    
+
     public void importMotif(String motif) {
-        if(!motif.isEmpty())
+        if (!motif.isEmpty()) {
             monde.importMotif(motif);
+        }
     }
 
     public void showMotif() {
@@ -110,5 +111,17 @@ public class Controle {
 
     public void applyMotif() {
         monde.applyMotif();
+    }
+
+    public void save(String path) {
+        monde.save(path);
+    }
+
+    public void emptyMotif() {
+        monde.emptyMotif();
+    }
+
+    public void setHasMotif(boolean b) {
+        monde.setMotifFlag(b);
     }
 }

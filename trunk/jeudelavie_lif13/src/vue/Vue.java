@@ -26,6 +26,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -37,6 +38,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -313,10 +315,13 @@ public class Vue extends JFrame implements Observer {
         JMenuBar jm = new JMenuBar();
 
         JMenu m = new JMenu("Jeu");
+        
+        JMenuItem save = new JMenuItem(new SaveListener());
 
         JMenuItem mi = new JMenuItem("Partie");
 
         m.add(mi);
+        m.add(save);
 
         jm.add(m);
 
@@ -497,5 +502,21 @@ public class Vue extends JFrame implements Observer {
             controle.importMotif((String) boxImport.getSelectedItem());
         }
 
+    }
+    
+    private class SaveListener extends AbstractAction {
+
+        public SaveListener() {
+            super("Sauvegarde");
+        }
+        
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String path = JOptionPane.showInputDialog(rootPane, "Veullez entrer un nom pour le fichier de sauvegarde\n(Dossier de sauvegarde dans data/save)");
+            if(path != null && path.length() > 0)
+                controle.save(path);
+        }
+        
     }
 }

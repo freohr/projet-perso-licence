@@ -80,12 +80,29 @@ public class Controle {
     public void setCellAlive(int x, int y) {
         monde.setCellAlive(x, y);
     }
-    
+
     public void setCellDead(int x, int y) {
         monde.setCellDead(x, y);
     }
 
     public void setNbThreads(int value) {
         monde.setNbThreads(value);
+    }
+
+    public void setOffset(int x, int y) {
+        monde.setMotifOffsetX(x);
+        monde.setMotifOffsetY(y);
+    }
+
+    public void showMotif() {
+        monde.showMotif();
+    }
+
+    public boolean hasMotif() {
+        return monde.hasMotif();
+    }
+
+    public void applyMotif() {
+        monde.applyMotif();
     }
 }

@@ -7,6 +7,8 @@ package vue;
 import java.awt.BorderLayout;
 import Controleur.Controle;
 import Utils.CellStates;
+import Utils.XML;
+import static Utils.XML.importListMotif;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -17,8 +19,12 @@ import java.awt.event.ActionListener;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -37,7 +43,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.parsers.ParserConfigurationException;
 import modele.Monde;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -187,14 +195,20 @@ public class Vue extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(sliderTaux, c);
 
-        String[] cells = {"Carré", "Hexagone", "Triangle"};
-        JComboBox<String> listCells = new JComboBox<>(cells);
-        listCells.setName("listCells");
+        ArrayList<String> listeMotifs = new ArrayList<>();
+        try {
+            listeMotifs = importListMotif();
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            Logger.getLogger(Vue.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erreur de récupération de la liste des motifs depuis XML.");
+        }
+        JComboBox<Object> listMotifs = new JComboBox<>(listeMotifs.toArray());
+        listMotifs.setName("listMotifs");
         c.gridx = 1;
         c.gridy = 2;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
-        panel.add(listCells, c);
+        panel.add(listMotifs, c);
 
         // Colonne 3
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -327,7 +341,7 @@ public class Vue extends JFrame implements Observer {
         // Si la grille du monde à afficher est différente de la grille d'affichage de la vue (en cas de nouveau monde par ex.)
         if (world.getSize() != g.getSizeX() || world.getSize() != g.getSizeY()) {
 
-            Grille tmp = new Grille(world.getSize(), world.getSize());
+            Grille tmp = new Grille(world.getSize(), world.getSize(), controle);
             this.g = tmp;
 
             JComponent tmpGrid = buildGrid(world.getSize());

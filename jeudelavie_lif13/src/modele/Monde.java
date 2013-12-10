@@ -4,6 +4,9 @@
  */
 package modele;
 
+import Utils.XML;
+import static Utils.XML.importPreconstruit;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Observable;
@@ -11,6 +14,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -24,6 +29,15 @@ public class Monde extends Observable implements Runnable {
     protected ArrayList<Coordonnee> changement;
     protected boolean useteams;
     protected Set<Integer> teams;
+    
+    //Données de l'import de motif
+    protected Cellule[][] motif;
+    protected boolean hasMotif;
+    protected int motifSizeX;
+    protected int motifSizeY;
+    protected int motifOffsetX;
+    protected int motifOffsetY;
+    
     // Données nécéssaires au threading
     protected int threadSpeed;
     protected int nbThreads;
@@ -32,7 +46,7 @@ public class Monde extends Observable implements Runnable {
     // Les constructeurs
     public Monde(int size) {
         this.size = size;
-        this.threadSpeed = 1500;
+        this.threadSpeed = 500;
         this.nbThreads = 2;
 
         this.regle = new Regles(3, 2, 3);
@@ -45,8 +59,11 @@ public class Monde extends Observable implements Runnable {
         }
 
         changement = new ArrayList<>();
-
-        pauseThreadFlag = false;
+        
+        motif = null;
+        hasMotif = false;
+        motifOffsetX = 0;
+        motifOffsetY = 0;
     }
 
     /**
@@ -77,29 +94,39 @@ public class Monde extends Observable implements Runnable {
         changement = new ArrayList<>();
 
         pauseThreadFlag = false;
-    }
-
-    public Monde(int size, int reveil, int survie, int mort, int nbteams) {
-        this.size = size;
-        this.useteams = true;
         
-        this.nbThreads = 2;
-
-        this.regle = new Regles(reveil, survie, mort);
-        grille = new Cellule[size][size];
-
-        for (int i = 0; i < nbteams; i++) {
-            teams.add(new Integer(i));
-        }
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                grille[i][j] = new Cellule((int) Math.round((Math.random() * nbteams) + 1));
-            }
-        }
-
-        changement = new ArrayList<>();
+        motif = null;
+        hasMotif = false;
+        motifOffsetX = 0;
+        motifOffsetY = 0;
     }
+
+    /*public Monde(int size, int reveil, int survie, int mort, int nbteams) {
+    this.size = size;
+    this.useteams = true;
+    
+    this.nbThreads = 2;
+    
+    this.regle = new Regles(reveil, survie, mort);
+    grille = new Cellule[size][size];
+    
+    for (int i = 0; i < nbteams; i++) {
+    teams.add(new Integer(i));
+    }
+    
+    for (int i = 0; i < size; i++) {
+    for (int j = 0; j < size; j++) {
+    grille[i][j] = new Cellule((int) Math.round((Math.random() * nbteams) + 1));
+    }
+    }
+    
+    changement = new ArrayList<>();
+    
+    motif = null;
+    hasMotif = false;
+    motifOffsetX = 0;
+    motifOffsetY = 0;
+    }*/
 
     public int getSize() {
         return size;
@@ -144,6 +171,50 @@ public class Monde extends Observable implements Runnable {
     public void setNbThreads(int nbThreads) {
         this.nbThreads = nbThreads;
     }
+
+    public boolean hasMotif() {
+        return hasMotif;
+    }
+
+    public void setMotifFlag(boolean hasMotif) {
+        this.hasMotif = hasMotif;
+    }
+
+    public int getMotifOffsetX() {
+        return motifOffsetX;
+    }
+    
+    public Cellule getMotifCase(int x, int y) {
+        return motif[x][y];
+    }
+
+    public void setMotifOffsetX(int motifOffsetX) {
+        this.motifOffsetX = motifOffsetX;
+    }
+
+    public int getMotifOffsetY() {
+        return motifOffsetY;
+    }
+
+    public void setMotifOffsetY(int motifOffsetY) {
+        this.motifOffsetY = motifOffsetY;
+    }
+
+    public int getMotifSizeX() {
+        return motifSizeX;
+    }
+
+    public void setMotifSizeX(int motifSizeX) {
+        this.motifSizeX = motifSizeX;
+    }
+
+    public int getMotifSizeY() {
+        return motifSizeY;
+    }
+
+    public void setMotifSizeY(int motifSizeY) {
+        this.motifSizeY = motifSizeY;
+    }
     
     synchronized public void init(int size) {
         this.size = size;
@@ -178,7 +249,6 @@ public class Monde extends Observable implements Runnable {
         changement.clear();
 
         if (nbThreads > 1) {
-            System.out.println("");
             int minx = 0, maxx = 0, miny = 0, maxy = 0;
 
             for (int i = 0; i < nbThreads; i++) {
@@ -232,7 +302,7 @@ public class Monde extends Observable implements Runnable {
             Coordonnee temp = it_coord.next();
             grille[temp.getX()][temp.getY()].setAlive(!grille[temp.getX()][temp.getY()].isAlive());
         }
-
+        
         this.setChanged();
     }
 
@@ -262,7 +332,39 @@ public class Monde extends Observable implements Runnable {
 
         this.setChanged();
     }
-
+    
+    //les motifs
+    public void importMotif(String motif){
+        try {
+            this.motif = importPreconstruit(motif);
+            setMotifFlag(true);
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erreur d'import du motif \"" + motif + "\" depuis XML");
+        }
+    }
+    
+    public void applyMotif() {
+        for(int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
+            for(int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++)
+                grille[i][j].setAlive(motif[i-motifOffsetX][j-motifOffsetY].isAlive());
+        }
+        
+        this.setChanged();
+        notifyObservers();
+    }
+    
+    public void showMotif() {
+        for(int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
+            for(int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++)
+                grille[i][j].setUnderMotif(motif[i-motifOffsetX][j-motifOffsetY].isAlive());
+        }
+        
+        this.setChanged();
+        notifyObservers();
+        
+    }
+    
     // Le threading du modèle
     @Override
     public void run() {

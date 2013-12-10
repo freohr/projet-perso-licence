@@ -5,7 +5,14 @@
 package jeudelavie;
 
 import Controleur.Controle;
+import Utils.XML;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
+import modele.Cellule;
 import modele.Monde;
+import org.xml.sax.SAXException;
 import vue.Vue;
 
 /**
@@ -18,7 +25,7 @@ public class JeuDeLaVie {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        
         final Monde test = new Monde(40, 3, 2, 3);
 
         Controle controle = new Controle();

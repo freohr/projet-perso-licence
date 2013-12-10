@@ -14,6 +14,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -54,9 +55,14 @@ import org.xml.sax.SAXException;
 public class Vue extends JFrame implements Observer {
 
     protected Grille g;
+
+    //Pour les eventListeners
     protected JPanel panelPrincipal;
     protected JPanel panelGrid;
     protected JLabel labelTaux;
+    protected JButton boutonPause;
+    protected JComboBox boxImport;
+
     protected Controle controle;
 
     public Vue(int size) {
@@ -162,20 +168,72 @@ public class Vue extends JFrame implements Observer {
         JLabel labelPercentTaux = new JLabel("50%");
         c.gridx = 1;
         c.gridy = 1;
+        c.gridheight = 2;
         c.anchor = GridBagConstraints.CENTER;
         this.labelTaux = labelPercentTaux;
         panelTaux.add(labelPercentTaux, c);
 
         c.gridx = 0;
         c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
         panel.add(panelTaux, c);
 
         c.gridheight = 1;
 
-        JLabel labelForme = new JLabel("Forme des cellules");
-        labelForme.setHorizontalAlignment(JLabel.CENTER);
+        // Déplacer sliders ici (lignes 2,3)
+        // Slider de vitesse de génération(ligne 4)
+        JLabel labelVitesseGeneration = new JLabel("Vitesse de génération (rapide <-> lent)");
+        labelVitesseGeneration.setName("labelVitesse");
         c.gridx = 0;
         c.gridy = 2;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        panel.add(labelVitesseGeneration, c);
+
+        JSlider sliderVitesse = new JSlider(0, 2000, 200);
+        sliderVitesse.setName("sliderVitesse");
+        sliderVitesse.addChangeListener(new SpeedSliderListener());
+        sliderVitesse.setMajorTickSpacing(500);
+        sliderVitesse.setMinorTickSpacing(100);
+        sliderVitesse.setLabelTable(sliderVitesse.createStandardLabels(500));
+        sliderVitesse.setPaintLabels(true);
+        sliderVitesse.setPaintTicks(true);
+        sliderVitesse.setSnapToTicks(true);
+        c.gridx = 1;
+        c.gridy = 2;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(sliderVitesse, c);
+
+        //Slider de vitesse de calcul(ligne5)
+        JLabel labelVitesseCalcul = new JLabel("Vitesse de calcul (nb de threads)");
+        labelVitesseCalcul.setName("labelVitesseCalcul");
+        c.gridx = 0;
+        c.gridy = 3;
+        c.anchor = GridBagConstraints.EAST;
+        c.fill = GridBagConstraints.BOTH;
+        panel.add(labelVitesseCalcul, c);
+
+        JSlider sliderVitesseCalcul = new JSlider(0, 20, 1);
+        sliderVitesseCalcul.setName("sliderVitesseCalcul");
+        sliderVitesseCalcul.addChangeListener(new NbThreadsListener());
+        sliderVitesseCalcul.setMajorTickSpacing(5);
+        sliderVitesseCalcul.setMinorTickSpacing(1);
+        sliderVitesseCalcul.setLabelTable(sliderVitesseCalcul.createStandardLabels(5));
+        sliderVitesseCalcul.setPaintLabels(true);
+        sliderVitesseCalcul.setPaintTicks(true);
+        sliderVitesseCalcul.setSnapToTicks(true);
+        c.gridx = 1;
+        c.gridy = 3;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(sliderVitesseCalcul, c);
+
+        JLabel labelForme = new JLabel("Import de motifs préconstruits");
+        labelForme.setHorizontalAlignment(JLabel.CENTER);
+        c.gridx = 0;
+        c.gridy = 4;
         c.fill = GridBagConstraints.BOTH;
         panel.add(labelForme, c);
 
@@ -205,9 +263,10 @@ public class Vue extends JFrame implements Observer {
         JComboBox<Object> listMotifs = new JComboBox<>(listeMotifs.toArray());
         listMotifs.setName("listMotifs");
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = 4;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
+        boxImport = listMotifs;
         panel.add(listMotifs, c);
 
         // Colonne 3
@@ -218,70 +277,34 @@ public class Vue extends JFrame implements Observer {
         boutonInit.setName("boutonName");
         c.gridx = 2;
         c.gridy = 0;
+        c.gridheight = 2;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(5, 10, 5, 10);
         boutonInit.addActionListener(new InitListener());
         panel.add(boutonInit, c);
 
-        JButton boutonPause = new JButton("Lancer");
-        boutonPause.setName("boutonPause");
-        boutonPause.addActionListener(new PauseListener());
+        JButton pauseButton = new JButton("Lancer");
+        pauseButton.setName("boutonPause");
+        pauseButton.addActionListener(new PauseListener());
         c.gridx = 2;
-        c.gridy = 1;
-        panel.add(boutonPause, c);
+        c.gridy = 2;
+        c.gridheight = 1;
+        this.boutonPause = pauseButton;
+        panel.add(pauseButton, c);
 
         JButton boutonReset = new JButton("Reset");
         boutonReset.setName("boutonReset");
         boutonReset.addActionListener(new ResetListener());
         c.gridx = 2;
-        c.gridy = 2;
+        c.gridy = 3;
         panel.add(boutonReset, c);
 
-        // Slider de vitesse de génération(ligne 4)
-        JLabel labelVitesseGeneration = new JLabel("Vitesse de génération (rapide <-> lent)");
-        labelVitesseGeneration.setName("labelVitesse");
-        c.gridx = 0;
-        c.gridy = 3;
-        c.anchor = GridBagConstraints.CENTER;
-        panel.add(labelVitesseGeneration, c);
-
-        JSlider sliderVitesse = new JSlider(0, 2000, 1000);
-        sliderVitesse.setName("sliderVitesse");
-        sliderVitesse.addChangeListener(new SpeedSliderListener());
-        sliderVitesse.setMajorTickSpacing(500);
-        sliderVitesse.setMinorTickSpacing(100);
-        sliderVitesse.setLabelTable(sliderVitesse.createStandardLabels(500));
-        sliderVitesse.setPaintLabels(true);
-        sliderVitesse.setPaintTicks(true);
-        sliderVitesse.setSnapToTicks(true);
-        c.gridx = 1;
-        c.gridy = 3;
-        c.gridwidth = 2;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(sliderVitesse, c);
-        
-        //Slider de vitesse de calcul(ligne5)
-        JLabel labelVitesseCalcul = new JLabel("Vitesse de calcul (nb de threads)");
-        labelVitesseCalcul.setName("labelVitesseCalcul");
-        c.gridx = 0;
+        JButton boutonImport = new JButton("Importer");
+        boutonImport.setName("boutonImport");
+        boutonImport.addActionListener(new ImportListener());
+        c.gridx = 2;
         c.gridy = 4;
-        c.anchor = GridBagConstraints.CENTER;
-        panel.add(labelVitesseCalcul,c);
-        
-        JSlider sliderVitesseCalcul = new JSlider(0, 20, 1);
-        sliderVitesseCalcul.setName("sliderVitesseCalcul");
-        sliderVitesseCalcul.addChangeListener(new NbThreadsListener());
-        sliderVitesseCalcul.setMajorTickSpacing(5);
-        sliderVitesseCalcul.setMinorTickSpacing(1);
-        sliderVitesseCalcul.setLabelTable(sliderVitesseCalcul.createStandardLabels(5));
-        sliderVitesseCalcul.setPaintLabels(true);
-        sliderVitesseCalcul.setPaintTicks(true);
-        sliderVitesseCalcul.setSnapToTicks(true);
-        c.gridx = 1;
-        c.gridy = 4;
-        c.gridwidth = 2;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(sliderVitesseCalcul, c);
-        
-        
+        panel.add(boutonImport, c);
 
         return panel;
     }
@@ -363,8 +386,19 @@ public class Vue extends JFrame implements Observer {
         //System.out.println("modif état");
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
-
-                if (world.getCellule(i, j).isAlive()) {
+                if (world.hasMotif()) {
+                    if (world.getCellule(i, j).isUnderMotif()) {
+                        if (world.getMotifCase(i - world.getMotifOffsetX(), j - world.getMotifOffsetY()).isAlive()) {
+                            g.grille[i][j].setCaseColor(CellStates.UNDER_MOTIF);
+                        } else {
+                            g.grille[i][j].setCaseColor(CellStates.DEAD);
+                        }
+                    } else if (world.getCellule(i, j).isAlive()) {
+                        g.grille[i][j].setCaseColor(CellStates.ALIVE);
+                    } else {
+                        g.grille[i][j].setCaseColor(CellStates.DEAD);
+                    }
+                } else if (world.getCellule(i, j).isAlive()) {
                     g.grille[i][j].setCaseColor(CellStates.ALIVE);
                 } else {
                     g.grille[i][j].setCaseColor(CellStates.DEAD);
@@ -418,6 +452,7 @@ public class Vue extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            boutonPause.setText("Lancer");
 
             controle.reset();
         }
@@ -443,15 +478,24 @@ public class Vue extends JFrame implements Observer {
             controle.setTaux(js.getValue());
         }
     }
-    
+
     private class NbThreadsListener implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider js = (JSlider) e.getSource();
-            
+
             controle.setNbThreads(js.getValue());
         }
-        
+
+    }
+
+    private class ImportListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controle.importMotif((String) boxImport.getSelectedItem());
+        }
+
     }
 }

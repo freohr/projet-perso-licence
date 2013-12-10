@@ -24,11 +24,14 @@ import modele.Cellule;
  */
 public class XML {
 
-    public static Cellule[][] importPreconstruit(String figure) throws ParserConfigurationException, SAXException, IOException {
+    public static GrilleImport importPreconstruit(String figure) throws ParserConfigurationException, SAXException, IOException {
 
+        GrilleImport tmpExport = null;
         Cellule[][] tmp = null;
+        
+        System.out.println("Début d'import");
 
-        File xmlFile = new File("data/preconstruit.xml");
+        File xmlFile = new File("src/data/preconstruit.xml");
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -36,72 +39,69 @@ public class XML {
 
         doc.getDocumentElement().normalize();
 
-        NodeList nList = doc.getElementsByTagName("preconstruit");
+        NodeList nList = doc.getElementsByTagName("motifs");
+        
+        System.out.println("Node Motifs récup");
 
         for (int i = 0; i < nList.getLength(); i++) {
             Node node = nList.item(i);
 
-            if (node.getNodeName().equals("motifs")) {
-                
-                node = node.getFirstChild();
-                
-                while(node != null) {
+            node = node.getFirstChild();
 
-                if (node.getNodeName().equals(figure) && node.getNodeType() == Node.ELEMENT_NODE) {
-                    // Récuperation de la figure à importer
-                    Element elt = (Element) node;
-                    int x = new Integer(elt.getAttribute("taillex"));
-                    int y = new Integer(elt.getAttribute("tailley"));
+            while (node != null && !(node.getNodeName().equalsIgnoreCase(figure))) {
+                node = node.getNextSibling();
+            }
+            
+            if (node != null) {
+                System.out.println(node.getNodeName());
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element node_elt = (Element) node;
 
-                    // Initialisation de tmp à la taille de la figure à importer
-                    tmp = new Cellule[x][y];
+                    int sizex = new Integer(node_elt.getAttribute("taillex"));
+                    int sizey = new Integer(node_elt.getAttribute("tailley"));
 
-                    for (int m = 0; m < x; m++) {
-                        for (int n = 0; n < y; n++) {
+                    tmpExport = new GrilleImport(sizex, sizey);
+
+                    tmp = new Cellule[sizex][sizey];
+
+                    for (int m = 0; m < sizex; m++) {
+                        for (int n = 0; n < sizey; n++) {
                             tmp[m][n] = new Cellule(0);
                         }
                     }
-
-                    //Remplissage de tmp avec les infos importées
-                    Node child = node.getFirstChild();
-                    if (child != null) {
-                        Element eltChild = (Element) child;
-                        int casex = new Integer(eltChild.getAttribute("x"));
-                        int casey = new Integer(eltChild.getAttribute("y"));
-
-                        String state = eltChild.getNodeValue();
-                        tmp[casex][casey].setAlive(state.equals("alive"));
-
-                        child = child.getNextSibling();
-
-                        while (child != null) {
-                            eltChild = (Element) child;
-                            casex = new Integer(eltChild.getAttribute("x"));
-                            casey = new Integer(eltChild.getAttribute("y"));
-
-                            state = eltChild.getNodeValue();
-                            tmp[casex][casey].setAlive(state.equals("alive"));
-
-                            child = child.getNextSibling();
-                        }
-
-                    }
-                    break;
                 }
-                
-                node = node.getNextSibling();
+
+                Node coords = node.getFirstChild();
+
+                while (coords != null) {
+                    if (coords.getNodeType() == Node.ELEMENT_NODE) {
+                        Element coords_elt = (Element) coords;
+
+                        int x = new Integer(coords_elt.getAttribute("x"));
+                        int y = new Integer(coords_elt.getAttribute("y"));
+                        String coords_value = coords.getTextContent().trim();
+
+                        tmp[x][y].setAlive("alive".equalsIgnoreCase(coords_value));
+                    }
+
+                    coords = coords.getNextSibling();
+
                 }
             }
 
         }
-        return tmp;
+        
+        System.out.println("tmpexport, sizex : " + tmpExport.getSizeX());
+        
+        tmpExport.setGrille(tmp);
+        return tmpExport;
 
     }
 
     public static ArrayList<String> importListMotif() throws ParserConfigurationException, SAXException, IOException {
         ArrayList<String> list = new ArrayList<>();
 
-        File xmlFile = new File("data/preconstruit.xml");
+        File xmlFile = new File("src/data/preconstruit.xml");
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -109,28 +109,18 @@ public class XML {
 
         doc.getDocumentElement().normalize();
 
-        NodeList nList = doc.getElementsByTagName("preconstruit");
+        NodeList nList = doc.getElementsByTagName("list");
 
         for (int i = 0; i < nList.getLength(); i++) {
-            Node node = nList.item(i);
-            if (node.getNodeName().equals("list") && node.getNodeType() == Node.ELEMENT_NODE) {
 
-                Node child = node.getFirstChild();
+            Node node = nList.item(i).getFirstChild();
 
-                if (child != null) {
-                    Element eltChild = (Element) child;
-
-                    list.add(eltChild.getNodeValue());
-
-                    child = child.getNextSibling();
-                    while (child != null) {
-                        eltChild = (Element) child;
-
-                        list.add(eltChild.getNodeValue());
-
-                        child = child.getNextSibling();
-                    }
+            while (node != null) {
+                if (node.getNodeName().equals("figure")) {
+                    list.add(node.getTextContent());
                 }
+
+                node = node.getNextSibling();
             }
 
         }

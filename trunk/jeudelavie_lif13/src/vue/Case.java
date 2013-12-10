@@ -48,6 +48,9 @@ public class Case extends JPanel {
             case CellStates.DEAD:
                 setBackground(new Color(245, 245, 245));
                 break;
+                
+            case CellStates.UNDER_MOTIF:
+                setBackground(Color.red);
 
             default:
                 break;

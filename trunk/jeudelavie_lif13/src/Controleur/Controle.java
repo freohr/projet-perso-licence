@@ -69,6 +69,7 @@ public class Controle {
 
     public void reset() {
         monde.empty();
+        monde.pause();
     }
 
     public void changeCell(int x, int y) {
@@ -92,6 +93,11 @@ public class Controle {
     public void setOffset(int x, int y) {
         monde.setMotifOffsetX(x);
         monde.setMotifOffsetY(y);
+    }
+    
+    public void importMotif(String motif) {
+        if(!motif.isEmpty())
+            monde.importMotif(motif);
     }
 
     public void showMotif() {

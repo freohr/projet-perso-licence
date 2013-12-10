@@ -7,8 +7,9 @@ and open the template in the editor.
 
 <preconstruit>
     <list>
-        <figure>Planneur</figure>
+        <figure>Planeur</figure>
         <figure>Horloge</figure>
+        <figure>Oscillateur</figure>
     </list>
     <motifs>
         <planeur taillex="3" tailley="3">
@@ -41,7 +42,141 @@ and open the template in the editor.
             </case>
         </planeur>
         <horloge taillex="12" tailley="12">
-        
+            <case x="0" y="0">
+                dead
+            </case>
+            <case x="0" y="1">
+                alive
+            </case>
+            <case x="0" y="2">
+                dead
+            </case>
+            <case x="0" y="3">
+                dead
+            </case>
+            <case x="0" y="4">
+                alive
+            </case>
+            <case x="0" y="5">
+                dead
+            </case>
+            <case x="0" y="6">
+                dead
+            </case>
+            <case x="0" y="7">
+                dead
+            </case>
+            <case x="0" y="8">
+                alive
+            </case>
+            <case x="0" y="9">
+                alive
+            </case>
+            <case x="0" y="10">
+                alive
+            </case>
+            <case x="0" y="11">
+                alive
+            </case>
+            <case x="1" y="0">
+                dead
+            </case>
+            <case x="1" y="1">
+                dead
+            </case>
+            <case x="1" y="2">
+                alive
+            </case>
+            <case x="1" y="3">
+                alive
+            </case>
+            <case x="1" y="4">
+                alive
+            </case>
+            <case x="1" y="5">
+                alive
+            </case>
+            <case x="1" y="6">
+                dead
+            </case>
+            <case x="1" y="7">
+                alive
+            </case>
+            <case x="1" y="8">
+                dead
+            </case>
+            <case x="1" y="9">
+                dead
+            </case>
+            <case x="1" y="10">
+                dead
+            </case>
+            <case x="1" y="11">
+                alive
+            </case>
+            <case x="2" y="0">
+                alive
+            </case>
+            <case x="2" y="1">
+                alive
+            </case>
+            <case x="2" y="2">
+                alive
+            </case>
+            <case x="2" y="3">
+                dead
+            </case>
+            <case x="0" y="1">
+                alive
+            </case>
+            <case x="0" y="2">
+                dead
+            </case>
+            <case x="1" y="0">
+                dead
+            </case>
+            <case x="1" y="1">
+                dead
+            </case>
+            <case x="1" y="2">
+                alive
+            </case>
+            <case x="2" y="0">
+                alive
+            </case>
+            <case x="2" y="1">
+                alive
+            </case>
+            <case x="2" y="2">
+                alive
+            </case>
+            <case x="0" y="0">
+                dead
+            </case>
+            <case x="0" y="1">
+                alive
+            </case>
+            <case x="0" y="2">
+                dead
+            </case>
+            <case x="1" y="0">
+                dead
+            </case>
+            <case x="1" y="1">
+                dead
+            </case>
+            <case x="1" y="2">
+                alive
+            </case>
+            <case x="2" y="0">
+                alive
+            </case>
+            <case x="2" y="1">
+                alive
+            </case>
+            <case x="2" y="2">
+                alive
+            </case>
         </horloge>
     </motifs>
 </preconstruit>

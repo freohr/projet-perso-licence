@@ -16,6 +16,7 @@ public class CellStates {
 
     public final static int ALIVE = 1;
     public final static int DEAD = 0;
+    public final static int UNDER_MOTIF = 10;
     
     public final static int TEAM_1 = 2;
     public final static int TEAM_2 = 3;

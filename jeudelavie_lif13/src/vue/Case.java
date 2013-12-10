@@ -48,7 +48,7 @@ public class Case extends JPanel {
             case CellStates.DEAD:
                 setBackground(new Color(245, 245, 245));
                 break;
-                
+
             case CellStates.UNDER_MOTIF:
                 setBackground(Color.red);
 
@@ -67,7 +67,12 @@ public class Case extends JPanel {
         public void mouseClicked(MouseEvent e) {
             Case c = (Case) e.getSource();
             if (controle.hasMotif()) {
-                controle.applyMotif();
+                if (Case.mouseButton == MouseEvent.BUTTON1) {
+                    controle.applyMotif();
+                } else {
+                    controle.emptyMotif();
+                    controle.setHasMotif(false);
+                }
             } else {
                 controle.changeCell(c.x, c.y);
             }
@@ -99,6 +104,11 @@ public class Case extends JPanel {
                 controle.setOffset(c.x, c.y);
                 controle.showMotif();
             }
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            controle.emptyMotif();
         }
     }
 }

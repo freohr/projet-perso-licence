@@ -10,6 +10,12 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -17,6 +23,8 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import modele.Cellule;
+import modele.Monde;
+import org.w3c.dom.Attr;
 
 /**
  *
@@ -28,7 +36,7 @@ public class XML {
 
         GrilleImport tmpExport = null;
         Cellule[][] tmp = null;
-        
+
         System.out.println("Début d'import");
 
         File xmlFile = new File("src/data/preconstruit.xml");
@@ -40,7 +48,7 @@ public class XML {
         doc.getDocumentElement().normalize();
 
         NodeList nList = doc.getElementsByTagName("motifs");
-        
+
         System.out.println("Node Motifs récup");
 
         for (int i = 0; i < nList.getLength(); i++) {
@@ -51,7 +59,7 @@ public class XML {
             while (node != null && !(node.getNodeName().equalsIgnoreCase(figure))) {
                 node = node.getNextSibling();
             }
-            
+
             if (node != null) {
                 System.out.println(node.getNodeName());
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -90,9 +98,9 @@ public class XML {
             }
 
         }
-        
+
         System.out.println("tmpexport, sizex : " + tmpExport.getSizeX());
-        
+
         tmpExport.setGrille(tmp);
         return tmpExport;
 
@@ -127,6 +135,56 @@ public class XML {
 
         return list;
 
+    }
+
+    public static void saveGrille(Monde world, String filename) throws ParserConfigurationException, TransformerConfigurationException, TransformerException {
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = factory.newDocumentBuilder();
+
+        Document doc = docBuilder.newDocument();
+        Element root = doc.createElement("sauvegarde");
+        doc.appendChild(root);
+        
+        Attr size = doc.createAttribute("size");
+        size.setValue((new Integer(world.getSize())).toString());
+        root.setAttributeNode(size);
+
+        for (int i = 0; i < world.getSize(); i++) {
+            for (int j = 0; j < world.getSize(); j++) {
+                Element cellule = doc.createElement("case");
+                root.appendChild(cellule);
+                
+                Attr x = doc.createAttribute("x");
+                x.setValue((new Integer(i)).toString());
+                cellule.setAttributeNode(x);
+                
+                Attr y = doc.createAttribute("y");
+                y.setValue((new Integer(j)).toString());
+                cellule.setAttributeNode(y);
+                
+                String state;
+                
+                if(world.getCellule(i, j).isAlive())
+                    state = "alive";
+                else
+                    state = "dead";
+                
+                cellule.appendChild(doc.createTextNode(state));
+
+            }
+        }
+        
+        
+        TransformerFactory transfact = TransformerFactory.newInstance();
+        Transformer transfo = transfact.newTransformer();
+        
+        DOMSource source = new DOMSource(doc);
+        
+        StreamResult stream = new StreamResult(new File("src/data/save/" + filename +".xml"));
+        
+        transfo.transform(source, stream);
+        
     }
 
 }

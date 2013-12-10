@@ -9,174 +9,865 @@ and open the template in the editor.
     <list>
         <figure>Planeur</figure>
         <figure>Horloge</figure>
-        <figure>Oscillateur</figure>
+        <figure>Diagonale</figure>
+        <figure>Fontaine</figure>
+        <figure>Pentadodecagone</figure>
+        <figure>Gosper_Glider_Gun</figure>
     </list>
     <motifs>
         <planeur taillex="3" tailley="3">
-            <case x="0" y="0">
-                dead
-            </case>
-            <case x="0" y="1">
-                alive
-            </case>
-            <case x="0" y="2">
-                dead
-            </case>
-            <case x="1" y="0">
-                dead
-            </case>
-            <case x="1" y="1">
-                dead
-            </case>
-            <case x="1" y="2">
-                alive
-            </case>
-            <case x="2" y="0">
-                alive
-            </case>
-            <case x="2" y="1">
-                alive
-            </case>
-            <case x="2" y="2">
-                alive
-            </case>
+            <case x="0" y="0">dead</case>
+            <case x="0" y="1">alive</case>
+            <case x="0" y="2">dead</case>
+            <case x="1" y="0">dead</case>
+            <case x="1" y="1">dead</case>
+            <case x="1" y="2">alive</case>
+            <case x="2" y="0">alive</case>
+            <case x="2" y="1">alive</case>
+            <case x="2" y="2">alive</case>
         </planeur>
         <horloge taillex="12" tailley="12">
-            <case x="0" y="0">
-                dead
-            </case>
-            <case x="0" y="1">
-                alive
-            </case>
-            <case x="0" y="2">
-                dead
-            </case>
-            <case x="0" y="3">
-                dead
-            </case>
-            <case x="0" y="4">
-                alive
-            </case>
-            <case x="0" y="5">
-                dead
-            </case>
-            <case x="0" y="6">
-                dead
-            </case>
-            <case x="0" y="7">
-                dead
-            </case>
-            <case x="0" y="8">
-                alive
-            </case>
-            <case x="0" y="9">
-                alive
-            </case>
-            <case x="0" y="10">
-                alive
-            </case>
-            <case x="0" y="11">
-                alive
-            </case>
-            <case x="1" y="0">
-                dead
-            </case>
-            <case x="1" y="1">
-                dead
-            </case>
-            <case x="1" y="2">
-                alive
-            </case>
-            <case x="1" y="3">
-                alive
-            </case>
-            <case x="1" y="4">
-                alive
-            </case>
-            <case x="1" y="5">
-                alive
-            </case>
-            <case x="1" y="6">
-                dead
-            </case>
-            <case x="1" y="7">
-                alive
-            </case>
-            <case x="1" y="8">
-                dead
-            </case>
-            <case x="1" y="9">
-                dead
-            </case>
-            <case x="1" y="10">
-                dead
-            </case>
-            <case x="1" y="11">
-                alive
-            </case>
-            <case x="2" y="0">
-                alive
-            </case>
-            <case x="2" y="1">
-                alive
-            </case>
-            <case x="2" y="2">
-                alive
-            </case>
-            <case x="2" y="3">
-                dead
-            </case>
-            <case x="0" y="1">
-                alive
-            </case>
-            <case x="0" y="2">
-                dead
-            </case>
-            <case x="1" y="0">
-                dead
-            </case>
-            <case x="1" y="1">
-                dead
-            </case>
-            <case x="1" y="2">
-                alive
-            </case>
-            <case x="2" y="0">
-                alive
-            </case>
-            <case x="2" y="1">
-                alive
-            </case>
-            <case x="2" y="2">
-                alive
-            </case>
-            <case x="0" y="0">
-                dead
-            </case>
-            <case x="0" y="1">
-                alive
-            </case>
-            <case x="0" y="2">
-                dead
-            </case>
-            <case x="1" y="0">
-                dead
-            </case>
-            <case x="1" y="1">
-                dead
-            </case>
-            <case x="1" y="2">
-                alive
-            </case>
-            <case x="2" y="0">
-                alive
-            </case>
-            <case x="2" y="1">
-                alive
-            </case>
-            <case x="2" y="2">
-                alive
-            </case>
+            <case x="0" y="0">dead</case>
+            <case x="0" y="1">dead</case>
+            <case x="0" y="2">dead</case>
+            <case x="0" y="3">dead</case>
+            <case x="0" y="4">dead</case>
+            <case x="0" y="5">dead</case>
+            <case x="0" y="6">alive</case>
+            <case x="0" y="7">alive</case>
+            <case x="0" y="8">dead</case>
+            <case x="0" y="9">dead</case>
+            <case x="0" y="10">dead</case>
+            <case x="0" y="11">dead</case>
+            <case x="1" y="0">dead</case>
+            <case x="1" y="1">dead</case>
+            <case x="1" y="2">dead</case>
+            <case x="1" y="3">dead</case>
+            <case x="1" y="4">dead</case>
+            <case x="1" y="5">dead</case>
+            <case x="1" y="6">alive</case>
+            <case x="1" y="7">alive</case>
+            <case x="1" y="8">dead</case>
+            <case x="1" y="9">dead</case>
+            <case x="1" y="10">dead</case>
+            <case x="1" y="11">dead</case>
+            <case x="2" y="0">dead</case>
+            <case x="2" y="1">dead</case>
+            <case x="2" y="2">dead</case>
+            <case x="2" y="3">dead</case>
+            <case x="2" y="4">dead</case>
+            <case x="2" y="5">dead</case>
+            <case x="2" y="6">dead</case>
+            <case x="2" y="7">dead</case>
+            <case x="2" y="8">dead</case>
+            <case x="2" y="9">dead</case>
+            <case x="2" y="10">dead</case>
+            <case x="2" y="11">dead</case>
+            <case x="3" y="0">dead</case>
+            <case x="3" y="1">dead</case>
+            <case x="3" y="2">dead</case>
+            <case x="3" y="3">dead</case>
+            <case x="3" y="4">alive</case>
+            <case x="3" y="5">alive</case>
+            <case x="3" y="6">alive</case>
+            <case x="3" y="7">alive</case>
+            <case x="3" y="8">dead</case>
+            <case x="3" y="9">dead</case>
+            <case x="3" y="10">dead</case>
+            <case x="3" y="11">dead</case>
+            <case x="4" y="0">alive</case>
+            <case x="4" y="1">alive</case>
+            <case x="4" y="2">dead</case>
+            <case x="4" y="3">alive</case>
+            <case x="4" y="4">dead</case>
+            <case x="4" y="5">dead</case>
+            <case x="4" y="6">dead</case>
+            <case x="4" y="7">dead</case>
+            <case x="4" y="8">alive</case>
+            <case x="4" y="9">dead</case>
+            <case x="4" y="10">dead</case>
+            <case x="4" y="11">dead</case>
+            <case x="5" y="0">alive</case>
+            <case x="5" y="1">alive</case>
+            <case x="5" y="2">dead</case>
+            <case x="5" y="3">alive</case>
+            <case x="5" y="4">alive</case>
+            <case x="5" y="5">dead</case>
+            <case x="5" y="6">dead</case>
+            <case x="5" y="7">dead</case>
+            <case x="5" y="8">alive</case>
+            <case x="5" y="9">dead</case>
+            <case x="5" y="10">dead</case>
+            <case x="5" y="11">dead</case>
+            <case x="6" y="0">dead</case>
+            <case x="6" y="1">dead</case>
+            <case x="6" y="2">dead</case>
+            <case x="6" y="3">alive</case>
+            <case x="6" y="4">dead</case>
+            <case x="6" y="5">alive</case>
+            <case x="6" y="6">alive</case>
+            <case x="6" y="7">dead</case>
+            <case x="6" y="8">alive</case>
+            <case x="6" y="9">dead</case>
+            <case x="6" y="10">alive</case>
+            <case x="6" y="11">alive</case>
+            <case x="7" y="0">dead</case>
+            <case x="7" y="1">dead</case>
+            <case x="7" y="2">dead</case>
+            <case x="7" y="3">alive</case>
+            <case x="7" y="4">dead</case>
+            <case x="7" y="5">dead</case>
+            <case x="7" y="6">dead</case>
+            <case x="7" y="7">dead</case>
+            <case x="7" y="8">alive</case>
+            <case x="7" y="9">dead</case>
+            <case x="7" y="10">alive</case>
+            <case x="7" y="11">alive</case>
+            <case x="8" y="0">dead</case>
+            <case x="8" y="1">dead</case>
+            <case x="8" y="2">dead</case>
+            <case x="8" y="3">dead</case>
+            <case x="8" y="4">alive</case>
+            <case x="8" y="5">alive</case>
+            <case x="8" y="6">alive</case>
+            <case x="8" y="7">alive</case>
+            <case x="8" y="8">dead</case>
+            <case x="8" y="9">dead</case>
+            <case x="8" y="10">dead</case>
+            <case x="8" y="11">dead</case>
+            <case x="9" y="0">dead</case>
+            <case x="9" y="1">dead</case>
+            <case x="9" y="2">dead</case>
+            <case x="9" y="3">dead</case>
+            <case x="9" y="4">dead</case>
+            <case x="9" y="5">dead</case>
+            <case x="9" y="6">dead</case>
+            <case x="9" y="7">dead</case>
+            <case x="9" y="8">dead</case>
+            <case x="9" y="9">dead</case>
+            <case x="9" y="10">dead</case>
+            <case x="9" y="11">dead</case>
+            <case x="10" y="0">dead</case>
+            <case x="10" y="1">dead</case>
+            <case x="10" y="2">dead</case>
+            <case x="10" y="3">dead</case>
+            <case x="10" y="4">alive</case>
+            <case x="10" y="5">alive</case>
+            <case x="10" y="6">dead</case>
+            <case x="10" y="7">dead</case>
+            <case x="10" y="8">dead</case>
+            <case x="10" y="9">dead</case>
+            <case x="10" y="10">dead</case>
+            <case x="10" y="11">dead</case>
+            <case x="11" y="0">dead</case>
+            <case x="11" y="1">dead</case>
+            <case x="11" y="2">dead</case>
+            <case x="11" y="3">dead</case>
+            <case x="11" y="4">alive</case>
+            <case x="11" y="5">alive</case>
+            <case x="11" y="6">dead</case>
+            <case x="11" y="7">dead</case>
+            <case x="11" y="8">dead</case>
+            <case x="11" y="9">dead</case>
+            <case x="11" y="10">dead</case>
+            <case x="11" y="11">dead</case>
         </horloge>
+        <diagonale taillex="13" tailley="13">
+            <case x="0" y="0">dead</case>
+            <case x="0" y="1">dead</case>
+            <case x="0" y="2">dead</case>
+            <case x="0" y="3">dead</case>
+            <case x="0" y="4">dead</case>
+            <case x="0" y="5">dead</case>
+            <case x="0" y="6">dead</case>
+            <case x="0" y="7">dead</case>
+            <case x="0" y="8">dead</case>
+            <case x="0" y="9">dead</case>
+            <case x="0" y="10">dead</case>
+            <case x="0" y="11">alive</case>
+            <case x="0" y="12">alive</case>
+            <case x="1" y="0">dead</case>
+            <case x="1" y="1">dead</case>
+            <case x="1" y="2">dead</case>
+            <case x="1" y="3">dead</case>
+            <case x="1" y="4">dead</case>
+            <case x="1" y="5">dead</case>
+            <case x="1" y="6">dead</case>
+            <case x="1" y="7">dead</case>
+            <case x="1" y="8">dead</case>
+            <case x="1" y="9">dead</case>
+            <case x="1" y="10">dead</case>
+            <case x="1" y="11">alive</case>
+            <case x="1" y="12">dead</case>
+            <case x="2" y="0">dead</case>
+            <case x="2" y="1">dead</case>
+            <case x="2" y="2">dead</case>
+            <case x="2" y="3">dead</case>
+            <case x="2" y="4">dead</case>
+            <case x="2" y="5">dead</case>
+            <case x="2" y="6">dead</case>
+            <case x="2" y="7">dead</case>
+            <case x="2" y="8">dead</case>
+            <case x="2" y="9">alive</case>
+            <case x="2" y="10">dead</case>
+            <case x="2" y="11">alive</case>
+            <case x="2" y="12">dead</case>
+            <case x="3" y="0">dead</case>
+            <case x="3" y="1">dead</case>
+            <case x="3" y="2">dead</case>
+            <case x="3" y="3">dead</case>
+            <case x="3" y="4">dead</case>
+            <case x="3" y="5">dead</case>
+            <case x="3" y="6">dead</case>
+            <case x="3" y="7">dead</case>
+            <case x="3" y="8">dead</case>
+            <case x="3" y="9">alive</case>
+            <case x="3" y="10">alive</case>
+            <case x="3" y="11">dead</case>
+            <case x="3" y="12">dead</case>
+            <case x="4" y="0">dead</case>
+            <case x="4" y="1">dead</case>
+            <case x="4" y="2">dead</case>
+            <case x="4" y="3">dead</case>
+            <case x="4" y="4">dead</case>
+            <case x="4" y="5">alive</case>
+            <case x="4" y="6">alive</case>
+            <case x="4" y="7">alive</case>
+            <case x="4" y="8">dead</case>
+            <case x="4" y="9">dead</case>
+            <case x="4" y="10">dead</case>
+            <case x="4" y="11">dead</case>
+            <case x="4" y="12">dead</case>
+            <case x="5" y="0">dead</case>
+            <case x="5" y="1">dead</case>
+            <case x="5" y="2">dead</case>
+            <case x="5" y="3">dead</case>
+            <case x="5" y="4">dead</case>
+            <case x="5" y="5">dead</case>
+            <case x="5" y="6">dead</case>
+            <case x="5" y="7">alive</case>
+            <case x="5" y="8">dead</case>
+            <case x="5" y="9">dead</case>
+            <case x="5" y="10">dead</case>
+            <case x="5" y="11">dead</case>
+            <case x="5" y="12">dead</case>
+            <case x="6" y="0">dead</case>
+            <case x="6" y="1">dead</case>
+            <case x="6" y="2">dead</case>
+            <case x="6" y="3">dead</case>
+            <case x="6" y="4">dead</case>
+            <case x="6" y="5">alive</case>
+            <case x="6" y="6">dead</case>
+            <case x="6" y="7">dead</case>
+            <case x="6" y="8">dead</case>
+            <case x="6" y="9">dead</case>
+            <case x="6" y="10">dead</case>
+            <case x="6" y="11">dead</case>
+            <case x="6" y="12">dead</case>
+            <case x="7" y="0">dead</case>
+            <case x="7" y="1">dead</case>
+            <case x="7" y="2">dead</case>
+            <case x="7" y="3">dead</case>
+            <case x="7" y="4">dead</case>
+            <case x="7" y="5">alive</case>
+            <case x="7" y="6">alive</case>
+            <case x="7" y="7">alive</case>
+            <case x="7" y="8">dead</case>
+            <case x="7" y="9">dead</case>
+            <case x="7" y="10">dead</case>
+            <case x="7" y="11">dead</case>
+            <case x="7" y="12">dead</case>
+            <case x="8" y="0">dead</case>
+            <case x="8" y="1">dead</case>
+            <case x="8" y="2">alive</case>
+            <case x="8" y="3">alive</case>
+            <case x="8" y="4">dead</case>
+            <case x="8" y="5">dead</case>
+            <case x="8" y="6">dead</case>
+            <case x="8" y="7">dead</case>
+            <case x="8" y="8">dead</case>
+            <case x="8" y="9">dead</case>
+            <case x="8" y="10">dead</case>
+            <case x="8" y="11">dead</case>
+            <case x="8" y="12">dead</case>
+            <case x="9" y="0">dead</case>
+            <case x="9" y="1">alive</case>
+            <case x="9" y="2">dead</case>
+            <case x="9" y="3">alive</case>
+            <case x="9" y="4">dead</case>
+            <case x="9" y="5">dead</case>
+            <case x="9" y="6">dead</case>
+            <case x="9" y="7">dead</case>
+            <case x="9" y="8">dead</case>
+            <case x="9" y="9">dead</case>
+            <case x="9" y="10">dead</case>
+            <case x="9" y="11">dead</case>
+            <case x="9" y="12">dead</case>
+            <case x="10" y="0">dead</case>
+            <case x="10" y="1">alive</case>
+            <case x="10" y="2">dead</case>
+            <case x="10" y="3">dead</case>
+            <case x="10" y="4">dead</case>
+            <case x="10" y="5">dead</case>
+            <case x="10" y="6">dead</case>
+            <case x="10" y="7">dead</case>
+            <case x="10" y="8">dead</case>
+            <case x="10" y="9">dead</case>
+            <case x="10" y="10">dead</case>
+            <case x="10" y="11">dead</case>
+            <case x="10" y="12">dead</case>
+            <case x="11" y="0">alive</case>
+            <case x="11" y="1">alive</case>
+            <case x="11" y="2">dead</case>
+            <case x="11" y="3">dead</case>
+            <case x="11" y="4">dead</case>
+            <case x="11" y="5">dead</case>
+            <case x="11" y="6">dead</case>
+            <case x="11" y="7">dead</case>
+            <case x="11" y="8">dead</case>
+            <case x="11" y="9">dead</case>
+            <case x="11" y="10">dead</case>
+            <case x="11" y="11">dead</case>
+            <case x="11" y="12">dead</case>
+            <case x="12" y="0">dead</case>
+            <case x="12" y="1">dead</case>
+            <case x="12" y="2">dead</case>
+            <case x="12" y="3">dead</case>
+            <case x="12" y="4">dead</case>
+            <case x="12" y="5">dead</case>
+            <case x="12" y="6">dead</case>
+            <case x="12" y="7">dead</case>
+            <case x="12" y="8">dead</case>
+            <case x="12" y="9">dead</case>
+            <case x="12" y="10">dead</case>
+            <case x="12" y="11">dead</case>
+            <case x="12" y="12">dead</case>
+        </diagonale>
+        <fontaine taillex="8" tailley="8">
+            <case x="0" y="0">dead</case>
+            <case x="0" y="1">dead</case>
+            <case x="0" y="2">dead</case>
+            <case x="0" y="3">dead</case>
+            <case x="0" y="4">dead</case>
+            <case x="0" y="5">dead</case>
+            <case x="0" y="6">dead</case>
+            <case x="0" y="7">dead</case>
+            <case x="1" y="0">dead</case>
+            <case x="1" y="1">dead</case>
+            <case x="1" y="2">dead</case>
+            <case x="1" y="3">dead</case>
+            <case x="1" y="4">dead</case>
+            <case x="1" y="5">dead</case>
+            <case x="1" y="6">dead</case>
+            <case x="1" y="7">dead</case>
+            <case x="2" y="0">dead</case>
+            <case x="2" y="1">dead</case>
+            <case x="2" y="2">dead</case>
+            <case x="2" y="3">alive</case>
+            <case x="2" y="4">alive</case>
+            <case x="2" y="5">dead</case>
+            <case x="2" y="6">dead</case>
+            <case x="2" y="7">dead</case>
+            <case x="3" y="0">dead</case>
+            <case x="3" y="1">alive</case>
+            <case x="3" y="2">alive</case>
+            <case x="3" y="3">dead</case>
+            <case x="3" y="4">dead</case>
+            <case x="3" y="5">alive</case>
+            <case x="3" y="6">alive</case>
+            <case x="3" y="7">dead</case>
+            <case x="4" y="0">dead</case>
+            <case x="4" y="1">alive</case>
+            <case x="4" y="2">dead</case>
+            <case x="4" y="3">dead</case>
+            <case x="4" y="4">dead</case>
+            <case x="4" y="5">dead</case>
+            <case x="4" y="6">alive</case>
+            <case x="4" y="7">dead</case>
+            <case x="5" y="0">dead</case>
+            <case x="5" y="1">dead</case>
+            <case x="5" y="2">alive</case>
+            <case x="5" y="3">dead</case>
+            <case x="5" y="4">dead</case>
+            <case x="5" y="5">alive</case>
+            <case x="5" y="6">dead</case>
+            <case x="5" y="7">dead</case>
+            <case x="6" y="0">alive</case>
+            <case x="6" y="1">dead</case>
+            <case x="6" y="2">alive</case>
+            <case x="6" y="3">dead</case>
+            <case x="6" y="4">dead</case>
+            <case x="6" y="5">alive</case>
+            <case x="6" y="6">dead</case>
+            <case x="6" y="7">alive</case>
+            <case x="7" y="0">alive</case>
+            <case x="7" y="1">alive</case>
+            <case x="7" y="2">dead</case>
+            <case x="7" y="3">dead</case>
+            <case x="7" y="4">dead</case>
+            <case x="7" y="5">dead</case>
+            <case x="7" y="6">alive</case>
+            <case x="7" y="7">alive</case>
+        </fontaine>
+        <gosper_glider_gun taillex="12" tailley="36">
+            <case x="0" y="0">dead</case>
+            <case x="0" y="1">dead</case>
+            <case x="0" y="2">dead</case>
+            <case x="0" y="3">dead</case>
+            <case x="0" y="4">dead</case>
+            <case x="0" y="5">dead</case>
+            <case x="0" y="6">dead</case>
+            <case x="0" y="7">dead</case>
+            <case x="0" y="8">dead</case>
+            <case x="0" y="9">dead</case>
+            <case x="0" y="10">dead</case>
+            <case x="0" y="11">dead</case>
+            <case x="0" y="12">dead</case>
+            <case x="0" y="13">dead</case>
+            <case x="0" y="14">dead</case>
+            <case x="0" y="15">dead</case>
+            <case x="0" y="16">dead</case>
+            <case x="0" y="17">dead</case>
+            <case x="0" y="18">dead</case>
+            <case x="0" y="19">dead</case>
+            <case x="0" y="20">dead</case>
+            <case x="0" y="21">dead</case>
+            <case x="0" y="22">dead</case>
+            <case x="0" y="23">alive</case>
+            <case x="0" y="24">dead</case>
+            <case x="0" y="25">alive</case>
+            <case x="0" y="26">dead</case>
+            <case x="0" y="27">dead</case>
+            <case x="0" y="28">dead</case>
+            <case x="0" y="29">dead</case>
+            <case x="0" y="30">dead</case>
+            <case x="0" y="31">dead</case>
+            <case x="0" y="32">dead</case>
+            <case x="0" y="33">dead</case>
+            <case x="0" y="34">dead</case>
+            <case x="0" y="35">dead</case>
+            <case x="1" y="0">dead</case>
+            <case x="1" y="1">dead</case>
+            <case x="1" y="2">dead</case>
+            <case x="1" y="3">dead</case>
+            <case x="1" y="4">dead</case>
+            <case x="1" y="5">dead</case>
+            <case x="1" y="6">dead</case>
+            <case x="1" y="7">dead</case>
+            <case x="1" y="8">dead</case>
+            <case x="1" y="9">dead</case>
+            <case x="1" y="10">dead</case>
+            <case x="1" y="11">dead</case>
+            <case x="1" y="12">dead</case>
+            <case x="1" y="13">dead</case>
+            <case x="1" y="14">dead</case>
+            <case x="1" y="15">dead</case>
+            <case x="1" y="16">dead</case>
+            <case x="1" y="17">dead</case>
+            <case x="1" y="18">dead</case>
+            <case x="1" y="19">dead</case>
+            <case x="1" y="20">dead</case>
+            <case x="1" y="21">alive</case>
+            <case x="1" y="22">dead</case>
+            <case x="1" y="23">dead</case>
+            <case x="1" y="24">dead</case>
+            <case x="1" y="25">alive</case>
+            <case x="1" y="26">dead</case>
+            <case x="1" y="27">dead</case>
+            <case x="1" y="28">dead</case>
+            <case x="1" y="29">dead</case>
+            <case x="1" y="30">dead</case>
+            <case x="1" y="31">dead</case>
+            <case x="1" y="32">dead</case>
+            <case x="1" y="33">dead</case>
+            <case x="1" y="34">dead</case>
+            <case x="1" y="35">dead</case>
+            <case x="2" y="0">dead</case>
+            <case x="2" y="1">dead</case>
+            <case x="2" y="2">dead</case>
+            <case x="2" y="3">dead</case>
+            <case x="2" y="4">dead</case>
+            <case x="2" y="5">dead</case>
+            <case x="2" y="6">dead</case>
+            <case x="2" y="7">dead</case>
+            <case x="2" y="8">dead</case>
+            <case x="2" y="9">dead</case>
+            <case x="2" y="10">dead</case>
+            <case x="2" y="11">dead</case>
+            <case x="2" y="12">dead</case>
+            <case x="2" y="13">alive</case>
+            <case x="2" y="14">dead</case>
+            <case x="2" y="15">dead</case>
+            <case x="2" y="16">dead</case>
+            <case x="2" y="17">dead</case>
+            <case x="2" y="18">dead</case>
+            <case x="2" y="19">dead</case>
+            <case x="2" y="20">dead</case>
+            <case x="2" y="21">alive</case>
+            <case x="2" y="22">dead</case>
+            <case x="2" y="23">dead</case>
+            <case x="2" y="24">dead</case>
+            <case x="2" y="25">dead</case>
+            <case x="2" y="26">dead</case>
+            <case x="2" y="27">dead</case>
+            <case x="2" y="28">dead</case>
+            <case x="2" y="29">dead</case>
+            <case x="2" y="30">dead</case>
+            <case x="2" y="31">dead</case>
+            <case x="2" y="32">dead</case>
+            <case x="2" y="33">dead</case>
+            <case x="2" y="34">alive</case>
+            <case x="2" y="35">alive</case>
+            <case x="3" y="0">dead</case>
+            <case x="3" y="1">dead</case>
+            <case x="3" y="2">dead</case>
+            <case x="3" y="3">dead</case>
+            <case x="3" y="4">dead</case>
+            <case x="3" y="5">dead</case>
+            <case x="3" y="6">dead</case>
+            <case x="3" y="7">dead</case>
+            <case x="3" y="8">dead</case>
+            <case x="3" y="9">dead</case>
+            <case x="3" y="10">dead</case>
+            <case x="3" y="11">dead</case>
+            <case x="3" y="12">alive</case>
+            <case x="3" y="13">alive</case>
+            <case x="3" y="14">alive</case>
+            <case x="3" y="15">alive</case>
+            <case x="3" y="16">dead</case>
+            <case x="3" y="17">dead</case>
+            <case x="3" y="18">dead</case>
+            <case x="3" y="19">dead</case>
+            <case x="3" y="20">alive</case>
+            <case x="3" y="21">dead</case>
+            <case x="3" y="22">dead</case>
+            <case x="3" y="23">dead</case>
+            <case x="3" y="24">dead</case>
+            <case x="3" y="25">alive</case>
+            <case x="3" y="26">dead</case>
+            <case x="3" y="27">dead</case>
+            <case x="3" y="28">dead</case>
+            <case x="3" y="29">dead</case>
+            <case x="3" y="30">dead</case>
+            <case x="3" y="31">dead</case>
+            <case x="3" y="32">dead</case>
+            <case x="3" y="33">dead</case>
+            <case x="3" y="34">alive</case>
+            <case x="3" y="35">alive</case>
+            <case x="4" y="0">alive</case>
+            <case x="4" y="1">alive</case>
+            <case x="4" y="2">dead</case>
+            <case x="4" y="3">dead</case>
+            <case x="4" y="4">dead</case>
+            <case x="4" y="5">dead</case>
+            <case x="4" y="6">dead</case>
+            <case x="4" y="7">dead</case>
+            <case x="4" y="8">dead</case>
+            <case x="4" y="9">dead</case>
+            <case x="4" y="10">dead</case>
+            <case x="4" y="11">alive</case>
+            <case x="4" y="12">alive</case>
+            <case x="4" y="13">dead</case>
+            <case x="4" y="14">alive</case>
+            <case x="4" y="15">dead</case>
+            <case x="4" y="16">alive</case>
+            <case x="4" y="17">dead</case>
+            <case x="4" y="18">dead</case>
+            <case x="4" y="19">dead</case>
+            <case x="4" y="20">dead</case>
+            <case x="4" y="21">alive</case>
+            <case x="4" y="22">dead</case>
+            <case x="4" y="23">dead</case>
+            <case x="4" y="24">dead</case>
+            <case x="4" y="25">dead</case>
+            <case x="4" y="26">dead</case>
+            <case x="4" y="27">dead</case>
+            <case x="4" y="28">dead</case>
+            <case x="4" y="29">dead</case>
+            <case x="4" y="30">dead</case>
+            <case x="4" y="31">dead</case>
+            <case x="4" y="32">dead</case>
+            <case x="4" y="33">dead</case>
+            <case x="4" y="34">dead</case>
+            <case x="4" y="35">dead</case>
+            <case x="5" y="0">alive</case>
+            <case x="5" y="1">alive</case>
+            <case x="5" y="2">dead</case>
+            <case x="5" y="3">dead</case>
+            <case x="5" y="4">dead</case>
+            <case x="5" y="5">dead</case>
+            <case x="5" y="6">dead</case>
+            <case x="5" y="7">dead</case>
+            <case x="5" y="8">dead</case>
+            <case x="5" y="9">dead</case>
+            <case x="5" y="10">alive</case>
+            <case x="5" y="11">alive</case>
+            <case x="5" y="12">alive</case>
+            <case x="5" y="13">dead</case>
+            <case x="5" y="14">alive</case>
+            <case x="5" y="15">dead</case>
+            <case x="5" y="16">dead</case>
+            <case x="5" y="17">alive</case>
+            <case x="5" y="18">dead</case>
+            <case x="5" y="19">dead</case>
+            <case x="5" y="20">dead</case>
+            <case x="5" y="21">alive</case>
+            <case x="5" y="22">dead</case>
+            <case x="5" y="23">dead</case>
+            <case x="5" y="24">dead</case>
+            <case x="5" y="25">alive</case>
+            <case x="5" y="26">dead</case>
+            <case x="5" y="27">dead</case>
+            <case x="5" y="28">dead</case>
+            <case x="5" y="29">dead</case>
+            <case x="5" y="30">dead</case>
+            <case x="5" y="31">dead</case>
+            <case x="5" y="32">dead</case>
+            <case x="5" y="33">dead</case>
+            <case x="5" y="34">dead</case>
+            <case x="5" y="35">dead</case>
+            <case x="6" y="0">dead</case>
+            <case x="6" y="1">dead</case>
+            <case x="6" y="2">dead</case>
+            <case x="6" y="3">dead</case>
+            <case x="6" y="4">dead</case>
+            <case x="6" y="5">dead</case>
+            <case x="6" y="6">dead</case>
+            <case x="6" y="7">dead</case>
+            <case x="6" y="8">dead</case>
+            <case x="6" y="9">dead</case>
+            <case x="6" y="10">dead</case>
+            <case x="6" y="11">alive</case>
+            <case x="6" y="12">alive</case>
+            <case x="6" y="13">dead</case>
+            <case x="6" y="14">alive</case>
+            <case x="6" y="15">dead</case>
+            <case x="6" y="16">alive</case>
+            <case x="6" y="17">dead</case>
+            <case x="6" y="18">dead</case>
+            <case x="6" y="19">dead</case>
+            <case x="6" y="20">dead</case>
+            <case x="6" y="21">dead</case>
+            <case x="6" y="22">dead</case>
+            <case x="6" y="23">alive</case>
+            <case x="6" y="24">dead</case>
+            <case x="6" y="25">alive</case>
+            <case x="6" y="26">dead</case>
+            <case x="6" y="27">dead</case>
+            <case x="6" y="28">dead</case>
+            <case x="6" y="29">dead</case>
+            <case x="6" y="30">dead</case>
+            <case x="6" y="31">dead</case>
+            <case x="6" y="32">dead</case>
+            <case x="6" y="33">dead</case>
+            <case x="6" y="34">dead</case>
+            <case x="6" y="35">dead</case>
+            <case x="7" y="0">dead</case>
+            <case x="7" y="1">dead</case>
+            <case x="7" y="2">dead</case>
+            <case x="7" y="3">dead</case>
+            <case x="7" y="4">dead</case>
+            <case x="7" y="5">dead</case>
+            <case x="7" y="6">dead</case>
+            <case x="7" y="7">dead</case>
+            <case x="7" y="8">dead</case>
+            <case x="7" y="9">dead</case>
+            <case x="7" y="10">dead</case>
+            <case x="7" y="11">dead</case>
+            <case x="7" y="12">alive</case>
+            <case x="7" y="13">alive</case>
+            <case x="7" y="14">alive</case>
+            <case x="7" y="15">alive</case>
+            <case x="7" y="16">dead</case>
+            <case x="7" y="17">dead</case>
+            <case x="7" y="18">dead</case>
+            <case x="7" y="19">dead</case>
+            <case x="7" y="20">dead</case>
+            <case x="7" y="21">dead</case>
+            <case x="7" y="22">dead</case>
+            <case x="7" y="23">dead</case>
+            <case x="7" y="24">dead</case>
+            <case x="7" y="25">dead</case>
+            <case x="7" y="26">dead</case>
+            <case x="7" y="27">dead</case>
+            <case x="7" y="28">dead</case>
+            <case x="7" y="29">dead</case>
+            <case x="7" y="30">dead</case>
+            <case x="7" y="31">dead</case>
+            <case x="7" y="32">dead</case>
+            <case x="7" y="33">dead</case>
+            <case x="7" y="34">dead</case>
+            <case x="7" y="35">dead</case>
+            <case x="8" y="0">dead</case>
+            <case x="8" y="1">dead</case>
+            <case x="8" y="2">dead</case>
+            <case x="8" y="3">dead</case>
+            <case x="8" y="4">dead</case>
+            <case x="8" y="5">dead</case>
+            <case x="8" y="6">dead</case>
+            <case x="8" y="7">dead</case>
+            <case x="8" y="8">dead</case>
+            <case x="8" y="9">dead</case>
+            <case x="8" y="10">dead</case>
+            <case x="8" y="11">dead</case>
+            <case x="8" y="12">dead</case>
+            <case x="8" y="13">alive</case>
+            <case x="8" y="14">dead</case>
+            <case x="8" y="15">dead</case>
+            <case x="8" y="16">dead</case>
+            <case x="8" y="17">dead</case>
+            <case x="8" y="18">dead</case>
+            <case x="8" y="19">dead</case>
+            <case x="8" y="20">dead</case>
+            <case x="8" y="21">dead</case>
+            <case x="8" y="22">dead</case>
+            <case x="8" y="23">dead</case>
+            <case x="8" y="24">dead</case>
+            <case x="8" y="25">dead</case>
+            <case x="8" y="26">dead</case>
+            <case x="8" y="27">dead</case>
+            <case x="8" y="28">dead</case>
+            <case x="8" y="29">dead</case>
+            <case x="8" y="30">dead</case>
+            <case x="8" y="31">dead</case>
+            <case x="8" y="32">dead</case>
+            <case x="8" y="33">dead</case>
+            <case x="8" y="34">dead</case>
+            <case x="8" y="35">dead</case>
+            <case x="9" y="0">dead</case>
+            <case x="9" y="1">dead</case>
+            <case x="9" y="2">dead</case>
+            <case x="9" y="3">dead</case>
+            <case x="9" y="4">dead</case>
+            <case x="9" y="5">dead</case>
+            <case x="9" y="6">dead</case>
+            <case x="9" y="7">dead</case>
+            <case x="9" y="8">dead</case>
+            <case x="9" y="9">dead</case>
+            <case x="9" y="10">dead</case>
+            <case x="9" y="11">dead</case>
+            <case x="9" y="12">dead</case>
+            <case x="9" y="13">dead</case>
+            <case x="9" y="14">dead</case>
+            <case x="9" y="15">dead</case>
+            <case x="9" y="16">dead</case>
+            <case x="9" y="17">dead</case>
+            <case x="9" y="18">dead</case>
+            <case x="9" y="19">dead</case>
+            <case x="9" y="20">dead</case>
+            <case x="9" y="21">dead</case>
+            <case x="9" y="22">dead</case>
+            <case x="9" y="23">dead</case>
+            <case x="9" y="24">alive</case>
+            <case x="9" y="25">dead</case>
+            <case x="9" y="26">dead</case>
+            <case x="9" y="27">dead</case>
+            <case x="9" y="28">dead</case>
+            <case x="9" y="29">dead</case>
+            <case x="9" y="30">dead</case>
+            <case x="9" y="31">dead</case>
+            <case x="9" y="32">dead</case>
+            <case x="9" y="33">dead</case>
+            <case x="9" y="34">dead</case>
+            <case x="9" y="35">dead</case>
+            <case x="10" y="0">dead</case>
+            <case x="10" y="1">dead</case>
+            <case x="10" y="2">dead</case>
+            <case x="10" y="3">dead</case>
+            <case x="10" y="4">dead</case>
+            <case x="10" y="5">dead</case>
+            <case x="10" y="6">dead</case>
+            <case x="10" y="7">dead</case>
+            <case x="10" y="8">dead</case>
+            <case x="10" y="9">dead</case>
+            <case x="10" y="10">dead</case>
+            <case x="10" y="11">dead</case>
+            <case x="10" y="12">dead</case>
+            <case x="10" y="13">dead</case>
+            <case x="10" y="14">dead</case>
+            <case x="10" y="15">dead</case>
+            <case x="10" y="16">dead</case>
+            <case x="10" y="17">dead</case>
+            <case x="10" y="18">dead</case>
+            <case x="10" y="19">dead</case>
+            <case x="10" y="20">dead</case>
+            <case x="10" y="21">dead</case>
+            <case x="10" y="22">alive</case>
+            <case x="10" y="23">dead</case>
+            <case x="10" y="24">alive</case>
+            <case x="10" y="25">dead</case>
+            <case x="10" y="26">dead</case>
+            <case x="10" y="27">dead</case>
+            <case x="10" y="28">dead</case>
+            <case x="10" y="29">dead</case>
+            <case x="10" y="30">dead</case>
+            <case x="10" y="31">dead</case>
+            <case x="10" y="32">dead</case>
+            <case x="10" y="33">dead</case>
+            <case x="10" y="34">dead</case>
+            <case x="10" y="35">dead</case>
+            <case x="11" y="0">dead</case>
+            <case x="11" y="1">dead</case>
+            <case x="11" y="2">dead</case>
+            <case x="11" y="3">dead</case>
+            <case x="11" y="4">dead</case>
+            <case x="11" y="5">dead</case>
+            <case x="11" y="6">dead</case>
+            <case x="11" y="7">dead</case>
+            <case x="11" y="8">dead</case>
+            <case x="11" y="9">dead</case>
+            <case x="11" y="10">dead</case>
+            <case x="11" y="11">dead</case>
+            <case x="11" y="12">dead</case>
+            <case x="11" y="13">dead</case>
+            <case x="11" y="14">dead</case>
+            <case x="11" y="15">dead</case>
+            <case x="11" y="16">dead</case>
+            <case x="11" y="17">dead</case>
+            <case x="11" y="18">dead</case>
+            <case x="11" y="19">dead</case>
+            <case x="11" y="20">dead</case>
+            <case x="11" y="21">dead</case>
+            <case x="11" y="22">dead</case>
+            <case x="11" y="23">alive</case>
+            <case x="11" y="24">alive</case>
+            <case x="11" y="25">dead</case>
+            <case x="11" y="26">dead</case>
+            <case x="11" y="27">dead</case>
+            <case x="11" y="28">dead</case>
+            <case x="11" y="29">dead</case>
+            <case x="11" y="30">dead</case>
+            <case x="11" y="31">dead</case>
+            <case x="11" y="32">dead</case>
+            <case x="11" y="33">dead</case>
+            <case x="11" y="34">dead</case>
+            <case x="11" y="35">dead</case>
+        </gosper_glider_gun>
+        <pentadodecagone taillex="3" tailley="8">
+            <case x="0" y="0">alive</case>
+            <case x="0" y="1">alive</case>
+            <case x="0" y="2">alive</case>
+            <case x="0" y="3">alive</case>
+            <case x="0" y="4">alive</case>
+            <case x="0" y="5">alive</case>
+            <case x="0" y="6">alive</case>
+            <case x="0" y="7">alive</case>
+            <case x="1" y="0">alive</case>
+            <case x="1" y="1">dead</case>
+            <case x="1" y="2">alive</case>
+            <case x="1" y="3">alive</case>
+            <case x="1" y="4">alive</case>
+            <case x="1" y="5">alive</case>
+            <case x="1" y="6">dead</case>
+            <case x="1" y="7">alive</case>
+            <case x="2" y="0">alive</case>
+            <case x="2" y="1">alive</case>
+            <case x="2" y="2">alive</case>
+            <case x="2" y="3">alive</case>
+            <case x="2" y="4">alive</case>
+            <case x="2" y="5">alive</case>
+            <case x="2" y="6">alive</case>
+            <case x="2" y="7">alive</case>
+        </pentadodecagone>
     </motifs>
 </preconstruit>

@@ -4,6 +4,7 @@
  */
 package modele;
 
+import Utils.GrilleImport;
 import Utils.XML;
 import static Utils.XML.importPreconstruit;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import org.xml.sax.SAXException;
  * @author p1006099
  */
 public class Monde extends Observable implements Runnable {
-
+    //Données de base
     protected int size;
     protected Cellule[][] grille;
     protected Regles regle;
@@ -46,7 +47,7 @@ public class Monde extends Observable implements Runnable {
     // Les constructeurs
     public Monde(int size) {
         this.size = size;
-        this.threadSpeed = 500;
+        this.threadSpeed = 200;
         this.nbThreads = 2;
 
         this.regle = new Regles(3, 2, 3);
@@ -78,7 +79,7 @@ public class Monde extends Observable implements Runnable {
      */
     public Monde(int size, int reveil, int survie, int mort) {
         this.size = size;
-        this.threadSpeed = 1500;
+        this.threadSpeed = 200;
         
         this.nbThreads = 2;
 
@@ -302,7 +303,7 @@ public class Monde extends Observable implements Runnable {
             Coordonnee temp = it_coord.next();
             grille[temp.getX()][temp.getY()].setAlive(!grille[temp.getX()][temp.getY()].isAlive());
         }
-        
+        this.showMotif();
         this.setChanged();
     }
 
@@ -336,8 +337,13 @@ public class Monde extends Observable implements Runnable {
     //les motifs
     public void importMotif(String motif){
         try {
-            this.motif = importPreconstruit(motif);
+            GrilleImport tmp = importPreconstruit(motif);
             setMotifFlag(true);
+            this.setMotifOffsetX(0);
+            this.setMotifOffsetY(0);
+            this.motif = tmp.getGrille();
+            this.motifSizeX = tmp.getSizeX();
+            this.motifSizeY = tmp.getSizeY();
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erreur d'import du motif \"" + motif + "\" depuis XML");
@@ -354,16 +360,26 @@ public class Monde extends Observable implements Runnable {
         notifyObservers();
     }
     
+    public void emptyMotif() {
+        for(int i = 0; i< size; i++)
+            for(int j = 0; j< size; j++)
+                grille[i][j].setUnderMotif(false);
+    }
+    
     public void showMotif() {
+        emptyMotif();
+        
         for(int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
             for(int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++)
-                grille[i][j].setUnderMotif(motif[i-motifOffsetX][j-motifOffsetY].isAlive());
+                grille[i][j].setUnderMotif(true);
         }
         
         this.setChanged();
         notifyObservers();
         
     }
+    
+    
     
     // Le threading du modèle
     @Override

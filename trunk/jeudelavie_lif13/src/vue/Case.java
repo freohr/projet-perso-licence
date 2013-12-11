@@ -86,8 +86,13 @@ public class Case extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
+            Case c = (Case) e.getSource();
             Case.mouseDown = true;
             Case.mouseButton = e.getButton();
+            if(e.getButton() == MouseEvent.BUTTON1)
+                controle.setCellAlive(c.x, c.y);
+            else if(e.getButton() == MouseEvent.BUTTON3)
+                controle.setCellDead(c.x, c.y);
         }
 
         @Override

@@ -186,5 +186,70 @@ public class XML {
         transfo.transform(source, stream);
         
     }
+    
+    public static GrilleImport chargeGrille(String filename) throws ParserConfigurationException, SAXException, IOException {
+        GrilleImport tmpExport = null;
+        Cellule[][] tmp = null;
+
+        System.out.println("Début d'import");
+
+        File xmlFile = new File("src/data/save/" + filename + ".xml");
+
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(xmlFile);
+
+        doc.getDocumentElement().normalize();
+
+        NodeList nList = doc.getElementsByTagName("sauvegarde");
+
+        System.out.println("Node sauvegarde récup");
+
+        for (int i = 0; i < nList.getLength(); i++) {
+            Node node = nList.item(i);
+
+            if (node != null) {
+                System.out.println(node.getNodeName());
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element node_elt = (Element) node;
+
+                    int size = new Integer(node_elt.getAttribute("size"));
+
+                    tmpExport = new GrilleImport(size, size);
+
+                    tmp = new Cellule[size][size];
+
+                    for (int m = 0; m < size; m++) {
+                        for (int n = 0; n < size; n++) {
+                            tmp[m][n] = new Cellule(0);
+                        }
+                    }
+                }
+
+                Node coords = node.getFirstChild();
+
+                while (coords != null) {
+                    if (coords.getNodeType() == Node.ELEMENT_NODE) {
+                        Element coords_elt = (Element) coords;
+
+                        int x = new Integer(coords_elt.getAttribute("x"));
+                        int y = new Integer(coords_elt.getAttribute("y"));
+                        String coords_value = coords.getTextContent().trim();
+
+                        tmp[x][y].setAlive("alive".equalsIgnoreCase(coords_value));
+                    }
+
+                    coords = coords.getNextSibling();
+
+                }
+            }
+
+        }
+
+        System.out.println("tmpexport, sizex : " + tmpExport.getSizeX());
+
+        tmpExport.setGrille(tmp);
+        return tmpExport;
+    }
 
 }

@@ -16,6 +16,8 @@ public class Regles {
     protected int reveil;
     protected int survie;
     protected int mort;
+    
+    
     protected boolean useSuperCells;
     protected int nbGenSuperCells;
     protected boolean usePoseNeg;

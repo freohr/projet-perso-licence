@@ -12,6 +12,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -30,39 +32,46 @@ import javax.swing.border.Border;
  *
  * @author leo
  */
-public class AffichageRegles extends JFrame implements ItemListener, MouseListener{
+public class AffichageRegles extends JFrame implements ItemListener, ActionListener{
     Regle regles[];
+    JButton annuler;
+    JButton enregistrer;
     
     public AffichageRegles()
     {
         super();
         buildRegles();
         buildWindow();
+        setLocationByPlatform(true);
         
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent arg0) {
-                boolean close = true;
-                // si jamais on met une interruption
-                if (close)
-                {
-                    dispose();
-                }
+                annuler();
             }
+        });
+        
+        addWindowFocusListener(new WindowAdapter () {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                synchronizeCheckbox();
+            }
+        
         });
     }
     
     private void buildRegles()
     {
         this.regles = new Regle[2];
-        this.regles[0] = new Regle("Super cellules", false, "Super cellule vas sauver la terre !");
-        this.regles[1] = new Regle("Cellules positives/negatives", false, "Posipi et Negapi sont sur un bateau, Posipi tombe à l'eau...");
+        this.regles[0] = new Regle("Super cellules", false, "Quand une cellule survit plus de cinq générations, elle devient immortelle");
+        this.regles[1] = new Regle("Cellules positives/negatives", false, "Les cellules ont une charge positive ou negative, si une cellule "
+                + "                                                    a plus de trois voisines de la même charge, elle passe à cette charge");
     }
     
     private void buildWindow()
     {
         
-        setTitle("Le jeu de la vie - Règles");
+        setTitle("Règles");
         //a modifier
         setSize(250, 300);
         setResizable(false);
@@ -120,49 +129,86 @@ public class AffichageRegles extends JFrame implements ItemListener, MouseListen
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 10, 5, 10);
         
-        JButton annuler = new JButton("Annuler");
-        annuler.addItemListener(this);
-        annuler.setName("BoutonAnnuler");
+        JButton ann = new JButton("Annuler");
+        ann.addActionListener(this);
+        ann.setName("BoutonAnnuler");
         c.anchor = GridBagConstraints.LINE_START;
-        panel.add(annuler, c);
+        panel.add(ann, c);
         
-        JButton enregistrer = new JButton("Enregistrer");
-        enregistrer.addItemListener(this);
-        enregistrer.setName("BoutonEnregistrer");
+        JButton enr = new JButton("Enregistrer");
+        enr.addActionListener(this);
+        enr.setName("BoutonEnregistrer");
         c.anchor = GridBagConstraints.LINE_END;
-        panel.add(enregistrer, c);
+        panel.add(enr, c);
+        
+        this.annuler = ann;
+        this.enregistrer = enr;
         
         return panel;
     }
     
     @Override
     public void itemStateChanged(ItemEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Object source = e.getItemSelectable();
+        
+        // cas des checkboxes
+        for (Regle regle : this.regles)
+        {
+            if (source == regle.checkBox)
+            {
+                regle.active = (e.getStateChange() == ItemEvent.SELECTED);
+                System.out.println("la regle "+ regle.checkBox.getText() +" est passé à "+ regle.active);
+            }
+        }
     }
-
+    
     @Override
-    public void mouseClicked(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void actionPerformed(ActionEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Object source = e.getSource();
+        System.out.println("coucou");
+        // cas des boutons
+        if(source == this.annuler)
+        {
+            annuler();
+        }
+        
+        if(source == this.enregistrer)
+        {
+            enregistrer();
+        }
     }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private void synchronizeCheckbox()
+    {
+        for (Regle regle : this.regles)
+        {
+            regle.checkBox.setSelected(regle.active);
+        }
     }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private void annuler()
+    {
+        for (Regle regle : this.regles)
+        {
+            regle.active = regle.wasActive;
+        }
+        close();
     }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private void enregistrer()
+    {
+        for (Regle regle : this.regles)
+        {
+            regle.wasActive = regle.active;
+        }
+        // ajouter un appel vers la fonction qui indiquera au controlleur que les règles ont changées.
+        close();
     }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private void close ()
+    {
+        dispose();
     }
-
 }

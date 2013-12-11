@@ -18,6 +18,7 @@ public class Regle extends JPanel{
     JCheckBox checkBox;
     JLabel explication;
     boolean active;
+    boolean wasActive;
     
     public Regle(String nom, boolean active, String explication)
     {
@@ -26,6 +27,7 @@ public class Regle extends JPanel{
         this.checkBox.setName(nom);
         this.checkBox.setSelected(active);
         this.active = active;
+        this.wasActive = active;
         this.explication = new JLabel("<html>"+ explication +"</html>");
         
     }

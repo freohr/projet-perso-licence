@@ -91,7 +91,7 @@ public class Regles {
                     }
                 }
 
-                System.out.println("charge " + i + "," + j + " : " + charge);
+                //System.out.println("charge " + i + "," + j + " : " + charge);
 
                 if (!usePoseNeg) {
                     if ((!world.getCellule(i, j).isAlive() && alive == reveil) || (world.getCellule(i, j).isAlive() && (alive < survie || alive > mort) && !world.getCellule(i, j).isImmortal())) {
@@ -116,8 +116,8 @@ public class Regles {
         }
 
         for (Map.Entry<Coordonnee, Integer> entry : changeCharge.entrySet()) {
-            System.out.println("Iteration sur map");
-            System.out.println(world.getCellule(entry.getKey().getX(), entry.getKey().getY()).getChargeValue());
+            //System.out.println("Iteration sur map");
+            //System.out.println(world.getCellule(entry.getKey().getX(), entry.getKey().getY()).getChargeValue());
             world.getCellule(entry.getKey().getX(), entry.getKey().getY()).setChargeValue(entry.getValue());
         }
     }
@@ -144,7 +144,7 @@ public class Regles {
                 }
 
 
-                System.out.println("charge " + i + "," + j + " : " + charge);
+                //System.out.println("charge " + i + "," + j + " : " + charge);
 
                 if (!usePoseNeg) {
                     synchronized (world.changement) {

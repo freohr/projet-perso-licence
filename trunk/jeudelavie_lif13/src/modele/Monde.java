@@ -440,7 +440,7 @@ public class Monde extends Observable implements Runnable {
             }
 
             update();
-            System.out.println("");
+            //System.out.println("");
 
             notifyObservers();
             try {
@@ -481,7 +481,7 @@ public class Monde extends Observable implements Runnable {
         @Override
         public void run() {
             regle.appliquerRegles(minx, maxx, miny, maxy, world);
-            System.out.println("");
+            //System.out.println("");
         }
     }
 }

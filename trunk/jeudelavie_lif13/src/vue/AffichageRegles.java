@@ -163,6 +163,7 @@ public class AffichageRegles extends JFrame implements ItemListener, ActionListe
                 //System.out.println("la regle "+ regle.checkBox.getText() +" est passé à "+ regle.active);
             }
         }
+
     }
     
     // listener des boutons

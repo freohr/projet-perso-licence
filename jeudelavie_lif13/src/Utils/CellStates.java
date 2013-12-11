@@ -28,12 +28,10 @@ public class CellStates {
     static {
         colors = new HashMap<>();
         colors.put(DEAD, new Color(245, 245, 245));
-        colors.put(ALIVE, new Color(50, 153, 51));
-        colors.put(IMMORTAL, new Color(colors.get(ALIVE).getRed()-10,
-                                       colors.get(ALIVE).getGreen()-20,
-                                       colors.get(ALIVE).getBlue()-10));
+        colors.put(ALIVE, new Color(50, 205, 50));
+        colors.put(IMMORTAL, new Color(0, 100, 0));
         /* passer les couleurs en rgb */
-        colors.put(POSITIVE, new Color(0, 255, 255)); // cyan
+        colors.put(POSITIVE, new Color(0,191,255)); // cyan
         colors.put(NEGATIVE, new Color(255, 0, 255)); // magenta
         colors.put(IMMORTAL_POSITIVE, new Color(0, 0, 255)); //bleu
         colors.put(IMMORTAL_NEGATIVE, new Color(255, 0, 0)); //rouge

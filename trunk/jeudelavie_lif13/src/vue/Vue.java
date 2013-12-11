@@ -64,6 +64,7 @@ public class Vue extends JFrame implements Observer {
     protected JLabel labelTaux;
     protected JButton boutonPause;
     protected JComboBox boxImport;
+    protected AffichageRegles panneauRegles;
 
     protected Controle controle;
 
@@ -90,6 +91,8 @@ public class Vue extends JFrame implements Observer {
         buildWindow(size);
 
         controle = controle1;
+        panneauRegles = new AffichageRegles();
+        panneauRegles.setVisible(false);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -318,9 +321,11 @@ public class Vue extends JFrame implements Observer {
         
         JMenuItem save = new JMenuItem(new SaveListener());
 
-        JMenuItem mi = new JMenuItem("Partie");
+        JMenuItem mi1 = new JMenuItem("Fichier");
+        JMenuItem mi2 = new JMenuItem(new MenuReglesListener());
 
-        m.add(mi);
+        m.add(mi1);
+        m.add(mi2);
         m.add(save);
 
         jm.add(m);
@@ -501,7 +506,20 @@ public class Vue extends JFrame implements Observer {
         public void actionPerformed(ActionEvent e) {
             controle.importMotif((String) boxImport.getSelectedItem());
         }
+    }
+    
+    private class MenuReglesListener extends AbstractAction {
 
+        public MenuReglesListener() {
+            super("Regles");
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("appui menu");
+            panneauRegles.setVisible(true);
+        }
+        
     }
     
     private class SaveListener extends AbstractAction {

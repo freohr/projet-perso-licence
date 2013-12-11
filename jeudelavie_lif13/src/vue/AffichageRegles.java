@@ -150,62 +150,50 @@ public class AffichageRegles extends JFrame implements ItemListener, ActionListe
         return panel;
     }
     
+    // listener des checkboxes
     @Override
     public void itemStateChanged(ItemEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         Object source = e.getItemSelectable();
-        
-        // cas des checkboxes
+
         for (Regle regle : this.regles)
         {
             if (source == regle.checkBox)
             {
                 regle.active = (e.getStateChange() == ItemEvent.SELECTED);
-                System.out.println("la regle "+ regle.checkBox.getText() +" est passé à "+ regle.active);
+                //System.out.println("la regle "+ regle.checkBox.getText() +" est passé à "+ regle.active);
             }
         }
     }
     
+    // listener des boutons
     @Override
     public void actionPerformed(ActionEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         Object source = e.getSource();
-        System.out.println("coucou");
-        // cas des boutons
+
         if(source == this.annuler)
-        {
             annuler();
-        }
         
         if(source == this.enregistrer)
-        {
             enregistrer();
-        }
     }
     
     private void synchronizeCheckbox()
     {
         for (Regle regle : this.regles)
-        {
             regle.checkBox.setSelected(regle.active);
-        }
     }
     
     private void annuler()
     {
         for (Regle regle : this.regles)
-        {
             regle.active = regle.wasActive;
-        }
         close();
     }
     
     private void enregistrer()
     {
         for (Regle regle : this.regles)
-        {
             regle.wasActive = regle.active;
-        }
         
         controle.modifRegles(regles[0].active, regles[1].active);
         close();

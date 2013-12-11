@@ -17,6 +17,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -41,6 +42,7 @@ import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import javax.swing.border.Border;
@@ -320,13 +322,17 @@ public class Vue extends JFrame implements Observer {
         JMenu m = new JMenu("Jeu");
 
         JMenuItem save = new JMenuItem(new SaveListener());
+        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        
         JMenuItem load = new JMenuItem(new LoadLIstener());
+        load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        
+        JMenuItem regle = new JMenuItem(new MenuReglesListener());
+        regle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+      //  menuItem.setAccelerator(KeyStroke.getKeyStroke(
+      //  KeyEvent.VK_1, ActionEvent.ALT_MASK));
 
-        JMenuItem mi1 = new JMenuItem("Fichier");
-        JMenuItem mi2 = new JMenuItem(new MenuReglesListener());
-
-        m.add(mi1);
-        m.add(mi2);
+        m.add(regle);
         m.add(save);
         m.add(load);
 

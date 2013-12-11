@@ -59,7 +59,6 @@ import org.xml.sax.SAXException;
 public class Vue extends JFrame implements Observer {
 
     protected Grille g;
-
     //Pour les eventListeners
     protected JPanel panelPrincipal;
     protected JPanel panelGrid;
@@ -67,7 +66,6 @@ public class Vue extends JFrame implements Observer {
     protected JButton boutonPause;
     protected JComboBox boxImport;
     protected AffichageRegles panneauRegles;
-
     protected Controle controle;
 
     public Vue(int size) {
@@ -410,10 +408,42 @@ public class Vue extends JFrame implements Observer {
                     } else {
                         g.grille[i][j].setCaseColor(CellStates.DEAD);
                     }
-                } else if (world.getCellule(i, j).isAlive()) {
-                    g.grille[i][j].setCaseColor(CellStates.ALIVE);
                 } else {
-                    g.grille[i][j].setCaseColor(CellStates.DEAD);
+                    if (world.getRegle().usePoseNeg()) {
+                        switch (world.getCellule(i, j).getChargeValue()) {
+                            case -1:
+                                if (world.getRegle().useSuperCells() && world.getCellule(i, j).isImmortal()) {
+                                    g.grille[i][j].setCaseColor(CellStates.IMMORTAL_NEGATIVE);
+                                } else {
+                                    g.grille[i][j].setCaseColor(CellStates.NEGATIVE);
+                                }
+                                break;
+
+                            case 1:
+                                if (world.getRegle().useSuperCells() && world.getCellule(i, j).isImmortal()) {
+                                    g.grille[i][j].setCaseColor(CellStates.IMMORTAL_POSITIVE);
+                                } else {
+                                    g.grille[i][j].setCaseColor(CellStates.POSITIVE);
+                                }
+                                break;
+
+                            case 0:
+                                g.grille[i][j].setCaseColor(CellStates.DEAD);
+                                break;
+
+                            default:
+                                g.grille[i][j].setCaseColor(CellStates.DEAD);
+                                break;
+
+                        }
+                    } else if (world.getCellule(i, j).isAlive()) {
+                        if(world.getRegle().useSuperCells() && world.getCellule(i, j).isImmortal())
+                            g.grille[i][j].setCaseColor(CellStates.IMMORTAL);
+                        else
+                            g.grille[i][j].setCaseColor(CellStates.ALIVE);
+                    } else {
+                        g.grille[i][j].setCaseColor(CellStates.DEAD);
+                    }
                 }
             }
         }
@@ -499,7 +529,6 @@ public class Vue extends JFrame implements Observer {
 
             controle.setNbThreads(js.getValue());
         }
-
     }
 
     private class ImportListener implements ActionListener {
@@ -521,7 +550,6 @@ public class Vue extends JFrame implements Observer {
             System.out.println("appui menu");
             panneauRegles.setVisible(true);
         }
-
     }
 
     private class SaveListener extends AbstractAction {
@@ -537,7 +565,6 @@ public class Vue extends JFrame implements Observer {
                 controle.save(path);
             }
         }
-
     }
 
     private class LoadLIstener extends AbstractAction {
@@ -552,14 +579,13 @@ public class Vue extends JFrame implements Observer {
             if (path != null && path.length() > 0) {
                 try {
                     controle.loadGrille(XML.chargeGrille(path));
-                } catch (        ParserConfigurationException | SAXException ex) {
-                    System.err.println("Erreur lors de l'importation du fichier "+path+".xml");
+                } catch (ParserConfigurationException | SAXException ex) {
+                    System.err.println("Erreur lors de l'importation du fichier " + path + ".xml");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(rootPane, "Le fichier demandé n'existe pas", "Fichier non existant", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
         }
-
     }
 }

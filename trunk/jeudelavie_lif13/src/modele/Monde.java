@@ -32,7 +32,6 @@ public class Monde extends Observable implements Runnable {
     protected ArrayList<Coordonnee> changement;
     protected boolean useteams;
     protected Set<Integer> teams;
-
     //Données de l'import de motif
     protected Cellule[][] motif;
     protected boolean hasMotif;
@@ -40,7 +39,6 @@ public class Monde extends Observable implements Runnable {
     protected int motifSizeY;
     protected int motifOffsetX;
     protected int motifOffsetY;
-
     // Données nécéssaires au threading
     protected int threadSpeed;
     protected int nbThreads;
@@ -241,7 +239,7 @@ public class Monde extends Observable implements Runnable {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grille[i][j].alive = rand.nextBoolean();
-                grille[i][j].setChargeValue(rand.nextInt() % 3 - 1);
+                grille[i][j].setChargeValue(rand.nextInt(3) - 1);
             }
         }
 
@@ -289,7 +287,7 @@ public class Monde extends Observable implements Runnable {
                         maxy = size;
                     }
 
-                    sousGrille tmp = new sousGrille(minx, maxx, miny, maxy);
+                    sousGrille tmp = new sousGrille(minx, maxx, miny, maxy, this);
                     tmp.run();
                 }
             }
@@ -357,9 +355,7 @@ public class Monde extends Observable implements Runnable {
         }
 
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                grille[i][j] = chargeGrille.getGrille()[i][j];
-            }
+            System.arraycopy(chargeGrille.getGrille()[i], 0, grille[i], 0, size);
         }
 
         this.setChanged();
@@ -444,6 +440,7 @@ public class Monde extends Observable implements Runnable {
             }
 
             update();
+            System.out.println("");
 
             notifyObservers();
             try {
@@ -471,59 +468,20 @@ public class Monde extends Observable implements Runnable {
         int maxx;
         int miny;
         int maxy;
+        Monde world;
 
-        public sousGrille(int minx, int maxx, int miny, int maxy) {
+        public sousGrille(int minx, int maxx, int miny, int maxy, Monde world) {
             this.minx = minx;
             this.maxx = maxx;
             this.miny = miny;
             this.maxy = maxy;
+            this.world = world;
         }
 
         @Override
         public void run() {
-            int alive;
-
-            for (int i = minx; i < maxx; i++) {
-                for (int j = miny; j < maxy; j++) {
-                    alive = 0;
-                    int charge = 0;
-
-                    for (int x = -1; x < 2; x++) {
-                        for (int y = - 1; y < 2; y++) {
-                            if ((i + x >= 0 && j + y >= 0) && (i + x < size && j + y < size)) {
-                                if (!(x == 0 && y == 0)) {
-                                    if (grille[i + x][j + y].isAlive()) {
-                                        alive++;
-                                        charge += grille[i + x][j + y].getChargeValue();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!regle.usePoseNeg) {
-                        synchronized (changement) {
-                            if ((!getCellule(i, j).isAlive() && alive == regle.reveil) || (getCellule(i, j).isAlive() && (alive < regle.survie || alive > regle.mort) && !getCellule(i, j).isImmortal())) {
-                                changement.add(new Coordonnee(i, j));
-                                getCellule(i, j).resetDureeVie();
-                            } else if (getCellule(i, j).isAlive()) {
-                                getCellule(i, j).incrementDureeVie();
-                                if (regle.useSuperCells && getCellule(i, j).getNbGenSurvie() >= 10) {
-                                    getCellule(i, j).setImmortal(true);
-                                }
-                            }
-                        }
-                    } else {
-                        if (charge <= -3) {
-                            getCellule(i, j).setChargeValue(-1);
-                        } else if (charge >= 3) {
-                            getCellule(i, j).setChargeValue(1);
-                        } else {
-                            getCellule(i, j).setChargeValue(0);
-                        }
-                    }
-                }
-            }
-
+            regle.appliquerRegles(minx, maxx, miny, maxy, world);
+            System.out.println("");
         }
     }
 }

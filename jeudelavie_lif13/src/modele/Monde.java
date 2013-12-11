@@ -241,7 +241,7 @@ public class Monde extends Observable implements Runnable {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grille[i][j].alive = rand.nextBoolean();
-
+                grille[i][j].setChargeValue(rand.nextInt() % 3 - 1);
             }
         }
 
@@ -256,6 +256,7 @@ public class Monde extends Observable implements Runnable {
                 if ((Math.round(rand.nextFloat() * 100)) <= taux) {
                     grille[i][j].alive = true;
                 }
+                grille[i][j].setChargeValue(rand.nextInt() % 3 - 1);
             }
         }
 
@@ -310,6 +311,8 @@ public class Monde extends Observable implements Runnable {
         for (Cellule[] cell : this.grille) {
             for (Cellule cell2 : cell) {
                 cell2.setAlive(false);
+                cell2.setChargeValue(0);
+                cell2.setImmortal(false);
             }
         }
 
@@ -504,7 +507,7 @@ public class Monde extends Observable implements Runnable {
                                 getCellule(i, j).resetDureeVie();
                             } else if (getCellule(i, j).isAlive()) {
                                 getCellule(i, j).incrementDureeVie();
-                                if (regle.useSuperCells && getCellule(i, j).getNbGenSurvie() >= 5) {
+                                if (regle.useSuperCells && getCellule(i, j).getNbGenSurvie() >= 10) {
                                     getCellule(i, j).setImmortal(true);
                                 }
                             }

@@ -91,7 +91,7 @@ public class Vue extends JFrame implements Observer {
         buildWindow(size);
 
         controle = controle1;
-        panneauRegles = new AffichageRegles();
+        panneauRegles = new AffichageRegles(controle);
         panneauRegles.setVisible(false);
 
         addWindowListener(new WindowAdapter() {

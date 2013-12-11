@@ -18,6 +18,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -245,6 +246,7 @@ public class Vue extends JFrame implements Observer {
         //Colonne 2
         JTextField textFieldTaille = new JTextField(new String() + size);
         textFieldTaille.setName("textFieldTaille");
+        textFieldTaille.addActionListener(new InitTextFieldListener());
         c.gridx = 1;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -321,14 +323,14 @@ public class Vue extends JFrame implements Observer {
 
         JMenuItem save = new JMenuItem(new SaveListener());
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-        
+
         JMenuItem load = new JMenuItem(new LoadLIstener());
         load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        
+
         JMenuItem regle = new JMenuItem(new MenuReglesListener());
         regle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
-      //  menuItem.setAccelerator(KeyStroke.getKeyStroke(
-      //  KeyEvent.VK_1, ActionEvent.ALT_MASK));
+        //  menuItem.setAccelerator(KeyStroke.getKeyStroke(
+        //  KeyEvent.VK_1, ActionEvent.ALT_MASK));
 
         m.add(regle);
         m.add(save);
@@ -437,10 +439,11 @@ public class Vue extends JFrame implements Observer {
 
                         }
                     } else if (world.getCellule(i, j).isAlive()) {
-                        if(world.getRegle().useSuperCells() && world.getCellule(i, j).isImmortal())
+                        if (world.getRegle().useSuperCells() && world.getCellule(i, j).isImmortal()) {
                             g.grille[i][j].setCaseColor(CellStates.IMMORTAL);
-                        else
+                        } else {
                             g.grille[i][j].setCaseColor(CellStates.ALIVE);
+                        }
                     } else {
                         g.grille[i][j].setCaseColor(CellStates.DEAD);
                     }
@@ -586,6 +589,15 @@ public class Vue extends JFrame implements Observer {
                 }
             }
 
+        }
+    }
+
+    private class InitTextFieldListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTextField field = (JTextField) e.getSource();
+            controle.initMonde(new Integer(field.getText()));
         }
     }
 }

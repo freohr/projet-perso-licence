@@ -133,7 +133,7 @@ public class Vue extends JFrame implements Observer {
 
         JPanel panel = new JPanel(layout);
         panel.setName("interface");
-        System.out.println("panel_name : " + panel.getName());
+        //System.out.println("panel_name : " + panel.getName());
 
         c.anchor = GridBagConstraints.CENTER;
         c.gridwidth = 1;
@@ -274,7 +274,9 @@ public class Vue extends JFrame implements Observer {
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
         boxImport = listMotifs;
+        listMotifs.addActionListener(new ListMotifsListener());
         panel.add(listMotifs, c);
+        
 
         // Colonne 3
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -387,7 +389,7 @@ public class Vue extends JFrame implements Observer {
             c.anchor = GridBagConstraints.CENTER;
             c.fill = GridBagConstraints.NONE;
 
-            System.out.println(panelGrid.getName());
+            //System.out.println(panelGrid.getName());
 
             panelGrid.remove(panelGrid.getComponent(0));
             panelGrid.add(tmpGrid, c);
@@ -550,7 +552,7 @@ public class Vue extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("appui menu");
+            //System.out.println("appui menu");
             panneauRegles.setVisible(true);
         }
     }
@@ -599,5 +601,15 @@ public class Vue extends JFrame implements Observer {
             JTextField field = (JTextField) e.getSource();
             controle.initMonde(new Integer(field.getText()));
         }
+    }
+    
+    private class ListMotifsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JComboBox combo = (JComboBox) e.getSource();
+            controle.importMotif((String) combo.getSelectedItem());
+        }
+        
     }
 }

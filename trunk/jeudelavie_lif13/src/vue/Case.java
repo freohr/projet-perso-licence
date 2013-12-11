@@ -39,7 +39,7 @@ public class Case extends JPanel {
         setBackground(Color.white);
     }
 
-    public void setCaseColor(int color) {
+   /* public void setCaseColor(int color) {
         switch (color) {
             case CellStates.ALIVE:
                 setBackground(new Color(51, 153, 51));
@@ -55,6 +55,12 @@ public class Case extends JPanel {
             default:
                 break;
         }
+    } */
+    
+    public void setCaseColor(int state)
+    {
+        //System.out.println("couleur : " + CellStates.colors.get(state));
+        setBackground(CellStates.colors.get(state));
     }
 
     public Color getCaseColor() {

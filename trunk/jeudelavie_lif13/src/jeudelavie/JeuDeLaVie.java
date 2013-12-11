@@ -26,20 +26,20 @@ public class JeuDeLaVie {
      */
     public static void main(String[] args) {
         
-        final Monde test = new Monde(40, 3, 2, 3);
+        final Monde world = new Monde(40, 3, 2, 3);
 
         Controle controle = new Controle();
 
-        controle.setModele(test);
+        controle.setModele(world);
 
         Vue fenetre;
-        fenetre = new Vue(test.getSize(), controle);
+        fenetre = new Vue(world.getSize(), controle);
 
-        test.addObserver(fenetre);
+        world.addObserver(fenetre);
         //fenetre.setControler(controle);
 
         fenetre.setVisible(true);//On rend la fenetre visible
-        test.run();
+        world.run();
 
     }
 }

@@ -14,7 +14,7 @@ import modele.Monde;
 public class Controle {
 
     protected Monde monde;
-    protected int taux;
+    protected int taux; // taux d'initialisation
 
     public Controle() {
         this.taux = 50;

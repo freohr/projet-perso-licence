@@ -14,21 +14,29 @@ import java.util.Map;
  */
 public class CellStates {
 
-    public final static int ALIVE = 1;
     public final static int DEAD = 0;
-    public final static int UNDER_MOTIF = 10;
+    public final static int ALIVE = 1;
+    public final static int IMMORTAL = 2;
+    public final static int POSITIVE = 3;
+    public final static int NEGATIVE = 4;
+    public final static int IMMORTAL_POSITIVE = 5;
+    public final static int IMMORTAL_NEGATIVE = 6;
+    public final static int UNDER_MOTIF = 7;
     
-    public final static int TEAM_1 = 2;
-    public final static int TEAM_2 = 3;
-    public final static int TEAM_3 = 4;
-    public final static int TEAM_4 = 5;
-    public final static Map<Integer, Color> teams;
+    public final static Map<Integer, Color> colors;
 
     static {
-        teams = new HashMap<>();
-        teams.put(TEAM_1, Color.BLUE);
-        teams.put(TEAM_2, Color.RED);
-        teams.put(TEAM_3, Color.YELLOW);
-        teams.put(TEAM_4, Color.CYAN);
+        colors = new HashMap<>();
+        colors.put(DEAD, new Color(245, 245, 245));
+        colors.put(ALIVE, new Color(50, 153, 51));
+        colors.put(IMMORTAL, new Color(colors.get(ALIVE).getRed()-10,
+                                       colors.get(ALIVE).getGreen()-20,
+                                       colors.get(ALIVE).getBlue()-10));
+        /* passer les couleurs en rgb */
+        colors.put(POSITIVE, new Color(0, 255, 255)); // cyan
+        colors.put(NEGATIVE, new Color(255, 0, 255)); // magenta
+        colors.put(IMMORTAL_POSITIVE, new Color(0, 0, 255)); //bleu
+        colors.put(IMMORTAL_NEGATIVE, new Color(255, 0, 0)); //rouge
+        colors.put(UNDER_MOTIF, new Color(230, 230, 10));
     }
 }

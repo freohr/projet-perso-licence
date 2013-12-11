@@ -4,6 +4,7 @@
  */
 package Controleur;
 
+import Utils.GrilleImport;
 import modele.Monde;
 
 /**
@@ -123,5 +124,13 @@ public class Controle {
 
     public void setHasMotif(boolean b) {
         monde.setMotifFlag(b);
+    }
+
+    public void loadGrille(GrilleImport chargeGrille) {
+        monde.loadGrille(chargeGrille);
+    }
+
+    public void modifRegles(boolean useSuperCells, boolean usePosNeg) {
+        monde.getRegle().modifRegles(useSuperCells, usePosNeg);
     }
 }

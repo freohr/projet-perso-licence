@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
  * @author p1006099
  */
 public class Monde extends Observable implements Runnable {
+
     //Données de base
     protected int size;
     protected Cellule[][] grille;
@@ -31,7 +32,7 @@ public class Monde extends Observable implements Runnable {
     protected ArrayList<Coordonnee> changement;
     protected boolean useteams;
     protected Set<Integer> teams;
-    
+
     //Données de l'import de motif
     protected Cellule[][] motif;
     protected boolean hasMotif;
@@ -39,7 +40,7 @@ public class Monde extends Observable implements Runnable {
     protected int motifSizeY;
     protected int motifOffsetX;
     protected int motifOffsetY;
-    
+
     // Données nécéssaires au threading
     protected int threadSpeed;
     protected int nbThreads;
@@ -56,12 +57,12 @@ public class Monde extends Observable implements Runnable {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grille[i][j] = new Cellule(0);
+                grille[i][j] = new Cellule();
             }
         }
 
         changement = new ArrayList<>();
-        
+
         motif = null;
         hasMotif = false;
         motifOffsetX = 0;
@@ -81,7 +82,7 @@ public class Monde extends Observable implements Runnable {
     public Monde(int size, int reveil, int survie, int mort) {
         this.size = size;
         this.threadSpeed = 200;
-        
+
         this.nbThreads = 2;
 
         this.regle = new Regles(reveil, survie, mort);
@@ -89,46 +90,19 @@ public class Monde extends Observable implements Runnable {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grille[i][j] = new Cellule(0);
+                grille[i][j] = new Cellule();
             }
         }
 
         changement = new ArrayList<>();
 
         pauseThreadFlag = false;
-        
+
         motif = null;
         hasMotif = false;
         motifOffsetX = 0;
         motifOffsetY = 0;
     }
-
-    /*public Monde(int size, int reveil, int survie, int mort, int nbteams) {
-    this.size = size;
-    this.useteams = true;
-    
-    this.nbThreads = 2;
-    
-    this.regle = new Regles(reveil, survie, mort);
-    grille = new Cellule[size][size];
-    
-    for (int i = 0; i < nbteams; i++) {
-    teams.add(new Integer(i));
-    }
-    
-    for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
-    grille[i][j] = new Cellule((int) Math.round((Math.random() * nbteams) + 1));
-    }
-    }
-    
-    changement = new ArrayList<>();
-    
-    motif = null;
-    hasMotif = false;
-    motifOffsetX = 0;
-    motifOffsetY = 0;
-    }*/
 
     public int getSize() {
         return size;
@@ -185,7 +159,7 @@ public class Monde extends Observable implements Runnable {
     public int getMotifOffsetX() {
         return motifOffsetX;
     }
-    
+
     public Cellule getMotifCase(int x, int y) {
         return motif[x][y];
     }
@@ -217,13 +191,28 @@ public class Monde extends Observable implements Runnable {
     public void setMotifSizeY(int motifSizeY) {
         this.motifSizeY = motifSizeY;
     }
-    
+
+    //Initialisation de la grille
+    synchronized public void initEmpty(int size) {
+        this.size = size;
+        this.grille = new Cellule[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grille[i][j] = new Cellule();
+            }
+        }
+
+        this.setChanged();
+        this.notifyObservers();
+
+    }
+
     synchronized public void init(int size) {
         this.size = size;
         this.grille = new Cellule[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grille[i][j] = new Cellule(0);
+                grille[i][j] = new Cellule();
             }
         }
 
@@ -237,75 +226,13 @@ public class Monde extends Observable implements Runnable {
         this.grille = new Cellule[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grille[i][j] = new Cellule(0);
+                grille[i][j] = new Cellule();
             }
         }
 
         this.random(taux);
 
         this.notifyObservers();
-    }
-
-    public void update() {
-        int alive;
-        changement.clear();
-
-        if (nbThreads > 1) {
-            int minx = 0, maxx = 0, miny = 0, maxy = 0;
-
-            for (int i = 0; i < nbThreads; i++) {
-                minx = maxx;
-
-                maxx += size / nbThreads;
-                if (i == nbThreads - 1) {
-                    maxx = size;
-                }
-                
-                miny = 0;
-                maxy = 0;
-                for (int j = 0; j < nbThreads; j++) {
-                    miny = maxy;
-                    maxy += size / nbThreads;
-
-                    if (j == nbThreads - 1) {
-                        maxy = size;
-                    }
-
-                    sousGrille tmp = new sousGrille(minx, maxx, miny, maxy);
-                    tmp.run();
-                }
-            }
-
-        } else {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    alive = 0;
-
-                    for (int x = -1; x < 2; x++) {
-                        for (int y = - 1; y < 2; y++) {
-                            if ((i + x >= 0 && j + y >= 0) && (i + x < size && j + y < size)) {
-                                if (!(x == 0 && y == 0)) {
-                                    if (grille[i + x][j + y].isAlive()) {
-                                        alive++;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if ((!grille[i][j].isAlive() && alive == regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
-                        changement.add(new Coordonnee(i, j));
-                    }
-                }
-            }
-        }
-
-        Iterator<Coordonnee> it_coord = changement.iterator();
-        while (it_coord.hasNext()) {
-            Coordonnee temp = it_coord.next();
-            grille[temp.getX()][temp.getY()].setAlive(!grille[temp.getX()][temp.getY()].isAlive());
-        }
-        this.showMotif();
-        this.setChanged();
     }
 
     public void random() {
@@ -334,104 +261,49 @@ public class Monde extends Observable implements Runnable {
 
         this.setChanged();
     }
-    
-    //les motifs
-    public void importMotif(String motif){
-        try {
-            GrilleImport tmp = importPreconstruit(motif);
-            setMotifFlag(true);
-            this.setMotifOffsetX(0);
-            this.setMotifOffsetY(0);
-            this.motif = tmp.getGrille();
-            this.motifSizeX = tmp.getSizeX();
-            this.motifSizeY = tmp.getSizeY();
-        } catch (ParserConfigurationException | SAXException | IOException ex) {
-            Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Erreur d'import du motif \"" + motif + "\" depuis XML");
-        }
-    }
-    
-    public void applyMotif() {
-        for(int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
-            for(int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++)
-                grille[i][j].setAlive(motif[i-motifOffsetX][j-motifOffsetY].isAlive());
-        }
-        
-        this.setChanged();
-        notifyObservers();
-    }
-    
-    public void emptyMotif() {
-        for(int i = 0; i< size; i++)
-            for(int j = 0; j< size; j++)
-                grille[i][j].setUnderMotif(false);
-        
-        this.setChanged();
-        notifyObservers();
-    }
-    
-    public void showMotif() {
-        emptyMotif();
-        
-        for(int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
-            for(int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++)
-                grille[i][j].setUnderMotif(true);
-        }
-        
-        this.setChanged();
-        notifyObservers();
-        
-    }
-    
-    
-    
-    // Le threading du modèle
-    @Override
-    public void run() {
-        pauseThreadFlag = true;
 
-        random();
-        notifyObservers();
+    //Mise à jour de la grille
+    public void update() {
+        int alive;
+        changement.clear();
 
-        /*try {
-         * Thread.sleep(1000);
-         * } catch (InterruptedException ex) {
-         * Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
-         * }*/
+        if (nbThreads > 1) {
+            int minx = 0, maxx = 0, miny = 0, maxy = 0;
 
-        while (true) {
+            for (int i = 0; i < nbThreads; i++) {
+                minx = maxx;
 
-            synchronized (this) {
-                if (pauseThreadFlag) {
-                    try {
-                        wait();
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+                maxx += size / nbThreads;
+                if (i == nbThreads - 1) {
+                    maxx = size;
+                }
+
+                miny = 0;
+                maxy = 0;
+                for (int j = 0; j < nbThreads; j++) {
+                    miny = maxy;
+                    maxy += size / nbThreads;
+
+                    if (j == nbThreads - 1) {
+                        maxy = size;
                     }
+
+                    sousGrille tmp = new sousGrille(minx, maxx, miny, maxy);
+                    tmp.run();
                 }
             }
 
-
-            update();
-
-            notifyObservers();
-            try {
-                Thread.sleep(this.threadSpeed);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+        } else {
+            regle.appliquerRegles(this);
         }
 
-    }
-
-    public void pause() {
-        pauseThreadFlag = true;
-    }
-
-    public synchronized void resume() {
-        pauseThreadFlag = false;
-        notify();
+        Iterator<Coordonnee> it_coord = changement.iterator();
+        while (it_coord.hasNext()) {
+            Coordonnee temp = it_coord.next();
+            grille[temp.getX()][temp.getY()].setAlive(!grille[temp.getX()][temp.getY()].isAlive());
+        }
+        this.showMotif();
+        this.setChanged();
     }
 
     public void empty() {
@@ -464,6 +336,7 @@ public class Monde extends Observable implements Runnable {
         notifyObservers();
     }
 
+    //Sauvegarde et chargement
     public void save(String path) {
         try {
             XML.saveGrille(this, path);
@@ -471,6 +344,122 @@ public class Monde extends Observable implements Runnable {
             Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erreur lors de la sauvegarde du fichier " + path);
         }
+    }
+
+    public void loadGrille(GrilleImport chargeGrille) {
+        if (chargeGrille.getSizeX() != size || chargeGrille.getSizeY() != size) {
+            this.size = chargeGrille.getSizeX();
+            this.grille = new Cellule[size][size];
+
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grille[i][j] = chargeGrille.getGrille()[i][j];
+            }
+        }
+
+        this.setChanged();
+        this.notifyObservers();
+    }
+
+    //les motifs
+    public void importMotif(String motif) {
+        try {
+            GrilleImport tmp = importPreconstruit(motif);
+            setMotifFlag(true);
+            this.setMotifOffsetX(0);
+            this.setMotifOffsetY(0);
+            this.motif = tmp.getGrille();
+            this.motifSizeX = tmp.getSizeX();
+            this.motifSizeY = tmp.getSizeY();
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erreur d'import du motif \"" + motif + "\" depuis XML");
+        }
+    }
+
+    public void applyMotif() {
+        for (int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
+            for (int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++) {
+                grille[i][j].setAlive(motif[i - motifOffsetX][j - motifOffsetY].isAlive());
+            }
+        }
+
+        this.setChanged();
+        notifyObservers();
+    }
+
+    public void emptyMotif() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grille[i][j].setUnderMotif(false);
+            }
+        }
+
+        this.setChanged();
+        notifyObservers();
+    }
+
+    public void showMotif() {
+        emptyMotif();
+
+        for (int i = motifOffsetX; i < Math.min(motifOffsetX + motifSizeX, size); i++) {
+            for (int j = motifOffsetY; j < Math.min(motifOffsetY + motifSizeY, size); j++) {
+                grille[i][j].setUnderMotif(true);
+            }
+        }
+
+        this.setChanged();
+        notifyObservers();
+
+    }
+
+    // Le threading du modèle
+    @Override
+    public void run() {
+        pauseThreadFlag = true;
+
+        random();
+        notifyObservers();
+
+        /*try {
+         * Thread.sleep(1000);
+         * } catch (InterruptedException ex) {
+         * Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+         * }*/
+        while (true) {
+
+            synchronized (this) {
+                if (pauseThreadFlag) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+            update();
+
+            notifyObservers();
+            try {
+                Thread.sleep(this.threadSpeed);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Monde.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+    }
+
+    public void pause() {
+        pauseThreadFlag = true;
+    }
+
+    public synchronized void resume() {
+        pauseThreadFlag = false;
+        notify();
     }
 
     private class sousGrille implements Runnable {
@@ -490,29 +479,45 @@ public class Monde extends Observable implements Runnable {
         @Override
         public void run() {
             int alive;
-            
+
             for (int i = minx; i < maxx; i++) {
                 for (int j = miny; j < maxy; j++) {
-
                     alive = 0;
+                    int charge = 0;
+
                     for (int x = -1; x < 2; x++) {
                         for (int y = - 1; y < 2; y++) {
                             if ((i + x >= 0 && j + y >= 0) && (i + x < size && j + y < size)) {
                                 if (!(x == 0 && y == 0)) {
                                     if (grille[i + x][j + y].isAlive()) {
                                         alive++;
+                                        charge += grille[i + x][j + y].getChargeValue();
                                     }
                                 }
                             }
                         }
                     }
-                    synchronized (changement) {
-                        if ((!grille[i][j].isAlive() && alive == regle.reveil) || (grille[i][j].isAlive() && (alive < regle.survie || alive > regle.mort))) {
-                            changement.add(new Coordonnee(i, j));
+                    if (!regle.usePoseNeg) {
+                        synchronized (changement) {
+                            if ((!getCellule(i, j).isAlive() && alive == regle.reveil) || (getCellule(i, j).isAlive() && (alive < regle.survie || alive > regle.mort) && !getCellule(i, j).isImmortal())) {
+                                changement.add(new Coordonnee(i, j));
+                                getCellule(i, j).resetDureeVie();
+                            } else if (getCellule(i, j).isAlive()) {
+                                getCellule(i, j).incrementDureeVie();
+                                if (regle.useSuperCells && getCellule(i, j).getNbGenSurvie() >= 5) {
+                                    getCellule(i, j).setImmortal(true);
+                                }
+                            }
                         }
-
+                    } else {
+                        if (charge <= -3) {
+                            getCellule(i, j).setChargeValue(-1);
+                        } else if (charge >= 3) {
+                            getCellule(i, j).setChargeValue(1);
+                        } else {
+                            getCellule(i, j).setChargeValue(0);
+                        }
                     }
-
                 }
             }
 

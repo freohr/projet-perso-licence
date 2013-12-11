@@ -74,7 +74,7 @@ public class XML {
 
                     for (int m = 0; m < sizex; m++) {
                         for (int n = 0; n < sizey; n++) {
-                            tmp[m][n] = new Cellule(0);
+                            tmp[m][n] = new Cellule();
                         }
                     }
                 }
@@ -221,7 +221,7 @@ public class XML {
 
                     for (int m = 0; m < size; m++) {
                         for (int n = 0; n < size; n++) {
-                            tmp[m][n] = new Cellule(0);
+                            tmp[m][n] = new Cellule();
                         }
                     }
                 }

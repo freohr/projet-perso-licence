@@ -9,16 +9,25 @@ package modele;
  * @author p1006099
  */
 public class Cellule {
+
     protected boolean alive;
     protected boolean underMotif;
     protected int x;
     protected int y;
-    protected int team;
 
-    public Cellule(int team) {
+    //Données utilisés par les reglèes personnalisées
+    protected int team;
+    protected int chargeValue;
+    protected int nbGenSurvie;
+    protected boolean immortal;
+
+    public Cellule() {
         this.underMotif = false;
         this.alive = false;
-        this.team = team;
+        this.team = 0;
+        this.chargeValue = 0;
+        this.nbGenSurvie = 0;
+        this.immortal = false;
     }
 
     public boolean isAlive() {
@@ -36,7 +45,7 @@ public class Cellule {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
-    
+
     public void setCoord(int x, int y) {
         this.x = x;
         this.y = y;
@@ -53,5 +62,37 @@ public class Cellule {
     public void setUnderMotif(boolean underMotif) {
         this.underMotif = underMotif;
     }
+
+    public int getChargeValue() {
+        return chargeValue;
+    }
+
+    public void setChargeValue(int chargeValue) {
+        this.chargeValue = chargeValue;
+    }
+
+    public int getNbGenSurvie() {
+        return nbGenSurvie;
+    }
+
+    public void setNbGenSurvie(int nbGenSurvie) {
+        this.nbGenSurvie = nbGenSurvie;
+    }
+
+    public boolean isImmortal() {
+        return immortal;
+    }
+
+    public void setImmortal(boolean immortal) {
+        this.immortal = immortal;
+    }
     
+    public void incrementDureeVie() {
+        nbGenSurvie++;
+    }
+
+    public void resetDureeVie() {
+        nbGenSurvie = 0;
+    }
+
 }

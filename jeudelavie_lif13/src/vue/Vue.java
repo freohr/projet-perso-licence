@@ -318,8 +318,9 @@ public class Vue extends JFrame implements Observer {
         JMenuBar jm = new JMenuBar();
 
         JMenu m = new JMenu("Jeu");
-        
+
         JMenuItem save = new JMenuItem(new SaveListener());
+        JMenuItem load = new JMenuItem(new LoadLIstener());
 
         JMenuItem mi1 = new JMenuItem("Fichier");
         JMenuItem mi2 = new JMenuItem(new MenuReglesListener());
@@ -327,6 +328,7 @@ public class Vue extends JFrame implements Observer {
         m.add(mi1);
         m.add(mi2);
         m.add(save);
+        m.add(load);
 
         jm.add(m);
 
@@ -501,34 +503,57 @@ public class Vue extends JFrame implements Observer {
             controle.importMotif((String) boxImport.getSelectedItem());
         }
     }
-    
+
     private class MenuReglesListener extends AbstractAction {
 
         public MenuReglesListener() {
             super("Regles");
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("appui menu");
             panneauRegles.setVisible(true);
         }
-        
+
     }
-    
+
     private class SaveListener extends AbstractAction {
 
         public SaveListener() {
             super("Sauvegarde");
         }
-        
 
         @Override
         public void actionPerformed(ActionEvent e) {
             String path = JOptionPane.showInputDialog(rootPane, "Veullez entrer un nom pour le fichier de sauvegarde\n(Dossier de sauvegarde : src/data/save)");
-            if(path != null && path.length() > 0)
+            if (path != null && path.length() > 0) {
                 controle.save(path);
+            }
         }
-        
+
+    }
+
+    private class LoadLIstener extends AbstractAction {
+
+        public LoadLIstener() {
+            super("Chargement");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String path = JOptionPane.showInputDialog(rootPane, "Veuillez entrer le nom du fichier à charger\n(Dossier de sauvegarde src/data/save)");
+            if (path != null && path.length() > 0) {
+                try {
+                    controle.loadGrille(XML.chargeGrille(path));
+                } catch (        ParserConfigurationException | SAXException ex) {
+                    System.err.println("Erreur lors de l'importation du fichier "+path+".xml");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(rootPane, "Le fichier demandé n'existe pas", "Fichier non existant", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        }
+
     }
 }

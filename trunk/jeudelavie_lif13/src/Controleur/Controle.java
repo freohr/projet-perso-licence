@@ -46,6 +46,8 @@ public class Controle {
     }
 
     public void initMonde(int size) {
+        if(!monde.isPaused())
+            pause();
         if (size > 0) {
             if (taux == 50) {
                 monde.init(size);
@@ -53,6 +55,7 @@ public class Controle {
                 monde.init(size, taux);
             }
         }
+        
     }
 
     public void pause() {

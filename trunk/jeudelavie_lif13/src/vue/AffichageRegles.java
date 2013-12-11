@@ -17,13 +17,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -66,9 +63,9 @@ public class AffichageRegles extends JFrame implements ItemListener, ActionListe
     private void buildRegles()
     {
         this.regles = new Regle[2];
-        this.regles[0] = new Regle("Super cellules", false, "Quand une cellule survit plus de cinq générations, elle devient immortelle");
-        this.regles[1] = new Regle("Cellules positives/negatives", false, "Les cellules ont une charge positive ou negative, si une cellule "
-                + "                                                    a plus de trois voisines de la même charge, elle passe à cette charge");
+        this.regles[0] = new Regle("Super cellules", false, "Quand une cellule survit plus de dix générations, elle devient immortelle");
+        this.regles[1] = new Regle("Cellules positives/negatives", false, "Les cellules ont une charge positive ou negative, chaque "
+                            + "cellule prend la charge qu'a le plus grand nombre de ces voisins");
     }
     
     private void buildWindow()

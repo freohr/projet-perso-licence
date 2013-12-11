@@ -476,6 +476,8 @@ public class Vue extends JFrame implements Observer {
                     //System.out.println("textfield");
                     //System.out.println(jTextField.getText());
                     controle.initMonde(new Integer(jTextField.getText()));
+                    boutonPause.setText("Lancer");
+                    
                 }
             }
         }
@@ -600,6 +602,7 @@ public class Vue extends JFrame implements Observer {
         public void actionPerformed(ActionEvent e) {
             JTextField field = (JTextField) e.getSource();
             controle.initMonde(new Integer(field.getText()));
+            boutonPause.setText("Lancer");
         }
     }
     

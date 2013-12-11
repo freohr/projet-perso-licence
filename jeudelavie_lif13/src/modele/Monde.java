@@ -303,6 +303,7 @@ public class Monde extends Observable implements Runnable {
         }
         this.showMotif();
         this.setChanged();
+        this.notifyObservers();
     }
 
     public void empty() {
@@ -333,6 +334,7 @@ public class Monde extends Observable implements Runnable {
 
     public void setCellDead(int x, int y) {
         getCellule(x, y).setAlive(false);
+        getCellule(x, y).setImmortal(false);
         this.setChanged();
         notifyObservers();
     }
@@ -481,6 +483,7 @@ public class Monde extends Observable implements Runnable {
         @Override
         public void run() {
             regle.appliquerRegles(minx, maxx, miny, maxy, world);
+            world.setChanged();
             //System.out.println("");
         }
     }

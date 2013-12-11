@@ -79,8 +79,7 @@ public class Case extends JPanel {
                     controle.emptyMotif();
                     controle.setHasMotif(false);
                 }
-            } else {
-                controle.changeCell(c.x, c.y);
+            
             }
         }
 
@@ -89,9 +88,9 @@ public class Case extends JPanel {
             Case c = (Case) e.getSource();
             Case.mouseDown = true;
             Case.mouseButton = e.getButton();
-            if(e.getButton() == MouseEvent.BUTTON1)
-                controle.setCellAlive(c.x, c.y);
-            else if(e.getButton() == MouseEvent.BUTTON3)
+            if(!controle.getMonde().getCellule(c.x, c.y).isAlive())
+                    controle.setCellAlive(c.x, c.y);
+            else
                 controle.setCellDead(c.x, c.y);
         }
 

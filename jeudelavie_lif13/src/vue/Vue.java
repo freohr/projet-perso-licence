@@ -365,12 +365,6 @@ public class Vue extends JFrame implements Observer {
     }
 
     public void updateGrille(Monde world) {
-        //System.out.println("Update grille");
-        /*
-         * System.out.println("monde.size " + world.getSize());
-         * System.out.println("grille.size_x " + g.getSizeX());
-         */
-
         // Si la grille du monde à afficher est différente de la grille d'affichage de la vue (en cas de nouveau monde par ex.)
         if (world.getSize() != g.getSizeX() || world.getSize() != g.getSizeY()) {
 
@@ -531,7 +525,7 @@ public class Vue extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String path = JOptionPane.showInputDialog(rootPane, "Veullez entrer un nom pour le fichier de sauvegarde\n(Dossier de sauvegarde dans data/save)");
+            String path = JOptionPane.showInputDialog(rootPane, "Veullez entrer un nom pour le fichier de sauvegarde\n(Dossier de sauvegarde : src/data/save)");
             if(path != null && path.length() > 0)
                 controle.save(path);
         }

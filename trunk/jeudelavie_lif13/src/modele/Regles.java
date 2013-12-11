@@ -80,7 +80,7 @@ public class Regles {
                         world.getCellule(i, j).resetDureeVie();
                     } else if (world.getCellule(i, j).isAlive()) {
                         world.getCellule(i, j).incrementDureeVie();
-                        if (useSuperCells && world.getCellule(i, j).getNbGenSurvie() >= 5) {
+                        if (useSuperCells && world.getCellule(i, j).getNbGenSurvie() >= 10) {
                             world.getCellule(i, j).setImmortal(true);
                         }
                     }

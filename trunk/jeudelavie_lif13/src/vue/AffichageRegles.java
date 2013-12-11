@@ -6,6 +6,7 @@
 
 package vue;
 
+import Controleur.Controle;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -36,13 +37,15 @@ public class AffichageRegles extends JFrame implements ItemListener, ActionListe
     Regle regles[];
     JButton annuler;
     JButton enregistrer;
+    Controle controle;
     
-    public AffichageRegles()
+    public AffichageRegles(Controle controle)
     {
         super();
         buildRegles();
         buildWindow();
         setLocationByPlatform(true);
+        this.controle = controle;
         
         addWindowListener(new WindowAdapter() {
             @Override
@@ -203,7 +206,8 @@ public class AffichageRegles extends JFrame implements ItemListener, ActionListe
         {
             regle.wasActive = regle.active;
         }
-        // ajouter un appel vers la fonction qui indiquera au controlleur que les règles ont changées.
+        
+        controle.modifRegles(regles[0].active, regles[1].active);
         close();
     }
     

@@ -664,7 +664,24 @@ bool ToGraph(sAutoNDE& at, string path) {
 
     return true;
 }
+////////////////////////////////////////////////////////////////////////////////
 
+// Fonction outil : copie d'un automate
+sAutoNDE Copie(const sAutoNDE& x) {
+
+	sAutoNDE tmp;
+	
+	tmp.nb_etats = x.nb_etats;
+	tmp.nb_symbs = x.nb_symbs;
+	tmp.nb_finaux = x.nb_finaux;
+
+	tmp.initial = x.initial;
+	tmp.finaux = x.finaux;
+	tmp.trans = x.trans;
+	tmp.epsilon = x.epsilon;
+
+	return tmp;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -767,7 +784,34 @@ sAutoNDE Complement(const sAutoNDE& x) {
 sAutoNDE Kleene(const sAutoNDE& x) {
     //TODO d�finir cette fonction
 
-    return x;
+	//copie de l'automate
+	sAutoNDE tmp = Copie(x);
+	fprintf(stderr, "automate copié\n");
+
+	//transition spontanée des états finaux sur l'état initial
+	for(etatset_t::const_iterator fin_t = tmp.finaux.begin(); fin_t != tmp.finaux.end(); fin_t++) {
+		tmp.epsilon.at(*fin_t).insert(tmp.initial);
+		fprintf(stderr, "transition de %d ok\n", *fin_t);
+	}
+
+
+	//ajout d'un nouvel état initial + transition spontanée sur l'ancien état initial
+
+	fprintf(stderr, "nb états %d\n", tmp.nb_etats);
+	tmp.nb_etats++;
+	fprintf(stderr, "nb états apres ++ %d\n", tmp.nb_etats);
+	tmp.epsilon.resize(tmp.nb_etats);
+	fprintf(stderr, "resize ok\n");
+
+	tmp.epsilon[x.nb_etats].insert(tmp.initial);
+	fprintf(stderr, " epsilon nouveau ->ancien ok\n");
+
+	tmp.initial = tmp.nb_etats-1;
+	fprintf(stderr, "changement init ok\n");
+	tmp.finaux.insert(tmp.initial);
+	fprintf(stderr, "ajout nouveau init dans finaux ok\n");
+	 
+    return tmp;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -779,19 +823,22 @@ sAutoNDE Intersection(const sAutoNDE& x, const sAutoNDE& y) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
+
 sAutoNDE ExpressionRationnelle2Automate(string expr){
-  sAutoNDE r;
+		sAutoNDE r;
 
-  sExpressionRationnelle er = lit_expression_rationnelle(expr);
+		sExpressionRationnelle er = lit_expression_rationnelle(expr);
 
-  cout << er << endl;
+		cout << er << endl;
 
-  //TODO d�finir cette fonction
+		//TODO d�finir cette fonction
+		r.nb_symbs = 1;
+		r.nb_finaux = 0;
+		r.initial = 0;
 
-  return r;
+
+		return r;
 }
- */
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -962,7 +1009,7 @@ int main(int argc, char* argv[]) {
             atr = Intersection(at1, at2);
             break;
         case 7: //expr2aut
-            //    atr =  ExpressionRationnelle2Automate(expr);
+            atr =  ExpressionRationnelle2Automate(expr);
             break;
         case 8: //nop
             atr = at1;

@@ -676,53 +676,48 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
     assert(x.nb_symbs == y.nb_symbs); // on vérifie que les deux alphabets sont égaux
     sAutoNDE r;
 
-    // ceci fait l'union, a modifier
+	r.nb_etats = x.nb_etats + y.nb_etats;
 	r.nb_symbs = x.nb_symbs;
-	// l'etat en plus sera le nouvel etat initial, un etat possédant deux
-	// transitions spontanées vers les etats initiaux des automates x et y
-	r.nb_etats = x.nb_etats + y.nb_etats + 1;
 	r.nb_finaux = x.nb_finaux + y.nb_finaux;
-
-	// création de l'etat initial
-	r.initial = 0;
-	etatset_t etat_initial;
-	etat_initial.insert(1+x.initial);
-	etat_initial.insert(1+x.nb_etats+y.initial);
-	r.epsilon[0] = etat_initial;
+	//r.initial = 0;
 
 	// on redéfinis la taille des tableaux
 	r.epsilon.resize(r.nb_etats);
     r.trans.resize(r.nb_etats);
     for(unsigned int i = 0; i<r.nb_etats; ++i)
 		r.trans[i].resize(r.nb_symbs);
+		
+	// on décale les transitions de l'automate y
 
 	// on ajoute les transitions de x et y
-	// on parcours le nombre d'etats moins un car on a déjà crée l'etat
-	// initial
-	for(unsigned int i = 0; i<r.nb_etats-1; i++)
+	for(unsigned int i = 0; i<r.nb_etats; i++)
 	{
 		if (i<x.nb_etats)
 		{
-			r.epsilon[i+1] = x.epsilon[i];
-			r.trans[i+1] = x.trans[i];
+			r.epsilon[i] = x.epsilon[i];
+			r.trans[i] = x.trans[i];
 		}
 		else
 		{
-			r.epsilon[i+1] = y.epsilon[i-x.nb_etats];
-			r.trans[i+1] = y.trans[i-x.nb_etats];
+			for(etatset_t::const_iterator ye_it = y.epsilon[i-x.nb_etats].begin(); ye_it != y.epsilon[i-x.nb_etats].end(); ye_it ++)
+				r.epsilon[i].insert(x.nb_etats + (*ye_it));
+			for(unsigned int j = 0; j < y.trans[i-x.nb_etats].size(); j++)
+			{
+				for(etatset_t::const_iterator yt_it = y.trans[i-x.nb_etats][j].begin(); yt_it != y.trans[i-x.nb_etats][j].end(); yt_it ++)
+					r.trans[i][j].insert(x.nb_etats + (*yt_it));
+			}
 		}
 	}
 
 	// on ajoute les états finaux
 	for(etatset_t::const_iterator x_it = x.finaux.begin(); x_it != x.finaux.end(); x_it ++)
 	{
-		r.finaux.insert(1 + (*x_it));
+		r.finaux.insert(*x_it);
 	}
 	for(etatset_t::const_iterator y_it = y.finaux.begin(); y_it != y.finaux.end(); y_it ++)
 	{
-		r.finaux.insert(x.nb_finaux + 1 + (*y_it));
+		r.finaux.insert(x.nb_etats+ (*y_it));
 	}
-
 
     return r;
 }
@@ -733,53 +728,16 @@ sAutoNDE Union(const sAutoNDE& x, const sAutoNDE& y) {
     assert(x.nb_symbs == y.nb_symbs);
     sAutoNDE r = Append(x, y);
 
-    //TODO d�finir cette fonction
-
-    r.nb_symbs = x.nb_symbs;
-	// l'etat en plus sera le nouvel etat initial, un etat possédant deux
-	// transitions spontanées vers les etats initiaux des automates x et y
-	r.nb_etats = x.nb_etats + y.nb_etats + 1;
-	r.nb_finaux = x.nb_finaux + y.nb_finaux;
-
 	// création de l'etat initial
-	r.initial = 0;
-	etatset_t etat_initial;
-	etat_initial.insert(1+x.initial);
-	etat_initial.insert(1+x.nb_etats+y.initial);
-	r.epsilon[0] = etat_initial;
-
-	// on redéfinis la taille des tableaux
-	r.epsilon.resize(r.nb_etats);
-    r.trans.resize(r.nb_etats);
-    for(unsigned int i = 0; i<r.nb_etats; ++i)
-		r.trans[i].resize(r.nb_symbs);
-
-	// on ajoute les transitions de x et y
-	// on parcours le nombre d'etats moins un car on a déjà crée l'etat
-	// initial
-	for(unsigned int i = 0; i<r.nb_etats-1; i++)
-	{
-		if (i<x.nb_etats)
-		{
-			r.epsilon[i+1] = x.epsilon[i];
-			r.trans[i+1] = x.trans[i];
-		}
-		else
-		{
-			r.epsilon[i+1] = y.epsilon[i-x.nb_etats];
-			r.trans[i+1] = y.trans[i-x.nb_etats];
-		}
-	}
-
-	// on ajoute les états finaux
-	for(etatset_t::const_iterator x_it = x.finaux.begin(); x_it != x.finaux.end(); x_it ++)
-	{
-		r.finaux.insert(1 + (*x_it));
-	}
-	for(etatset_t::const_iterator y_it = y.finaux.begin(); y_it != y.finaux.end(); y_it ++)
-	{
-		r.finaux.insert(x.nb_finaux + 1 + (*y_it));
-	}
+	r.nb_etats++; // on rajoute l'état final à la fin
+	r.initial = r.nb_etats-1;
+	
+	// on crée deux transitions spontanées entre le nouvel état initial
+	// et les états initiaux des deux automates
+	etatset_t transitions_etat_initial;
+	transitions_etat_initial.insert(x.initial);
+	transitions_etat_initial.insert(x.nb_etats+y.initial);
+	r.epsilon.push_back(transitions_etat_initial);
 
     return r;
 }

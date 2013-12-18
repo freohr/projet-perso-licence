@@ -748,6 +748,11 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
 	}
 
 	cout << "finaux" << endl;
+	r.epsilon.resize(r.nb_etats);
+   	r.trans.resize(r.nb_etats);
+	for(unsigned int i = 0; i< r.trans.size(); i++) {
+		r.trans[i].resize(r.nb_symbs);
+	}
 
     return r;
 }
@@ -768,6 +773,10 @@ sAutoNDE Union(const sAutoNDE& x, const sAutoNDE& y) {
 	transitions_etat_initial.insert(x.initial);
 	transitions_etat_initial.insert(x.nb_etats+y.initial);
 	r.epsilon.push_back(transitions_etat_initial);
+	r.trans.resize(r.nb_etats);
+	for(unsigned int i = 0; i< r.trans.size(); i++) {
+		r.trans[i].resize(r.nb_symbs);
+	}
 
     return r;
 }
@@ -778,6 +787,7 @@ sAutoNDE Concat(const sAutoNDE& x, const sAutoNDE& y) {
    cout << "rentré dans concat" << endl; 
     assert(x.nb_symbs == y.nb_symbs);
     sAutoNDE r = Append(x, y);
+	
    cout << "append ok" << endl; 
     r.initial = x.initial;
 	// on remplace les états finaux de x par des transitions spontanées
@@ -790,6 +800,13 @@ sAutoNDE Concat(const sAutoNDE& x, const sAutoNDE& y) {
 	}
 
 	cout << "sortie de concat" << endl;
+	
+	r.epsilon.resize(r.nb_etats);
+   	r.trans.resize(r.nb_etats);
+	for(unsigned int i = 0; i< r.trans.size(); i++) {
+		r.trans[i].resize(r.nb_symbs);
+	}
+	
     return r;
 }
 
@@ -848,7 +865,13 @@ sAutoNDE Kleene(const sAutoNDE& x) {
 	//fprintf(stderr, "changement init ok\n");
 	tmp.finaux.insert(tmp.initial);
 	//fprintf(stderr, "ajout nouveau init dans finaux ok\n");
-	 
+	
+	tmp.epsilon.resize(tmp.nb_etats);
+   	tmp.trans.resize(tmp.nb_etats);
+	for(unsigned int i = 0; i< tmp.trans.size(); i++) {
+		tmp.trans[i].resize(tmp.nb_symbs);
+	}
+	
     return tmp;
 }
 
@@ -902,13 +925,19 @@ sAutoNDE Expr2AutRecur(sExpressionRationnelle& er) {
 			cout << "cas ou" << endl;
 			sAutoNDE tmp1 = Expr2AutRecur(er->arg1);
 			sAutoNDE tmp2 = Expr2AutRecur(er->arg2);
+			sAutoNDE tmp;
 			if(tmp1.nb_symbs != tmp2.nb_symbs) {
 				tmp1.nb_symbs = max(tmp1.nb_symbs, tmp2.nb_symbs);
 				tmp2.nb_symbs = max(tmp1.nb_symbs, tmp2.nb_symbs);
 			}
-
+			tmp = Union(tmp1, tmp2);
 			cout << "union ok" << endl << endl;
-			return Union(tmp1, tmp2);
+			cout << "aut union" << endl;
+			cout << "taille du tableau de transitions : " <<tmp.trans.size() << endl;
+			cout << tmp;
+			cout << endl;
+
+			return tmp;
 			break;}
 
 		case o_concat:{
@@ -925,6 +954,10 @@ sAutoNDE Expr2AutRecur(sExpressionRationnelle& er) {
 			cout << "aut concat" << endl;
 			cout << tmp;
 			cout << endl;
+			
+			cout << "nombre d'etats : " << tmp.nb_etats << endl;
+			cout << "taille du tableau de transitions : " <<tmp.trans.size() << endl;
+		
 			return tmp;
 			break;}
 
@@ -935,6 +968,9 @@ sAutoNDE Expr2AutRecur(sExpressionRationnelle& er) {
 			return Kleene(tmp);
 			break;}
 	}
+	
+	sAutoNDE test;
+	return test;
 }
 
 
@@ -947,6 +983,8 @@ sAutoNDE ExpressionRationnelle2Automate(string expr){
 		sAutoNDE r = Expr2AutRecur(er);
 
 		cout << "apres transfo exp" << endl;
+		cout << "nombre d'etats : " << r.nb_etats << endl;
+		cout << "taille du tableau de transitions : " <<r.trans.size() << endl;
 		cout << r << endl;
 		//TODO d�finir cette fonction
 		return r;

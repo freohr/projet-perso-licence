@@ -438,6 +438,9 @@ map_etats ordonne_lexico(map_etats &map_inv) {
 }
 
 sAutoNDE Determinize(const sAutoNDE& at) {
+	if (EstDeterministe(at))
+		return at;
+		
     sAutoNDE r; /*automate de retour, déterminisé */
     map_t map_auto_det;
     map_etats map_Epsi, map_Inv;
@@ -689,6 +692,8 @@ sAutoNDE Copie(const sAutoNDE& x) {
 // en renommant ses �tats en d�callant les indices des �tats de y
 // de x.nb_etats
 
+// ATTENTION : Append ne redéfinis pas d'état initial
+// penser a changer l'état inital dans les fonction utilisant Append
 sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
     assert(x.nb_symbs == y.nb_symbs); // on vérifie que les deux alphabets sont égaux
     sAutoNDE r;
@@ -696,7 +701,7 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
 	r.nb_etats = x.nb_etats + y.nb_etats;
 	r.nb_symbs = x.nb_symbs;
 	r.nb_finaux = x.nb_finaux + y.nb_finaux;
-	//r.initial = 0;
+	//r.initial = x.initial;
 
 	// on redéfinis la taille des tableaux
 	r.epsilon.resize(r.nb_etats);
@@ -764,19 +769,33 @@ sAutoNDE Union(const sAutoNDE& x, const sAutoNDE& y) {
 sAutoNDE Concat(const sAutoNDE& x, const sAutoNDE& y) {
     assert(x.nb_symbs == y.nb_symbs);
     sAutoNDE r = Append(x, y);
-
-    //TODO d�finir cette fonction
+    r.initial = x.initial;
+    
+	// on remplace les états finaux de x par des transitions spontanées
+	// sur l'etat inital de y
+	for (etatset_t::const_iterator xf_it = x.finaux.begin(); xf_it != x.finaux.end(); xf_it ++)
+	{
+		//cout << "xf_it = " << (*xf_it) << endl;
+		r.epsilon[(*xf_it)].insert(y.initial + x.nb_etats);
+		r.finaux.erase(*xf_it);
+	}
 
     return r;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+/*
 sAutoNDE Complement(const sAutoNDE& x) {
     //TODO d�finir cette fonction
-
+	sAutoNDE r = determinize(x);
+	
+	for (int i = 0; i<r.nb_etats; i++)
+	{
+		if
+	}
+	
     return x;
-}
+} */
 
 
 ////////////////////////////////////////////////////////////////////////////////

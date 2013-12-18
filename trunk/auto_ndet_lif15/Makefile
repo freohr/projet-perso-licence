@@ -28,3 +28,6 @@ clean:
 cleanparser:
 	rm -f src/lex.yy.cpp src/parser.tab.cpp
   # $(EXECUTABLE)
+
+keyboardcat:
+	firefox http://www.youtube.com/watch?v=J---aiyznGQ &

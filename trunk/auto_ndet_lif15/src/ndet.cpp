@@ -623,20 +623,21 @@ sAutoNDE Determinize(const sAutoNDE& at) {
 
 bool ToGraph(sAutoNDE& at, string path) {
     //TODO définir cette fonction
+    
     ofstream sortie;
-
     sortie.open(path.c_str());
-
+	
     if(!sortie.is_open())
     {
 		cerr << "Erreur d'ouverture du fichier " << path << " pour la création graphique de l'automate" << endl;
 		return false;
 	}
+	
     sortie << "digraph finite_state_machine {" << endl;
     sortie << "	rankdir=LR;" << endl;
     sortie << "	size=\"10,10\";" << endl;
     sortie << endl;
-
+	
     // dessin des états finaux sous forme de double cercle
     for(etatset_t::const_iterator f_it = at.finaux.begin(); f_it != at.finaux.end(); f_it++)
 		sortie << "	node [shape = doublecircle]; "<< *f_it <<" ;"<<endl;
@@ -649,15 +650,15 @@ bool ToGraph(sAutoNDE& at, string path) {
 	//transitions non spontanées
 	// 0 -> 2 [label = "b"];
 	for(unsigned int j = 0; j < at.trans.size(); j++) {
-        for(unsigned int i = 0; i < at.trans.at(i).size(); i++) {
+        for(unsigned int i = 0; i < at.trans.at(j).size(); i++) {			
             for(etatset_t::const_iterator eset_it = at.trans.at(j).at(i).begin(); eset_it != at.trans.at(j).at(i).end(); eset_it++)
                 sortie << "	" << j << " -> " << (*eset_it) << " [label = \"" << (char)(ASCII_A + i) << "\"];" << endl;
         }
 	}
 
 	//transitions spontanées
-	//0 -> 1 [label = "ε"];
-	for(unsigned int i = 0; i < at.epsilon.size(); i++) {
+	//0 -> 1 [label = "ε"];	
+	for(unsigned int i = 0; i < at.epsilon.size(); i++) {		
         for(etatset_t::const_iterator esp_it2 = at.epsilon.at(i).begin(); esp_it2 != at.epsilon.at(i).end(); esp_it2++) {
             sortie << "	" << i << " -> " << (*esp_it2) << " [label = \"ε\"];" << endl;
         }
@@ -784,18 +785,27 @@ sAutoNDE Concat(const sAutoNDE& x, const sAutoNDE& y) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
+
 sAutoNDE Complement(const sAutoNDE& x) {
-    //TODO d�finir cette fonction
-	sAutoNDE r = determinize(x);
+	sAutoNDE r = x;
+	etatset_t finaux_tmp;
+	bool est_final = false;
 	
-	for (int i = 0; i<r.nb_etats; i++)
+	for (unsigned int i = 0; i<r.nb_etats; i++)
 	{
-		if
+		for(etatset_t::iterator rf_it = r.finaux.begin(); rf_it != r.finaux.end(); rf_it ++)
+		{
+			if ((*rf_it) == i) // si l'etat actuel est un état final
+				est_final = true;
+		}
+		if(!est_final)
+			finaux_tmp.insert(i);
+		est_final = false;
 	}
-	
-    return x;
-} */
+	r.finaux = finaux_tmp;
+	r.nb_finaux = r.finaux.size();
+    return r;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -805,30 +815,30 @@ sAutoNDE Kleene(const sAutoNDE& x) {
 
 	//copie de l'automate
 	sAutoNDE tmp = Copie(x);
-	fprintf(stderr, "automate copié\n");
+	//fprintf(stderr, "automate copié\n");
 
 	//transition spontanée des états finaux sur l'état initial
 	for(etatset_t::const_iterator fin_t = tmp.finaux.begin(); fin_t != tmp.finaux.end(); fin_t++) {
 		tmp.epsilon.at(*fin_t).insert(tmp.initial);
-		fprintf(stderr, "transition de %d ok\n", *fin_t);
+		//fprintf(stderr, "transition de %d ok\n", *fin_t);
 	}
 
 
 	//ajout d'un nouvel état initial + transition spontanée sur l'ancien état initial
 
-	fprintf(stderr, "nb états %d\n", tmp.nb_etats);
+	//fprintf(stderr, "nb états %d\n", tmp.nb_etats);
 	tmp.nb_etats++;
-	fprintf(stderr, "nb états apres ++ %d\n", tmp.nb_etats);
+	//fprintf(stderr, "nb états apres ++ %d\n", tmp.nb_etats);
 	tmp.epsilon.resize(tmp.nb_etats);
-	fprintf(stderr, "resize ok\n");
+	//fprintf(stderr, "resize ok\n");
 
 	tmp.epsilon[x.nb_etats].insert(tmp.initial);
-	fprintf(stderr, " epsilon nouveau ->ancien ok\n");
+	//fprintf(stderr, " epsilon nouveau ->ancien ok\n");
 
 	tmp.initial = tmp.nb_etats-1;
-	fprintf(stderr, "changement init ok\n");
+	//fprintf(stderr, "changement init ok\n");
 	tmp.finaux.insert(tmp.initial);
-	fprintf(stderr, "ajout nouveau init dans finaux ok\n");
+	//fprintf(stderr, "ajout nouveau init dans finaux ok\n");
 	 
     return tmp;
 }
@@ -836,9 +846,10 @@ sAutoNDE Kleene(const sAutoNDE& x) {
 ////////////////////////////////////////////////////////////////////////////////
 
 sAutoNDE Intersection(const sAutoNDE& x, const sAutoNDE& y) {
-    //TODO d�finir cette fonction
-
-    return x;
+    sAutoNDE a = Complement(x);
+    sAutoNDE b = Complement(y);
+    sAutoNDE r = Union(a, b);
+    return Complement(r);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1036,7 +1047,6 @@ int main(int argc, char* argv[]) {
         default:
             return EXIT_FAILURE;
     }
-
     // on affiche le r�sultat ou on l'�crit dans un fichier
     if (!toFile) {
         cout << endl << atr;

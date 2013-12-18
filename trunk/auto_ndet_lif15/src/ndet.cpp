@@ -697,6 +697,7 @@ sAutoNDE Copie(const sAutoNDE& x) {
 // penser a changer l'état inital dans les fonction utilisant Append
 sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
     assert(x.nb_symbs == y.nb_symbs); // on vérifie que les deux alphabets sont égaux
+	cout << "entrée dans append" << endl;
     sAutoNDE r;
 
 	r.nb_etats = x.nb_etats + y.nb_etats;
@@ -710,11 +711,13 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
     for(unsigned int i = 0; i<r.nb_etats; ++i)
 		r.trans[i].resize(r.nb_symbs);
 		
+	cout << "resize " << endl;
 	// on décale les transitions de l'automate y
 
 	// on ajoute les transitions de x et y
 	for(unsigned int i = 0; i<r.nb_etats; i++)
 	{
+		cout << "trans " << i << endl;
 		if (i<x.nb_etats)
 		{
 			r.epsilon[i] = x.epsilon[i];
@@ -732,6 +735,8 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
 		}
 	}
 
+	cout << "transitions" << endl;
+
 	// on ajoute les états finaux
 	for(etatset_t::const_iterator x_it = x.finaux.begin(); x_it != x.finaux.end(); x_it ++)
 	{
@@ -741,6 +746,8 @@ sAutoNDE Append(const sAutoNDE& x, const sAutoNDE& y) {
 	{
 		r.finaux.insert(x.nb_etats+ (*y_it));
 	}
+
+	cout << "finaux" << endl;
 
     return r;
 }
@@ -768,10 +775,11 @@ sAutoNDE Union(const sAutoNDE& x, const sAutoNDE& y) {
 ////////////////////////////////////////////////////////////////////////////////
 
 sAutoNDE Concat(const sAutoNDE& x, const sAutoNDE& y) {
+   cout << "rentré dans concat" << endl; 
     assert(x.nb_symbs == y.nb_symbs);
     sAutoNDE r = Append(x, y);
+   cout << "append ok" << endl; 
     r.initial = x.initial;
-    
 	// on remplace les états finaux de x par des transitions spontanées
 	// sur l'etat inital de y
 	for (etatset_t::const_iterator xf_it = x.finaux.begin(); xf_it != x.finaux.end(); xf_it ++)
@@ -781,6 +789,7 @@ sAutoNDE Concat(const sAutoNDE& x, const sAutoNDE& y) {
 		r.finaux.erase(*xf_it);
 	}
 
+	cout << "sortie de concat" << endl;
     return r;
 }
 
@@ -853,20 +862,93 @@ sAutoNDE Intersection(const sAutoNDE& x, const sAutoNDE& y) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+sAutoNDE Expr2AutRecur(sExpressionRationnelle& er) {
+	switch(er->op) 
+	{
+		case o_variable:{
+			cout << "cas variable" << endl;
+			int var = ((er->nom)->at(0)) - ASCII_A; 
+			cout << "var " << ((er->nom)->at(0)) << ": " << var << endl; 	
+			sAutoNDE tmp;
+
+			tmp.nb_etats = 2;
+			tmp.nb_symbs = var+1; 
+			tmp.nb_finaux = 1;
+			tmp.initial = 0;
+			tmp.finaux.insert(1);
+			cout << "insert finaux ok " << endl;
+			
+       		tmp.trans.resize(tmp.nb_etats);
+       		for (size_t i = 0; i < tmp.nb_etats; ++i){
+				tmp.trans[i].resize(tmp.nb_symbs);
+				cout << "resize " << i << " ok" << endl;
+			}
+			tmp.epsilon.resize(tmp.nb_etats);
+
+			cout << "tmp init : " << tmp.initial << endl;
+			cout << "variable : "<< ((er->nom)->at(0)) - ASCII_A << endl;
+			tmp.trans[tmp.initial][var].insert(1);
+			cout << "insert trans ok" << endl;
+			cout << "var ok" << endl<<endl;
+			
+			cout << "affichage graph" << endl;
+			cout << tmp;
+			cout << endl;	
+			return tmp;
+
+			break;}
+
+		case o_ou:{
+			cout << "cas ou" << endl;
+			sAutoNDE tmp1 = Expr2AutRecur(er->arg1);
+			sAutoNDE tmp2 = Expr2AutRecur(er->arg2);
+			if(tmp1.nb_symbs != tmp2.nb_symbs) {
+				tmp1.nb_symbs = max(tmp1.nb_symbs, tmp2.nb_symbs);
+				tmp2.nb_symbs = max(tmp1.nb_symbs, tmp2.nb_symbs);
+			}
+
+			cout << "union ok" << endl << endl;
+			return Union(tmp1, tmp2);
+			break;}
+
+		case o_concat:{
+			cout << "cas concat" << endl;
+			sAutoNDE tmp1 = Expr2AutRecur(er->arg1);
+			sAutoNDE tmp2 = Expr2AutRecur(er->arg2);
+			if(tmp1.nb_symbs != tmp2.nb_symbs) {
+				tmp1.nb_symbs = max(tmp1.nb_symbs, tmp2.nb_symbs);
+				tmp2.nb_symbs = max(tmp1.nb_symbs, tmp2.nb_symbs);
+			}
+
+			cout << "concat ok" << endl << endl;
+			sAutoNDE tmp = Concat(tmp1, tmp2);
+			cout << "aut concat" << endl;
+			cout << tmp;
+			cout << endl;
+			return tmp;
+			break;}
+
+		case o_etoile:{
+			cout << "cas etoile" << endl;
+			sAutoNDE tmp = Expr2AutRecur(er->arg);
+			cout << "étoile ok" << endl << endl;
+			return Kleene(tmp);
+			break;}
+	}
+}
+
 
 sAutoNDE ExpressionRationnelle2Automate(string expr){
-		sAutoNDE r;
 
 		sExpressionRationnelle er = lit_expression_rationnelle(expr);
 
 		cout << er << endl;
+		
+		sAutoNDE r = Expr2AutRecur(er);
 
+		cout << "apres transfo exp" << endl;
+		cout << r << endl;
 		//TODO d�finir cette fonction
-		r.nb_symbs = 1;
-		r.nb_finaux = 0;
-		r.initial = 0;
-
-
 		return r;
 }
 
